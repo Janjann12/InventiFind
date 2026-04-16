@@ -1,0 +1,583 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="InventiFind.StudentDashboard"
+             Title="Student Dashboard"
+             NavigationPage.HasNavigationBar="False"
+             Shell.NavBarIsVisible="False"
+             BackgroundColor="#F5F5F5">
+
+    <Grid RowDefinitions="Auto,*,Auto">
+
+        <!-- Fixed Header Content (Not Scrollable) -->
+        <VerticalStackLayout Grid.Row="0" Spacing="0">
+
+            <!-- Header with Red Background -->
+            <Grid BackgroundColor="#DC143C" 
+                  Padding="20,40,20,30"
+                  HeightRequest="180">
+
+                <!-- App Name -->
+                <Label Text="InventiFind"
+                       FontSize="32"
+                       FontAttributes="Bold"
+                       TextColor="White"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Start"/>
+
+                <!-- Search Bar -->
+                <Frame BackgroundColor="White"
+                       CornerRadius="25"
+                       Padding="15,0"
+                       HasShadow="True"
+                       Margin="0,20,0,0"
+                       VerticalOptions="End"
+                       HeightRequest="50">
+                    <HorizontalStackLayout Spacing="10" VerticalOptions="Center">
+                        <Label Text="🔍" 
+                               FontSize="16" 
+                               TextColor="#999"
+                               VerticalOptions="Center"/>
+                        <Entry Placeholder="Search lost or Found Item"
+                               PlaceholderColor="#999"
+                               TextColor="#333"
+                               FontSize="14"
+                               VerticalOptions="Center"
+                               HorizontalOptions="FillAndExpand"/>
+                    </HorizontalStackLayout>
+                </Frame>
+            </Grid>
+
+            <!-- Categories Section -->
+            <VerticalStackLayout Padding="20,25,20,15" Spacing="15">
+
+                <Label Text="Categories"
+                       FontSize="18"
+                       FontAttributes="Bold"
+                       TextColor="#1a1a1a"/>
+
+                <!-- Category Icons Grid - Fixed: 5 columns -->
+                <Grid ColumnDefinitions="*,*,*,*,*" 
+                      RowDefinitions="Auto"
+                      ColumnSpacing="10">
+
+                    <!-- Phone -->
+                    <VerticalStackLayout Grid.Column="0" Spacing="8">
+                        <Frame BackgroundColor="White"
+                               CornerRadius="15"
+                               Padding="15"
+                               HasShadow="False"
+                               BorderColor="#E0E0E0"
+                               HeightRequest="70"
+                               WidthRequest="70"
+                               HorizontalOptions="Center">
+                            <Image Source="Images/mobile.png"
+                                   Aspect="AspectFit"
+                                   HeightRequest="35"
+                                   WidthRequest="35"/>
+                        </Frame>
+                        <Label Text="Phone"
+                               FontSize="12"
+                               TextColor="#333"
+                               HorizontalOptions="Center"/>
+                    </VerticalStackLayout>
+
+                    <!-- Wallet -->
+                    <VerticalStackLayout Grid.Column="1" Spacing="8">
+                        <Frame BackgroundColor="White"
+                               CornerRadius="15"
+                               Padding="15"
+                               HasShadow="False"
+                               BorderColor="#E0E0E0"
+                               HeightRequest="70"
+                               WidthRequest="70"
+                               HorizontalOptions="Center">
+                            <Image Source="Images/wallet.png"
+                                   Aspect="AspectFit"
+                                   HeightRequest="35"
+                                   WidthRequest="35"/>
+                        </Frame>
+                        <Label Text="Wallet"
+                               FontSize="12"
+                               TextColor="#333"
+                               HorizontalOptions="Center"/>
+                    </VerticalStackLayout>
+
+                    <!-- Keys -->
+                    <VerticalStackLayout Grid.Column="2" Spacing="8">
+                        <Frame BackgroundColor="White"
+                               CornerRadius="15"
+                               Padding="15"
+                               HasShadow="False"
+                               BorderColor="#E0E0E0"
+                               HeightRequest="70"
+                               WidthRequest="70"
+                               HorizontalOptions="Center">
+                            <Image Source="Images/id.png"
+                                   Aspect="AspectFit"
+                                   HeightRequest="35"
+                                   WidthRequest="35"/>
+                        </Frame>
+                        <Label Text="ID"
+                               FontSize="12"
+                               TextColor="#333"
+                               HorizontalOptions="Center"/>
+                    </VerticalStackLayout>
+
+                    <!-- Watch -->
+                    <VerticalStackLayout Grid.Column="3" Spacing="8">
+                        <Frame BackgroundColor="White"
+                               CornerRadius="15"
+                               Padding="15"
+                               HasShadow="False"
+                               BorderColor="#E0E0E0"
+                               HeightRequest="70"
+                               WidthRequest="70"
+                               HorizontalOptions="Center">
+                            <Image Source="Images/watch1.png"
+                                   Aspect="AspectFit"
+                                   HeightRequest="35"
+                                   WidthRequest="35"/>
+                        </Frame>
+                        <Label Text="Watch"
+                               FontSize="12"
+                               TextColor="#333"
+                               HorizontalOptions="Center"/>
+                    </VerticalStackLayout>
+
+                    <!-- Others -->
+                    <VerticalStackLayout Grid.Column="4" Spacing="8">
+                        <Frame BackgroundColor="White"
+                               CornerRadius="15"
+                               Padding="15"
+                               HasShadow="False"
+                               BorderColor="#E0E0E0"
+                               HeightRequest="70"
+                               WidthRequest="70"
+                               HorizontalOptions="Center">
+                            <Image Source="Images/dots.png"
+                                   Aspect="AspectFit"
+                                   HeightRequest="35"
+                                   WidthRequest="35"/>
+                        </Frame>
+                        <Label Text="Others"
+                               FontSize="12"
+                               TextColor="#333"
+                               HorizontalOptions="Center"/>
+                    </VerticalStackLayout>
+
+                </Grid>
+            </VerticalStackLayout>
+
+            <!-- Recent Post Header (Fixed) -->
+            <Grid ColumnDefinitions="*,Auto" Padding="20,20,20,10">
+                <Label Text="Recent Post"
+                       FontSize="18"
+                       FontAttributes="Bold"
+                       TextColor="#1a1a1a"
+                       VerticalOptions="Center"/>
+                <Label Text="View All"
+                       FontSize="14"
+                       TextColor="#DC143C"
+                       FontAttributes="Bold"
+                       Grid.Column="1"
+                       VerticalOptions="Center">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnViewAllTapped"/>
+                    </Label.GestureRecognizers>
+                </Label>
+            </Grid>
+        </VerticalStackLayout>
+
+        <!-- Scrollable Recent Post Section Only -->
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Padding="20,10,20,20" Spacing="15">
+
+                <!-- Post 1 - Found -->
+                <Frame BackgroundColor="White"
+                       CornerRadius="15"
+                       Padding="15"
+                       HasShadow="False"
+                       BorderColor="#E8E8E8">
+                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="15">
+                        <!-- Item Image -->
+                        <Frame Grid.Column="0"
+                               BackgroundColor="#DC143C"
+                               CornerRadius="10"
+                               Padding="0"
+                               WidthRequest="70"
+                               HeightRequest="70"
+                               HasShadow="False">
+                            <Image Source="Images/wallet.png"
+                                   Aspect="AspectFit"
+                                   HeightRequest="40"
+                                   WidthRequest="40"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center"/>
+                        </Frame>
+
+                        <!-- Item Details -->
+                        <VerticalStackLayout Grid.Column="1" Spacing="5">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <Label Text="CLN Wallet"
+                                       FontSize="16"
+                                       FontAttributes="Bold"
+                                       TextColor="#1a1a1a"/>
+                                <Frame Grid.Column="1"
+                                       BackgroundColor="#90EE90"
+                                       CornerRadius="10"
+                                       Padding="8,3"
+                                       HasShadow="False">
+                                    <Label Text="FOUND"
+                                           FontSize="11"
+                                           FontAttributes="Bold"
+                                           TextColor="#228B22"/>
+                                </Frame>
+                            </Grid>
+
+                            <Label Text="Janjan De Leon - 20212225567"
+                                   FontSize="12"
+                                   TextColor="#666"/>
+
+                            <HorizontalStackLayout Spacing="20">
+                                <HorizontalStackLayout Spacing="5">
+                                    <Label Text="📅" FontSize="12"/>
+                                    <Label Text="12/01/2025" FontSize="12" TextColor="#999"/>
+                                </HorizontalStackLayout>
+
+                                <HorizontalStackLayout Spacing="5">
+                                    <Label Text="📍" FontSize="12"/>
+                                    <Label Text="TYK 1st Floor" FontSize="12" TextColor="#999"/>
+                                </HorizontalStackLayout>
+                            </HorizontalStackLayout>
+                        </VerticalStackLayout>
+                    </Grid>
+                </Frame>
+
+                <!-- Post 2 - Lost -->
+                <Frame BackgroundColor="White"
+                       CornerRadius="15"
+                       Padding="15"
+                       HasShadow="False"
+                       BorderColor="#E8E8E8">
+                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="15">
+                        <Frame Grid.Column="0"
+                               BackgroundColor="#DC143C"
+                               CornerRadius="10"
+                               Padding="0"
+                               WidthRequest="70"
+                               HeightRequest="70"
+                               HasShadow="False">
+                            <Image Source="Images/mobile.png"
+                                   Aspect="AspectFit"
+                                   HeightRequest="40"
+                                   WidthRequest="40"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center"/>
+                        </Frame>
+
+                        <VerticalStackLayout Grid.Column="1" Spacing="5">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <Label Text="Lost Cellphone"
+                                       FontSize="16"
+                                       FontAttributes="Bold"
+                                       TextColor="#1a1a1a"/>
+                                <Frame Grid.Column="1"
+                                       BackgroundColor="#FFB6C1"
+                                       CornerRadius="10"
+                                       Padding="8,3"
+                                       HasShadow="False">
+                                    <Label Text="LOST"
+                                           FontSize="11"
+                                           FontAttributes="Bold"
+                                           TextColor="#DC143C"/>
+                                </Frame>
+                            </Grid>
+
+                            <Label Text="Agatha Cruz - 20212225567"
+                                   FontSize="12"
+                                   TextColor="#666"/>
+
+                            <HorizontalStackLayout Spacing="20">
+                                <HorizontalStackLayout Spacing="5">
+                                    <Label Text="📅" FontSize="12"/>
+                                    <Label Text="12/01/2025" FontSize="12" TextColor="#999"/>
+                                </HorizontalStackLayout>
+
+                                <HorizontalStackLayout Spacing="5">
+                                    <Label Text="📍" FontSize="12"/>
+                                    <Label Text="TYK 2nd Floor" FontSize="12" TextColor="#999"/>
+                                </HorizontalStackLayout>
+                            </HorizontalStackLayout>
+                        </VerticalStackLayout>
+                    </Grid>
+                </Frame>
+
+                <!-- Post 3 - Found -->
+                <Frame BackgroundColor="White"
+                       CornerRadius="15"
+                       Padding="15"
+                       HasShadow="False"
+                       BorderColor="#E8E8E8">
+                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="15">
+                        <Frame Grid.Column="0"
+                               BackgroundColor="#DC143C"
+                               CornerRadius="10"
+                               Padding="0"
+                               WidthRequest="70"
+                               HeightRequest="70"
+                               HasShadow="False">
+                            <Image Source="Images/mobile.png"
+                                   Aspect="AspectFit"
+                                   HeightRequest="40"
+                                   WidthRequest="40"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center"/>
+                        </Frame>
+
+                        <VerticalStackLayout Grid.Column="1" Spacing="5">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <Label Text="Iphone 67"
+                                       FontSize="16"
+                                       FontAttributes="Bold"
+                                       TextColor="#1a1a1a"/>
+                                <Frame Grid.Column="1"
+                                       BackgroundColor="#90EE90"
+                                       CornerRadius="10"
+                                       Padding="8,3"
+                                       HasShadow="False">
+                                    <Label Text="FOUND"
+                                           FontSize="11"
+                                           FontAttributes="Bold"
+                                           TextColor="#228B22"/>
+                                </Frame>
+                            </Grid>
+
+                            <Label Text="Yhulo Cruz - 20212225567"
+                                   FontSize="12"
+                                   TextColor="#666"/>
+
+                            <HorizontalStackLayout Spacing="20">
+                                <HorizontalStackLayout Spacing="5">
+                                    <Label Text="📅" FontSize="12"/>
+                                    <Label Text="12/01/2025" FontSize="12" TextColor="#999"/>
+                                </HorizontalStackLayout>
+
+                                <HorizontalStackLayout Spacing="5">
+                                    <Label Text="📍" FontSize="12"/>
+                                    <Label Text="TYK 1st Floor" FontSize="12" TextColor="#999"/>
+                                </HorizontalStackLayout>
+                            </HorizontalStackLayout>
+                        </VerticalStackLayout>
+                    </Grid>
+                </Frame>
+
+                <!-- Post 4 - Lost -->
+                <Frame BackgroundColor="White"
+                       CornerRadius="15"
+                       Padding="15"
+                       HasShadow="False"
+                       BorderColor="#E8E8E8">
+                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="15">
+                        <Frame Grid.Column="0"
+                               BackgroundColor="#DC143C"
+                               CornerRadius="10"
+                               Padding="0"
+                               WidthRequest="70"
+                               HeightRequest="70"
+                               HasShadow="False">
+                            <Image Source="Images/id.png"
+                                   Aspect="AspectFit"
+                                   HeightRequest="40"
+                                   WidthRequest="40"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center"/>
+                        </Frame>
+
+                        <VerticalStackLayout Grid.Column="1" Spacing="5">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <Label Text="Student ID Card"
+                                       FontSize="16"
+                                       FontAttributes="Bold"
+                                       TextColor="#1a1a1a"/>
+                                <Frame Grid.Column="1"
+                                       BackgroundColor="#FFB6C1"
+                                       CornerRadius="10"
+                                       Padding="8,3"
+                                       HasShadow="False">
+                                    <Label Text="LOST"
+                                           FontSize="11"
+                                           FontAttributes="Bold"
+                                           TextColor="#DC143C"/>
+                                </Frame>
+                            </Grid>
+
+                            <Label Text="Maria Santos - 20212225568"
+                                   FontSize="12"
+                                   TextColor="#666"/>
+
+                            <HorizontalStackLayout Spacing="20">
+                                <HorizontalStackLayout Spacing="5">
+                                    <Label Text="📅" FontSize="12"/>
+                                    <Label Text="12/02/2025" FontSize="12" TextColor="#999"/>
+                                </HorizontalStackLayout>
+
+                                <HorizontalStackLayout Spacing="5">
+                                    <Label Text="📍" FontSize="12"/>
+                                    <Label Text="Library 2nd Floor" FontSize="12" TextColor="#999"/>
+                                </HorizontalStackLayout>
+                            </HorizontalStackLayout>
+                        </VerticalStackLayout>
+                    </Grid>
+                </Frame>
+
+                <!-- Post 5 - Found -->
+                <Frame BackgroundColor="White"
+                       CornerRadius="15"
+                       Padding="15"
+                       HasShadow="False"
+                       BorderColor="#E8E8E8">
+                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="15">
+                        <Frame Grid.Column="0"
+                               BackgroundColor="#DC143C"
+                               CornerRadius="10"
+                               Padding="0"
+                               WidthRequest="70"
+                               HeightRequest="70"
+                               HasShadow="False">
+                            <Image Source="Images/watch1.png"
+                                   Aspect="AspectFit"
+                                   HeightRequest="40"
+                                   WidthRequest="40"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center"/>
+                        </Frame>
+
+                        <VerticalStackLayout Grid.Column="1" Spacing="5">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <Label Text="Smart Watch"
+                                       FontSize="16"
+                                       FontAttributes="Bold"
+                                       TextColor="#1a1a1a"/>
+                                <Frame Grid.Column="1"
+                                       BackgroundColor="#90EE90"
+                                       CornerRadius="10"
+                                       Padding="8,3"
+                                       HasShadow="False">
+                                    <Label Text="FOUND"
+                                           FontSize="11"
+                                           FontAttributes="Bold"
+                                           TextColor="#228B22"/>
+                                </Frame>
+                            </Grid>
+
+                            <Label Text="John Reyes - 20212225569"
+                                   FontSize="12"
+                                   TextColor="#666"/>
+
+                            <HorizontalStackLayout Spacing="20">
+                                <HorizontalStackLayout Spacing="5">
+                                    <Label Text="📅" FontSize="12"/>
+                                    <Label Text="12/02/2025" FontSize="12" TextColor="#999"/>
+                                </HorizontalStackLayout>
+
+                                <HorizontalStackLayout Spacing="5">
+                                    <Label Text="📍" FontSize="12"/>
+                                    <Label Text="Canteen Area" FontSize="12" TextColor="#999"/>
+                                </HorizontalStackLayout>
+                            </HorizontalStackLayout>
+                        </VerticalStackLayout>
+                    </Grid>
+                </Frame>
+
+                <!-- Bottom Spacing -->
+                <BoxView HeightRequest="20" BackgroundColor="Transparent"/>
+
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!-- Bottom Navigation Bar -->
+        <Grid Grid.Row="2" 
+              BackgroundColor="White"
+              HeightRequest="70"
+              ColumnDefinitions="*,*,*,*,*"
+              Padding="0,10">
+
+            <!-- Home -->
+            <VerticalStackLayout Grid.Column="0" 
+                                 Spacing="2"
+                                 HorizontalOptions="Center"
+                                 VerticalOptions="Center">
+                <Image Source="Images/home.png"
+                       WidthRequest="28"
+                       HeightRequest="33"
+                       HorizontalOptions="Center"/>
+                <Label Text="Home" FontSize="11" TextColor="#8B0000" FontAttributes="Bold" HorizontalOptions="Center"/>
+            </VerticalStackLayout>
+
+            <!-- Report -->
+            <VerticalStackLayout Grid.Column="1" 
+                                 Spacing="2"
+                                 HorizontalOptions="Center"
+                                 VerticalOptions="Center">
+                <Image Source="Images/report.png"
+                       WidthRequest="28"
+                       HeightRequest="33"
+                       HorizontalOptions="Center"/>
+                <Label Text="Report" FontSize="11" TextColor="#666" HorizontalOptions="Center"/>
+                <VerticalStackLayout.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnReportTapped"/>
+                </VerticalStackLayout.GestureRecognizers>
+            </VerticalStackLayout>
+
+            <!-- Receive -->
+            <VerticalStackLayout Grid.Column="2" 
+                                 Spacing="2"
+                                 HorizontalOptions="Center"
+                                 VerticalOptions="Center">
+                <Image Source="Images/box.png"
+                       WidthRequest="28"
+                       HeightRequest="33"
+                       HorizontalOptions="Center"/>
+                <Label Text="Receive" FontSize="11" TextColor="#666" HorizontalOptions="Center"/>
+                <VerticalStackLayout.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnReceiveTapped"/>
+                </VerticalStackLayout.GestureRecognizers>
+            </VerticalStackLayout>
+
+            <!-- News -->
+            <VerticalStackLayout Grid.Column="3" 
+                                 Spacing="2"
+                                 HorizontalOptions="Center"
+                                 VerticalOptions="Center">
+                <Image Source="Images/notif.png"
+                       WidthRequest="28"
+                       HeightRequest="33"
+                       HorizontalOptions="Center"/>
+                <Label Text="News" FontSize="11" TextColor="#666" HorizontalOptions="Center"/>
+                <VerticalStackLayout.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnNewsTapped"/>
+                </VerticalStackLayout.GestureRecognizers>
+            </VerticalStackLayout>
+
+            <!-- Logout -->
+            <VerticalStackLayout Grid.Column="4" 
+                                 Spacing="2"
+                                 HorizontalOptions="Center"
+                                 VerticalOptions="Center">
+                <Image Source="Images/logout.png"
+                       WidthRequest="28"
+                       HeightRequest="33"
+                       HorizontalOptions="Center">
+                    <Image.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnLogoutClicked"/>
+                    </Image.GestureRecognizers>
+                </Image>
+                <Label Text="Logout" FontSize="11" TextColor="#666" HorizontalOptions="Center"/>
+            </VerticalStackLayout>
+
+        </Grid>
+
+    </Grid>
+
+</ContentPage>

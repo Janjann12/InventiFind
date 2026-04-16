@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="InventiFind.ReceiveModule"
+             Title="ReceiveModule"
+             BackgroundColor="#F5F0F0">
+
+    <Grid RowDefinitions="Auto,*,Auto">
+
+        <!-- Header -->
+        <Border Grid.Row="0" 
+                BackgroundColor="#B71C1C"
+                StrokeThickness="0"
+                Padding="0,25,0,20">
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="0,0,25,25"/>
+            </Border.StrokeShape>
+            <Label Text="Receive Items"
+                   TextColor="White"
+                   FontSize="28"
+                   FontAttributes="Bold"
+                   HorizontalOptions="Center"/>
+        </Border>
+
+        <!-- Main Content -->
+        <ScrollView Grid.Row="1" Padding="15,20">
+            <VerticalStackLayout Spacing="15">
+
+                <!-- How to Claim Box -->
+                <Border BackgroundColor="#D6EAF8"
+                        Stroke="#5DADE2"
+                        StrokeThickness="1"
+                        Padding="15"
+                        Margin="0,0,0,10">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="10"/>
+                    </Border.StrokeShape>
+                    <VerticalStackLayout Spacing="5">
+                        <Label Text="How to Claim Your Item"
+                               TextColor="#2E86AB"
+                               FontSize="16"
+                               FontAttributes="Bold"/>
+                        <Label Text="1. Visit the location shown below"
+                               TextColor="#2E86AB"
+                               FontSize="13"/>
+                        <Label Text="2. Bring a valid ID for verification"
+                               TextColor="#2E86AB"
+                               FontSize="13"/>
+                        <Label Text="3. Provide item verification code"
+                               TextColor="#2E86AB"
+                               FontSize="13"/>
+                        <Label Text="4. Sign the release form"
+                               TextColor="#2E86AB"
+                               FontSize="13"/>
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Item Cards -->
+                <CollectionView x:Name="ItemsCollectionView"
+                                ItemsSource="{Binding LostItems}">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Border BackgroundColor="White"
+                                    Stroke="#E0E0E0"
+                                    StrokeThickness="1"
+                                    Padding="15"
+                                    Margin="0,5">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="12"/>
+                                </Border.StrokeShape>
+                                <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto" 
+                                      ColumnDefinitions="*,Auto">
+
+                                    <!-- Item Name & Status -->
+                                    <Label Grid.Row="0" Grid.Column="0"
+                                           Text="{Binding ItemName}"
+                                           FontSize="20"
+                                           FontAttributes="Bold"
+                                           TextColor="Black"/>
+                                    <Border Grid.Row="0" Grid.Column="1"
+                                            BackgroundColor="#A5D6A7"
+                                            StrokeThickness="0"
+                                            Padding="8,4">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="15"/>
+                                        </Border.StrokeShape>
+                                        <Label Text="READY TO CLAIM"
+                                               FontSize="10"
+                                               FontAttributes="Bold"
+                                               TextColor="#2E7D32"/>
+                                    </Border>
+
+                                    <!-- Description -->
+                                    <Label Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
+                                           Text="{Binding Description}"
+                                           FontSize="14"
+                                           TextColor="#666666"
+                                           Margin="0,2,0,8"/>
+
+                                    <!-- Location -->
+                                    <HorizontalStackLayout Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Spacing="5">
+                                        <Image Source="location_icon.png"
+                                               HeightRequest="16"
+                                               WidthRequest="16"
+                                               Aspect="AspectFit"/>
+                                        <Label Text="{Binding Location}"
+                                               FontSize="13"
+                                               TextColor="#666666"/>
+                                    </HorizontalStackLayout>
+
+                                    <!-- Found Date -->
+                                    <HorizontalStackLayout Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Spacing="5">
+                                        <Image Source="clock_icon.png"
+                                               HeightRequest="16"
+                                               WidthRequest="16"
+                                               Aspect="AspectFit"/>
+                                        <Label Text="{Binding FoundDate, StringFormat='Found on {0:MM-dd-yyyy}'}"
+                                               FontSize="13"
+                                               TextColor="#666666"/>
+                                    </HorizontalStackLayout>
+
+                                    <!-- Claim Code -->
+                                    <HorizontalStackLayout Grid.Row="4" Grid.Column="0" Spacing="5" Margin="0,5,0,0">
+                                        <Image Source="tag_icon.png"
+                                               HeightRequest="16"
+                                               WidthRequest="16"
+                                               Aspect="AspectFit"/>
+                                        <Label Text="{Binding ClaimCode, StringFormat='Claim Code : {0}'}"
+                                               FontSize="13"
+                                               TextColor="#666666"/>
+                                    </HorizontalStackLayout>
+
+                                    <!-- Action Buttons -->
+                                    <HorizontalStackLayout Grid.Row="4"
+                                                           Grid.Column="1" 
+                                                           Spacing="10"
+                                                           HorizontalOptions="End"
+                                                           VerticalOptions="End">
+                                        <Button Text="Claim Item"
+                                                BackgroundColor="#B71C1C"
+                                                TextColor="White"
+                                                FontSize="12"
+                                                FontAttributes="Bold"
+                                                Padding="15,8"
+                                                CornerRadius="8"
+                                                Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.ClaimItemCommand}"
+                                                CommandParameter="{Binding .}"/>
+                                        <Button Text="Contact"
+                                                BackgroundColor="#B0BEC5"
+                                                TextColor="White"
+                                                FontSize="12"
+                                                FontAttributes="Bold"
+                                                Padding="15,8"
+                                                CornerRadius="8"
+                                                Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.ContactCommand}"
+                                                CommandParameter="{Binding .}"/>
+                                    </HorizontalStackLayout>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <Grid Grid.Row="2" 
+      BackgroundColor="White"
+      HeightRequest="70"
+      ColumnDefinitions="*,*,*,*,*"
+      Padding="0,10"
+      Shadow="{Shadow Brush=#20000000, Offset='0,-2', Radius=4}">
+
+            <!-- Home -->
+            <VerticalStackLayout Grid.Column="0" 
+                         Spacing="2"
+                         HorizontalOptions="Center"
+                         VerticalOptions="Center">
+                <Image Source="home.png" WidthRequest="28" HeightRequest="28"/>
+                <Label Text="Home" FontSize="11" TextColor="#666"/>
+                <VerticalStackLayout.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnHomeTapped"/>
+                </VerticalStackLayout.GestureRecognizers>
+            </VerticalStackLayout>
+
+            <!-- Report -->
+            <VerticalStackLayout Grid.Column="1" 
+                         Spacing="2"
+                         HorizontalOptions="Center"
+                         VerticalOptions="Center">
+                <Image Source="report.png" WidthRequest="28" HeightRequest="28"/>
+                <Label Text="Report" FontSize="11" TextColor="#666"/>
+                <VerticalStackLayout.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnReportTapped"/>
+                </VerticalStackLayout.GestureRecognizers>
+            </VerticalStackLayout>
+
+            <!-- Receive (Active) -->
+            <VerticalStackLayout Grid.Column="2" 
+                         Spacing="2"
+                         HorizontalOptions="Center"
+                         VerticalOptions="Center">
+                <Image Source="box.png" WidthRequest="28" HeightRequest="28"/>
+                <Label Text="Receive" FontSize="11" TextColor="#B71C1C" FontAttributes="Bold"/>
+                <BoxView HeightRequest="2" BackgroundColor="#B71C1C" CornerRadius="1" Margin="0,-2,0,0"/>
+                <VerticalStackLayout.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnReceiveTapped"/>
+                </VerticalStackLayout.GestureRecognizers>
+            </VerticalStackLayout>
+
+            <!-- News -->
+            <VerticalStackLayout Grid.Column="3" 
+                         Spacing="2"
+                         HorizontalOptions="Center"
+                         VerticalOptions="Center">
+                <Image Source="notif.png" WidthRequest="28" HeightRequest="28"/>
+                <Label Text="News" FontSize="11" TextColor="#666"/>
+                <VerticalStackLayout.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnNewsTapped"/>
+                </VerticalStackLayout.GestureRecognizers>
+            </VerticalStackLayout>
+
+            <!-- Logout -->
+            <VerticalStackLayout Grid.Column="4" 
+                         Spacing="2"
+                         HorizontalOptions="Center"
+                         VerticalOptions="Center">
+                <Image Source="logout.png" WidthRequest="28" HeightRequest="28"/>
+                <Label Text="Logout" FontSize="11" TextColor="#666"/>
+                <VerticalStackLayout.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnLogoutTapped"/>
+                </VerticalStackLayout.GestureRecognizers>
+            </VerticalStackLayout>
+
+        </Grid>
+    </Grid>
+
+</ContentPage>

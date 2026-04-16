@@ -1,0 +1,211 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="InventiFind.MainPage"
+             Title="Login"
+             NavigationPage.HasNavigationBar="False"
+             Shell.NavBarIsVisible="False"
+             BackgroundColor="White">
+    
+    <!-- CHANGED: Background is now white for the whole page -->
+
+    <Grid>
+       
+        <BoxView BackgroundColor="#DC143C" 
+                 VerticalOptions="Start"
+                 HeightRequest="300"/>
+     
+        <Grid RowDefinitions="Auto,*">
+
+            <!-- Header Section - sits on RED background -->
+            <VerticalStackLayout Grid.Row="0" 
+                                 Padding="0,50,0,20"
+                                 Spacing="10">
+
+                <Label Text="InventiFind"
+                       FontSize="36"
+                       FontAttributes="Bold"
+                       TextColor="White"
+                       HorizontalOptions="Center"/>
+
+                <Label Text="Find what matters most"
+                       FontSize="14"
+                       TextColor="White"
+                       Opacity="0.9"
+                       HorizontalOptions="Center"/>
+            </VerticalStackLayout>
+
+            <!-- White Card Section - overlaps from red into white area -->
+            <Frame Grid.Row="1"
+                   x:Name="MainCard"
+                   BackgroundColor="White"
+                   CornerRadius="30"
+                   Padding="25,30"
+                   Margin="20,0,20,20"
+                   HasShadow="True"
+                   BorderColor="Black">
+
+                <ScrollView>
+                    <VerticalStackLayout Spacing="20">
+
+                        <!-- Welcome Back -->
+                        <Label Text="Welcome Back"
+                               FontSize="24"
+                               FontAttributes="Bold"
+                               TextColor="#1a1a1a"
+                               HorizontalOptions="Center"
+                               Margin="0,0,0,10"/>
+
+                        <!-- Email Entry -->
+                        <VerticalStackLayout Spacing="8">
+                            <Label Text="Email"
+                                   FontSize="14"
+                                   TextColor="#333"
+                                   FontAttributes="Bold"/>
+                            <Frame BorderColor="#E0E0E0" 
+                                   CornerRadius="12" 
+                                   Padding="15,0"
+                                   HasShadow="False"
+                                   BackgroundColor="#F8F9FA">
+                                <Entry x:Name="EmailEntry"
+                                       Placeholder="Enter your email"
+                                       PlaceholderColor="#999"
+                                       TextColor="#333"
+                                       FontSize="15"
+                                       Keyboard="Email"
+                                       TextChanged="OnEmailTextChanged"
+                                       HeightRequest="50"/>
+                            </Frame>
+                        </VerticalStackLayout>
+
+                        <!-- Detected Role Display -->
+                        <Frame x:Name="RoleDisplayFrame"
+                               BackgroundColor="#FFF5F5"
+                               BorderColor="#DC143C"
+                               CornerRadius="10"
+                               Padding="12"
+                               HasShadow="False"
+                               IsVisible="False">
+                            <HorizontalStackLayout Spacing="10" HorizontalOptions="Center">
+                                <Label x:Name="RoleIconLabel"
+                                       FontSize="20"
+                                       TextColor="#DC143C"/>
+                                <Label x:Name="RoleLabel"
+                                       Text="Detected Role"
+                                       FontSize="14"
+                                       TextColor="#DC143C"
+                                       FontAttributes="Bold"/>
+                            </HorizontalStackLayout>
+                        </Frame>
+
+                        <!-- Password Entry -->
+                        <VerticalStackLayout Spacing="8">
+                            <Label Text="Password"
+                                   FontSize="14"
+                                   TextColor="#333"
+                                   FontAttributes="Bold"/>
+                            <Frame BorderColor="#E0E0E0" 
+                                   CornerRadius="12" 
+                                   Padding="15,0"
+                                   HasShadow="False"
+                                   BackgroundColor="#F8F9FA">
+                                <Entry x:Name="PasswordEntry"
+                                       Placeholder="Enter your password"
+                                       PlaceholderColor="#999"
+                                       TextColor="#333"
+                                       FontSize="15"
+                                       IsPassword="True"
+                                       HeightRequest="50"/>
+                            </Frame>
+                        </VerticalStackLayout>
+
+                        <!-- Login Button -->
+                        <Button x:Name="LoginButton"
+                                Text="Login"
+                                BackgroundColor="#DC143C"
+                                TextColor="White"
+                                FontAttributes="Bold"
+                                FontSize="16"
+                                CornerRadius="12"
+                                HeightRequest="55"
+                                Clicked="OnLoginClicked"
+                                Margin="0,10,0,0"/>
+
+                        <!-- Forgot Password -->
+                        <Label Text="Forgot Password?"
+                               FontSize="14"
+                               TextColor="#DC143C"
+                               HorizontalOptions="Center"
+                               TextDecorations="Underline">
+                            <Label.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnForgotPasswordTapped"/>
+                            </Label.GestureRecognizers>
+                        </Label>
+
+                        <!-- OR Divider -->
+                        <Grid ColumnDefinitions="*,Auto,*" 
+                              Margin="0,10">
+                            <BoxView Grid.Column="0" 
+                                     HeightRequest="1" 
+                                     Color="#E0E0E0"
+                                     VerticalOptions="Center"/>
+                            <Label Grid.Column="1" 
+                                   Text="OR" 
+                                   FontSize="12" 
+                                   TextColor="#999"
+                                   Margin="10,0"/>
+                            <BoxView Grid.Column="2" 
+                                     HeightRequest="1" 
+                                     Color="#E0E0E0"
+                                     VerticalOptions="Center"/>
+                        </Grid>
+
+                        <!-- Google Sign In Button -->
+                        <Frame x:Name="GoogleButtonFrame"
+                               BorderColor="#E0E0E0"
+                               CornerRadius="12"
+                               Padding="0"
+                               HasShadow="False"
+                               BackgroundColor="White">
+                            <HorizontalStackLayout Padding="15,12"
+                                                   Spacing="12"
+                                                   HorizontalOptions="Center">
+                                <Label Text="G"
+                                       FontSize="20"
+                                       FontAttributes="Bold"
+                                       TextColor="#4285F4"/>
+                                <Label Text="Continue with Google"
+                                       FontSize="15"
+                                       TextColor="#333"
+                                       VerticalOptions="Center"/>
+                                
+                            </HorizontalStackLayout>
+                            <Frame.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnGoogleSignInTapped"/>
+                            </Frame.GestureRecognizers>
+                        </Frame>
+
+                        <HorizontalStackLayout Spacing="5"
+                           HorizontalOptions="Center">
+                            <Label Text="No account yet?"
+                                   FontSize="14"
+                                   TextColor="#666"/>
+                            <Label Text="Sign up"
+                                   FontSize="14"
+                                   TextColor="#4285F4"
+                                   FontAttributes="Bold">                   
+                                <Label.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnSignUpTapped"/>
+                                </Label.GestureRecognizers>
+                            </Label>
+                        </HorizontalStackLayout>
+
+
+
+                    </VerticalStackLayout>
+                </ScrollView>
+            </Frame>
+        </Grid>
+    </Grid>
+
+</ContentPage>

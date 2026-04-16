@@ -1,0 +1,337 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="InventiFind.SignUpPage"
+             Title="Sign Up"
+             NavigationPage.HasNavigationBar="False"
+             Shell.NavBarIsVisible="False"
+             BackgroundColor="White">
+
+    <Grid>
+
+        <BoxView BackgroundColor="#DC143C" 
+                 VerticalOptions="Start"
+                 HeightRequest="280"/>
+
+        <Grid RowDefinitions="Auto,*">
+
+            <!-- Header Section -->
+            <VerticalStackLayout Grid.Row="0" 
+                                 Padding="0,50,0,20"
+                                 Spacing="10">
+
+                <Label Text="InventiFind"
+                       FontSize="36"
+                       FontAttributes="Bold"
+                       TextColor="White"
+                       HorizontalOptions="Center"/>
+
+                <Label Text="Create your account"
+                       FontSize="14"
+                       TextColor="White"
+                       Opacity="0.9"
+                       HorizontalOptions="Center"/>
+            </VerticalStackLayout>
+
+            <!-- White Card Section -->
+            <Frame Grid.Row="1"
+                   x:Name="MainCard"
+                   BackgroundColor="White"
+                   CornerRadius="30"
+                   Padding="25,30"
+                   Margin="20,-5,20,20"
+                   HasShadow="True"
+                   BorderColor="Black">
+
+                <ScrollView>
+                    <VerticalStackLayout Spacing="18">
+
+                        <!-- Create Account Title -->
+                        <Label Text="Create Account"
+                               FontSize="24"
+                               FontAttributes="Bold"
+                               TextColor="#1a1a1a"
+                               HorizontalOptions="Center"
+                               Margin="0,0,0,10"/>
+
+                        <!-- First Name Entry -->
+                        <VerticalStackLayout Spacing="8">
+                            <Label Text="First Name"
+                                   FontSize="14"
+                                   TextColor="#333"
+                                   FontAttributes="Bold"/>
+                            <Frame BorderColor="#E0E0E0" 
+                                   CornerRadius="12" 
+                                   Padding="15,0"
+                                   HasShadow="False"
+                                   BackgroundColor="#F8F9FA">
+                                <Entry x:Name="FirstNameEntry"
+                                       Placeholder="Enter your first name"
+                                       PlaceholderColor="#999"
+                                       TextColor="#333"
+                                       FontSize="15"
+                                       Keyboard="Text"
+                                       HeightRequest="50"/>
+                            </Frame>
+                        </VerticalStackLayout>
+
+                        <!-- Surname Entry -->
+                        <VerticalStackLayout Spacing="8">
+                            <Label Text="Surname"
+                                   FontSize="14"
+                                   TextColor="#333"
+                                   FontAttributes="Bold"/>
+                            <Frame BorderColor="#E0E0E0" 
+                                   CornerRadius="12" 
+                                   Padding="15,0"
+                                   HasShadow="False"
+                                   BackgroundColor="#F8F9FA">
+                                <Entry x:Name="SurnameEntry"
+                                       Placeholder="Enter your surname"
+                                       PlaceholderColor="#999"
+                                       TextColor="#333"
+                                       FontSize="15"
+                                       Keyboard="Text"
+                                       HeightRequest="50"/>
+                            </Frame>
+                        </VerticalStackLayout>
+
+                        <!-- Email Entry -->
+                        <VerticalStackLayout Spacing="8">
+                            <Label Text="Email"
+                                   FontSize="14"
+                                   TextColor="#333"
+                                   FontAttributes="Bold"/>
+                            <Frame BorderColor="#E0E0E0" 
+                                   CornerRadius="12" 
+                                   Padding="15,0"
+                                   HasShadow="False"
+                                   BackgroundColor="#F8F9FA">
+                                <Entry x:Name="EmailEntry"
+                                       Placeholder="Enter your email"
+                                       PlaceholderColor="#999"
+                                       TextColor="#333"
+                                       FontSize="15"
+                                       Keyboard="Email"
+                                       TextChanged="OnEmailTextChanged"
+                                       HeightRequest="50"/>
+                            </Frame>
+                        </VerticalStackLayout>
+
+                        <!-- Contact Number Entry -->
+                        <VerticalStackLayout Spacing="8">
+                            <Label Text="Contact Number"
+                                   FontSize="14"
+                                   TextColor="#333"
+                                   FontAttributes="Bold"/>
+                            <Frame BorderColor="#E0E0E0" 
+                                   CornerRadius="12" 
+                                   Padding="15,0"
+                                   HasShadow="False"
+                                   BackgroundColor="#F8F9FA">
+                                <Entry x:Name="ContactEntry"
+                                       Placeholder="Enter your phone number"
+                                       PlaceholderColor="#999"
+                                       TextColor="#333"
+                                       FontSize="15"
+                                       Keyboard="Telephone"
+                                       MaxLength="15"
+                                       HeightRequest="50"/>
+                            </Frame>
+                        </VerticalStackLayout>
+
+                        <!-- Password Entry -->
+                        <VerticalStackLayout Spacing="8">
+                            <Label Text="Password"
+                                   FontSize="14"
+                                   TextColor="#333"
+                                   FontAttributes="Bold"/>
+                            <Frame BorderColor="#E0E0E0" 
+                                   CornerRadius="12" 
+                                   Padding="15,0"
+                                   HasShadow="False"
+                                   BackgroundColor="#F8F9FA">
+                                <Entry x:Name="PasswordEntry"
+                                       Placeholder="Create a password"
+                                       PlaceholderColor="#999"
+                                       TextColor="#333"
+                                       FontSize="15"
+                                       IsPassword="True"
+                                       TextChanged="OnPasswordTextChanged"
+                                       HeightRequest="50"/>
+                            </Frame>
+                        </VerticalStackLayout>
+
+                        <!-- Password Requirements Indicator -->
+                        <Frame x:Name="PasswordRequirementsFrame"
+                               BackgroundColor="#F8F9FA"
+                               BorderColor="#E0E0E0"
+                               CornerRadius="10"
+                               Padding="12"
+                               HasShadow="False">
+                            <VerticalStackLayout Spacing="6">
+                                <Label Text="Password must contain:"
+                                       FontSize="12"
+                                       TextColor="#666"
+                                       FontAttributes="Bold"/>
+
+                                <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="4">
+                                    <!-- Uppercase -->
+                                    <Label Grid.Row="0" Grid.Column="0" 
+                                           x:Name="UppercaseCheck"
+                                           Text="✗" 
+                                           FontSize="12" 
+                                           TextColor="#DC143C"/>
+                                    <Label Grid.Row="0" Grid.Column="1" 
+                                           Text="At least one uppercase letter (A-Z)"
+                                           FontSize="12" 
+                                           TextColor="#666"/>
+
+                                    <!-- Lowercase -->
+                                    <Label Grid.Row="1" Grid.Column="0" 
+                                           x:Name="LowercaseCheck"
+                                           Text="✗" 
+                                           FontSize="12" 
+                                           TextColor="#DC143C"/>
+                                    <Label Grid.Row="1" Grid.Column="1" 
+                                           Text="At least one lowercase letter (a-z)"
+                                           FontSize="12" 
+                                           TextColor="#666"/>
+
+                                    <!-- Number -->
+                                    <Label Grid.Row="2" Grid.Column="0" 
+                                           x:Name="NumberCheck"
+                                           Text="✗" 
+                                           FontSize="12" 
+                                           TextColor="#DC143C"/>
+                                    <Label Grid.Row="2" Grid.Column="1" 
+                                           Text="At least one number (0-9)"
+                                           FontSize="12" 
+                                           TextColor="#666"/>
+
+                                    <!-- Special Character -->
+                                    <Label Grid.Row="3" Grid.Column="0" 
+                                           x:Name="SpecialCharCheck"
+                                           Text="✗" 
+                                           FontSize="12" 
+                                           TextColor="#DC143C"/>
+                                    <Label Grid.Row="3" Grid.Column="1" 
+                                           Text="At least one special character (!@#$%^*)"
+                                           FontSize="12" 
+                                           TextColor="#666"/>
+                                </Grid>
+
+                                <Label x:Name="LengthCheck"
+                                       Text="✗ At least 8 characters"
+                                       FontSize="12" 
+                                       TextColor="#DC143C"
+                                       Margin="0,4,0,0"/>
+                            </VerticalStackLayout>
+                        </Frame>
+
+                        <!-- Confirm Password Entry -->
+                        <VerticalStackLayout Spacing="8">
+                            <Label Text="Confirm Password"
+                                   FontSize="14"
+                                   TextColor="#333"
+                                   FontAttributes="Bold"/>
+                            <Frame x:Name="ConfirmPasswordFrame"
+                                   BorderColor="#E0E0E0" 
+                                   CornerRadius="12" 
+                                   Padding="15,0"
+                                   HasShadow="False"
+                                   BackgroundColor="#F8F9FA">
+                                <Entry x:Name="ConfirmPasswordEntry"
+                                       Placeholder="Re-enter your password"
+                                       PlaceholderColor="#999"
+                                       TextColor="#333"
+                                       FontSize="15"
+                                       IsPassword="True"
+                                       TextChanged="OnConfirmPasswordTextChanged"
+                                       HeightRequest="50"/>
+                            </Frame>
+                            <Label x:Name="PasswordMatchLabel"
+                                   Text="Passwords do not match"
+                                   FontSize="12"
+                                   TextColor="#DC143C"
+                                   IsVisible="False"/>
+                        </VerticalStackLayout>
+
+                        <!-- Sign Up Button -->
+                        <Button x:Name="SignUpButton"
+                                Text="Create Account"
+                                BackgroundColor="#DC143C"
+                                TextColor="White"
+                                FontAttributes="Bold"
+                                FontSize="16"
+                                CornerRadius="12"
+                                HeightRequest="55"
+                                Clicked="OnSignUpClicked"
+                                Margin="0,10,0,0"/>
+
+                        <!-- OR Divider -->
+                        <Grid ColumnDefinitions="*,Auto,*" 
+                              Margin="0,10">
+                            <BoxView Grid.Column="0" 
+                                     HeightRequest="1" 
+                                     Color="#E0E0E0"
+                                     VerticalOptions="Center"/>
+                            <Label Grid.Column="1" 
+                                   Text="OR" 
+                                   FontSize="12" 
+                                   TextColor="#999"
+                                   Margin="10,0"/>
+                            <BoxView Grid.Column="2" 
+                                     HeightRequest="1" 
+                                     Color="#E0E0E0"
+                                     VerticalOptions="Center"/>
+                        </Grid>
+
+                        <!-- Google Sign Up Button -->
+                        <Frame x:Name="GoogleButtonFrame"
+                               BorderColor="#E0E0E0"
+                               CornerRadius="12"
+                               Padding="0"
+                               HasShadow="False"
+                               BackgroundColor="White">
+                            <HorizontalStackLayout Padding="15,12"
+                                                   Spacing="12"
+                                                   HorizontalOptions="Center">
+                                <Label Text="G"
+                                       FontSize="20"
+                                       FontAttributes="Bold"
+                                       TextColor="#4285F4"/>
+                                <Label Text="Continue with Google"
+                                       FontSize="15"
+                                       TextColor="#333"
+                                       VerticalOptions="Center"/>
+                            </HorizontalStackLayout>
+                            <Frame.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnGoogleSignUpTapped"/>
+                            </Frame.GestureRecognizers>
+                        </Frame>
+
+                        <!-- Already have account -->
+                        <HorizontalStackLayout Spacing="5"
+                                               HorizontalOptions="Center"
+                                               Margin="0,10,0,0">
+                            <Label Text="Already have an account?"
+                                   FontSize="14"
+                                   TextColor="#666"/>
+                            <Label Text="Sign in"
+                                   FontSize="14"
+                                   TextColor="#4285F4"
+                                   FontAttributes="Bold">
+                                <Label.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnSignInTapped"/>
+                                </Label.GestureRecognizers>
+                            </Label>
+                        </HorizontalStackLayout>
+
+                    </VerticalStackLayout>
+                </ScrollView>
+            </Frame>
+        </Grid>
+    </Grid>
+
+</ContentPage>

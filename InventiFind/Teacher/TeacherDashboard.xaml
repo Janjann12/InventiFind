@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="InventiFind.TeacherDashboard"
+             Title="Teacher Dashboard"
+             NavigationPage.HasNavigationBar="False"
+             Shell.NavBarIsVisible="False"
+             BackgroundColor="#F5F0F0">
+
+    <Grid RowDefinitions="Auto,*,Auto">
+
+        <!-- ========================================== -->
+        <!-- HEADER: Red curved background              -->
+        <!-- ========================================== -->
+        <Grid Grid.Row="0" HeightRequest="140">
+            <Path Fill="#DC143C" Aspect="Fill">
+                <Path.Data>
+                    <PathGeometry>
+                        <PathFigure StartPoint="0,0">
+                            <LineSegment Point="400,0"/>
+                            <LineSegment Point="400,120"/>
+                            <ArcSegment Point="0,120" Size="400,80" SweepDirection="Clockwise"/>
+                            <LineSegment Point="0,0"/>
+                        </PathFigure>
+                    </PathGeometry>
+                </Path.Data>
+            </Path>
+
+            <Label Text="Teacher Dashboard"
+                   FontSize="26"
+                   FontAttributes="Bold"
+                   TextColor="White"
+                   HorizontalOptions="Center"
+                   VerticalOptions="Start"
+                   Margin="0,35,0,0"/>
+        </Grid>
+
+        <!-- ========================================== -->
+        <!-- MAIN CONTENT: Scrollable                   -->
+        <!-- ========================================== -->
+        <ScrollView Grid.Row="1" Margin="0,-20,0,0">
+            <VerticalStackLayout Padding="20" Spacing="15">
+
+                <!-- Stats Cards -->
+                <Grid ColumnDefinitions="*,*,*" ColumnSpacing="10">
+                    <!-- Total Reports -->
+                    <Frame BackgroundColor="White" CornerRadius="15" Padding="15" HasShadow="False">
+                        <VerticalStackLayout Spacing="8">
+                            <Frame BackgroundColor="#87CEEB" CornerRadius="10" WidthRequest="40" HeightRequest="40" Padding="0" HasShadow="False"/>
+                            <Label Text="Total Reports" FontSize="11" TextColor="#666"/>
+                            <Label Text="1,234" FontSize="20" FontAttributes="Bold" TextColor="#333"/>
+                        </VerticalStackLayout>
+                    </Frame>
+
+                    <!-- Lost Items -->
+                    <Frame Grid.Column="1" BackgroundColor="White" CornerRadius="15" Padding="15" HasShadow="False">
+                        <VerticalStackLayout Spacing="8">
+                            <Frame BackgroundColor="#F08080" CornerRadius="10" WidthRequest="40" HeightRequest="40" Padding="0" HasShadow="False"/>
+                            <Label Text="Lost Items" FontSize="11" TextColor="#666"/>
+                            <Label Text="467" FontSize="20" FontAttributes="Bold" TextColor="#333"/>
+                        </VerticalStackLayout>
+                    </Frame>
+
+                    <!-- Found Items -->
+                    <Frame Grid.Column="2" BackgroundColor="White" CornerRadius="15" Padding="15" HasShadow="False">
+                        <VerticalStackLayout Spacing="8">
+                            <Frame BackgroundColor="#90EE90" CornerRadius="10" WidthRequest="40" HeightRequest="40" Padding="0" HasShadow="False"/>
+                            <Label Text="Found Items" FontSize="11" TextColor="#666"/>
+                            <Label Text="741" FontSize="20" FontAttributes="Bold" TextColor="#333"/>
+                        </VerticalStackLayout>
+                    </Frame>
+                </Grid>
+
+                <!-- Items by Category -->
+                <Frame BackgroundColor="White" CornerRadius="15" Padding="20" HasShadow="False">
+                    <VerticalStackLayout Spacing="12">
+                        <Label Text="Items by Category" FontSize="16" FontAttributes="Bold" TextColor="#333"/>
+
+                        <!-- Category 1 -->
+                        <VerticalStackLayout Spacing="5">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <Label Text="Category 1" FontSize="13" TextColor="#666"/>
+                                <Label Grid.Column="1" Text="741" FontSize="13" TextColor="#333" FontAttributes="Bold"/>
+                            </Grid>
+                            <ProgressBar Progress="0.7" ProgressColor="#4169E1" HeightRequest="8" BackgroundColor="#E0E0E0"/>
+                        </VerticalStackLayout>
+
+                        <!-- Category 2 -->
+                        <VerticalStackLayout Spacing="5">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <Label Text="Category 1" FontSize="13" TextColor="#666"/>
+                                <Label Grid.Column="1" Text="741" FontSize="13" TextColor="#333" FontAttributes="Bold"/>
+                            </Grid>
+                            <ProgressBar Progress="0.7" ProgressColor="#4169E1" HeightRequest="8" BackgroundColor="#E0E0E0"/>
+                        </VerticalStackLayout>
+
+                        <!-- Category 3 -->
+                        <VerticalStackLayout Spacing="5">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <Label Text="Category 1" FontSize="13" TextColor="#666"/>
+                                <Label Grid.Column="1" Text="741" FontSize="13" TextColor="#333" FontAttributes="Bold"/>
+                            </Grid>
+                            <ProgressBar Progress="0.7" ProgressColor="#4169E1" HeightRequest="8" BackgroundColor="#E0E0E0"/>
+                        </VerticalStackLayout>
+
+                        <!-- Category 4 -->
+                        <VerticalStackLayout Spacing="5">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <Label Text="Category 1" FontSize="13" TextColor="#666"/>
+                                <Label Grid.Column="1" Text="741" FontSize="13" TextColor="#333" FontAttributes="Bold"/>
+                            </Grid>
+                            <ProgressBar Progress="0.7" ProgressColor="#4169E1" HeightRequest="8" BackgroundColor="#E0E0E0"/>
+                        </VerticalStackLayout>
+
+                        <!-- Category 5 -->
+                        <VerticalStackLayout Spacing="5">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <Label Text="Category 1" FontSize="13" TextColor="#666"/>
+                                <Label Grid.Column="1" Text="741" FontSize="13" TextColor="#333" FontAttributes="Bold"/>
+                            </Grid>
+                            <ProgressBar Progress="0.7" ProgressColor="#4169E1" HeightRequest="8" BackgroundColor="#E0E0E0"/>
+                        </VerticalStackLayout>
+                    </VerticalStackLayout>
+                </Frame>
+
+                <!-- Recent Reports -->
+                <Frame BackgroundColor="White" CornerRadius="15" Padding="20" HasShadow="False" HeightRequest="280">
+                    <VerticalStackLayout Spacing="10">
+                        <Label Text="Recent Reports" FontSize="16" FontAttributes="Bold" TextColor="#333"/>
+
+                        <ScrollView>
+                            <VerticalStackLayout Spacing="10">
+                                <!-- Report 1: Lost -->
+                                <Frame BackgroundColor="#F5F5F5" CornerRadius="10" Padding="12" HasShadow="False">
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <VerticalStackLayout Spacing="4">
+                                            <HorizontalStackLayout Spacing="8">
+                                                <Label Text="iPhone 14 Pro Max" FontSize="14" FontAttributes="Bold" TextColor="#333"/>
+                                                <Frame BackgroundColor="#FFB6C1" CornerRadius="8" Padding="6,2" HasShadow="False">
+                                                    <Label Text="Lost" FontSize="10" TextColor="#DC143C" FontAttributes="Bold"/>
+                                                </Frame>
+                                            </HorizontalStackLayout>
+                                            <Label Text="blablabla" FontSize="12" TextColor="#999"/>
+                                            <Label Text="🕐 7 mins ago" FontSize="11" TextColor="#999"/>
+                                        </VerticalStackLayout>
+                                        <Frame Grid.Column="1" BackgroundColor="#87CEEB" CornerRadius="12" Padding="8,4" HasShadow="False" VerticalOptions="Center">
+                                            <Label Text="Status" FontSize="11" TextColor="#333"/>
+                                        </Frame>
+                                    </Grid>
+                                </Frame>
+
+                                <!-- Report 2: Found -->
+                                <Frame BackgroundColor="#F5F5F5" CornerRadius="10" Padding="12" HasShadow="False">
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <VerticalStackLayout Spacing="4">
+                                            <HorizontalStackLayout Spacing="8">
+                                                <Label Text="iPhone 14 Pro Max" FontSize="14" FontAttributes="Bold" TextColor="#333"/>
+                                                <Frame BackgroundColor="#90EE90" CornerRadius="8" Padding="6,2" HasShadow="False">
+                                                    <Label Text="Found" FontSize="10" TextColor="#228B22" FontAttributes="Bold"/>
+                                                </Frame>
+                                            </HorizontalStackLayout>
+                                            <Label Text="blablabla" FontSize="12" TextColor="#999"/>
+                                            <Label Text="🕐 7 mins ago" FontSize="11" TextColor="#999"/>
+                                        </VerticalStackLayout>
+                                        <Frame Grid.Column="1" BackgroundColor="#87CEEB" CornerRadius="12" Padding="8,4" HasShadow="False" VerticalOptions="Center">
+                                            <Label Text="Status" FontSize="11" TextColor="#333"/>
+                                        </Frame>
+                                    </Grid>
+                                </Frame>
+                            </VerticalStackLayout>
+                        </ScrollView>
+                    </VerticalStackLayout>
+                </Frame>
+
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!-- ========================================== -->
+        <!-- BOTTOM NAVIGATION                          -->
+        <!-- ========================================== -->
+        <Grid Grid.Row="2" 
+              BackgroundColor="White"
+              HeightRequest="70"
+              ColumnDefinitions="*,*,*,*,*"
+              Padding="0,5">
+
+            <!-- Home -->
+            <VerticalStackLayout Grid.Column="0" Spacing="2" HorizontalOptions="Center" VerticalOptions="Center">
+                <Label Text="🏠" FontSize="22" TextColor="#DC143C" HorizontalOptions="Center"/>
+                <Label Text="Home" FontSize="11" TextColor="#DC143C" FontAttributes="Bold" HorizontalOptions="Center"/>
+            </VerticalStackLayout>
+
+            <!-- Report -->
+            <VerticalStackLayout Grid.Column="1" Spacing="2" HorizontalOptions="Center" VerticalOptions="Center">
+                <Label Text="📝" FontSize="22" TextColor="#666" HorizontalOptions="Center"/>
+                <Label Text="Report" FontSize="11" TextColor="#666" HorizontalOptions="Center"/>
+                <VerticalStackLayout.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnReportTapped"/>
+                </VerticalStackLayout.GestureRecognizers>
+            </VerticalStackLayout>
+
+            <!-- Receive -->
+            <VerticalStackLayout Grid.Column="2" Spacing="2" HorizontalOptions="Center" VerticalOptions="Center">
+                <Label Text="📥" FontSize="22" TextColor="#666" HorizontalOptions="Center"/>
+                <Label Text="Receive" FontSize="11" TextColor="#666" HorizontalOptions="Center"/>
+                <VerticalStackLayout.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnReceiveTapped"/>
+                </VerticalStackLayout.GestureRecognizers>
+            </VerticalStackLayout>
+
+            <!-- News -->
+            <VerticalStackLayout Grid.Column="3" Spacing="2" HorizontalOptions="Center" VerticalOptions="Center">
+                <Label Text="🔔" FontSize="22" TextColor="#666" HorizontalOptions="Center"/>
+                <Label Text="News" FontSize="11" TextColor="#666" HorizontalOptions="Center"/>
+                <VerticalStackLayout.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnNewsTapped"/>
+                </VerticalStackLayout.GestureRecognizers>
+            </VerticalStackLayout>
+
+            <!-- Logout -->
+            <VerticalStackLayout Grid.Column="4" Spacing="2" HorizontalOptions="Center" VerticalOptions="Center">
+                <Button Text="➡️" 
+                        FontSize="22" 
+                        TextColor="#666" 
+                        BackgroundColor="Transparent"
+                        Padding="0"
+                        Clicked="OnLogoutClicked"/>
+                <Label Text="Logout" FontSize="11" TextColor="#666" HorizontalOptions="Center"/>
+            </VerticalStackLayout>
+        </Grid>
+
+    </Grid>
+
+</ContentPage>
