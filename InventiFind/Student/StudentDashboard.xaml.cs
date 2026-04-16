@@ -32,7 +32,6 @@ public partial class StudentDashboard : ContentPage
 
     }
 
-    // CHANGED: Use EventArgs for Button Clicked, or TappedEventArgs for TapGesture
     private async void OnLogoutClicked(object sender, EventArgs e)  // For Button.Clicked
     {
         bool confirm = await DisplayAlert("Logout", "Are you sure you want to logout?", "Yes", "No");

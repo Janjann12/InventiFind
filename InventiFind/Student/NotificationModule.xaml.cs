@@ -9,7 +9,6 @@ public partial class NotificationModule : ContentPage
 
     private async void OnHomeTapped(object sender, TappedEventArgs e)
     {
-        await Navigation.PopToRootAsync();
         await Navigation.PushAsync(new StudentDashboard());
     }
 

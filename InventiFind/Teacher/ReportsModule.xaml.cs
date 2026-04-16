@@ -1,4 +1,5 @@
-namespace InventiFind.Teacher;
+namespace InventiFind;
+
 
 public partial class ReportsModule : ContentPage
 {

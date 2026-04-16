@@ -1,12 +1,173 @@
-<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="InventiFind.Teacher.ReportsModule"
-             Title="ReportsModule">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+             x:Class="InventiFind.ReportsModule"
+             Title="Report Module"
+             BackgroundColor="#F5E6E8">
+
+    <Grid RowDefinitions="*,Auto">
+
+        <!-- Main Scrollable Content -->
+        <ScrollView Grid.Row="0">
+            <VerticalStackLayout Spacing="0">
+
+                <!-- Header -->
+                <Grid BackgroundColor="#B71C1C" HeightRequest="120" VerticalOptions="Start">
+                    <Label Text="Report Module" FontSize="32" FontAttributes="Bold" TextColor="White"
+                           HorizontalOptions="Center" VerticalOptions="Center"/>
+                </Grid>
+
+                <VerticalStackLayout Padding="15" Spacing="15">
+
+                    <!-- Search Bar -->
+                    <Frame BackgroundColor="White" CornerRadius="25" Padding="15,10" HasShadow="True">
+                        <HorizontalStackLayout Spacing="10">
+                            <Label Text="🔍" FontSize="18" TextColor="#666" VerticalOptions="Center"/>
+                            <Entry Placeholder="Search Reports, Items..." FontSize="14" TextColor="#333"
+                                   PlaceholderColor="#999" VerticalOptions="Center" HorizontalOptions="FillAndExpand"/>
+                        </HorizontalStackLayout>
+                    </Frame>
+
+                    <!-- Filter Buttons -->
+                    <ScrollView Orientation="Horizontal" HorizontalScrollBarVisibility="Never">
+                        <HorizontalStackLayout Spacing="10">
+                            <Frame BackgroundColor="White" CornerRadius="20" Padding="15,8" HasShadow="True">
+                                <Label Text="All Items" FontSize="13" FontAttributes="Bold" TextColor="#333"/>
+                            </Frame>
+                            <Frame BackgroundColor="White" CornerRadius="20" Padding="15,8" HasShadow="True">
+                                <Label Text="Lost Items" FontSize="13" TextColor="#666"/>
+                            </Frame>
+                            <Frame BackgroundColor="White" CornerRadius="20" Padding="15,8" HasShadow="True">
+                                <Label Text="Found Items" FontSize="13" TextColor="#666"/>
+                            </Frame>
+                            <Frame BackgroundColor="White" CornerRadius="20" Padding="15,8" HasShadow="True">
+                                <HorizontalStackLayout Spacing="5">
+                                    <Label Text="All Status" FontSize="13" TextColor="#666"/>
+                                    <Label Text="▼" FontSize="10" TextColor="#666" VerticalOptions="Center"/>
+                                </HorizontalStackLayout>
+                            </Frame>
+                        </HorizontalStackLayout>
+                    </ScrollView>
+
+                    <!-- Report Cards -->
+                    <VerticalStackLayout Spacing="15">
+
+                        <!-- Report Card 1 - Lost -->
+                        <Frame BackgroundColor="White" CornerRadius="15" Padding="20" HasShadow="True">
+                            <VerticalStackLayout Spacing="10">
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <Label Grid.Column="0" Text="iPhone 14 Pro Max" FontSize="18" FontAttributes="Bold" TextColor="#333"/>
+                                    <Frame Grid.Column="1" BackgroundColor="#FFEBEE" CornerRadius="10" Padding="8,3" HasShadow="False">
+                                        <Label Text="LOST" FontSize="11" TextColor="#C62828" FontAttributes="Bold"/>
+                                    </Frame>
+                                </Grid>
+                                <Label Text="Black iPhone 14 Pro Max with a blue case. Last seen at Central Park near the fountain." 
+                                       FontSize="13" TextColor="#666" LineBreakMode="WordWrap"/>
+                                <VerticalStackLayout Spacing="8">
+                                    <HorizontalStackLayout Spacing="8">
+                                        <Label Text="📍" FontSize="14"/>
+                                        <Label Text="Central Park, NYC" FontSize="13" TextColor="#666"/>
+                                    </HorizontalStackLayout>
+                                    <HorizontalStackLayout Spacing="8">
+                                        <Label Text="📅" FontSize="14"/>
+                                        <Label Text="2026-04-12 at 14:30" FontSize="13" TextColor="#666"/>
+                                    </HorizontalStackLayout>
+                                    <HorizontalStackLayout Spacing="8">
+                                        <Label Text="👤" FontSize="14"/>
+                                        <Label Text="John Doe" FontSize="13" TextColor="#666"/>
+                                    </HorizontalStackLayout>
+                                    <HorizontalStackLayout Spacing="8">
+                                        <Label Text="🖼" FontSize="14"/>
+                                        <Label Text="2 images attached" FontSize="13" TextColor="#666"/>
+                                    </HorizontalStackLayout>
+                                </VerticalStackLayout>
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <Frame Grid.Column="0" BackgroundColor="#FFF8E1" CornerRadius="15" Padding="12,6" 
+                                           HorizontalOptions="Start" HasShadow="False">
+                                        <Label Text="PENDING" FontSize="12" TextColor="#F9A825" FontAttributes="Bold"/>
+                                    </Frame>
+                                    <Frame Grid.Column="1" BackgroundColor="#F5F5F5" CornerRadius="15" Padding="12,6" HasShadow="False">
+                                        <HorizontalStackLayout Spacing="5">
+                                            <Label Text="👁" FontSize="12"/>
+                                            <Label Text="View" FontSize="12" TextColor="#666"/>
+                                        </HorizontalStackLayout>
+                                    </Frame>
+                                </Grid>
+                            </VerticalStackLayout>
+                        </Frame>
+
+                        <!-- Report Card 2 - Found -->
+                        <Frame BackgroundColor="White" CornerRadius="15" Padding="20" HasShadow="True">
+                            <VerticalStackLayout Spacing="10">
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <Label Grid.Column="0" Text="Black Leather Wallet" FontSize="18" FontAttributes="Bold" TextColor="#333"/>
+                                    <Frame Grid.Column="1" BackgroundColor="#E8F5E9" CornerRadius="10" Padding="8,3" HasShadow="False">
+                                        <Label Text="FOUND" FontSize="11" TextColor="#2E7D32" FontAttributes="Bold"/>
+                                    </Frame>
+                                </Grid>
+                                <Label Text="Black leather wallet found at Starbucks. Contains ID cards and some cash." 
+                                       FontSize="13" TextColor="#666" LineBreakMode="WordWrap"/>
+                                <VerticalStackLayout Spacing="8">
+                                    <HorizontalStackLayout Spacing="8">
+                                        <Label Text="📍" FontSize="14"/>
+                                        <Label Text="Starbucks, 5th Ave" FontSize="13" TextColor="#666"/>
+                                    </HorizontalStackLayout>
+                                    <HorizontalStackLayout Spacing="8">
+                                        <Label Text="📅" FontSize="14"/>
+                                        <Label Text="2026-04-12 at 10:15" FontSize="13" TextColor="#666"/>
+                                    </HorizontalStackLayout>
+                                    <HorizontalStackLayout Spacing="8">
+                                        <Label Text="👤" FontSize="14"/>
+                                        <Label Text="Jane Smith" FontSize="13" TextColor="#666"/>
+                                    </HorizontalStackLayout>
+                                    <HorizontalStackLayout Spacing="8">
+                                        <Label Text="🖼" FontSize="14"/>
+                                        <Label Text="3 images attached" FontSize="13" TextColor="#666"/>
+                                    </HorizontalStackLayout>
+                                </VerticalStackLayout>
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <Frame Grid.Column="0" BackgroundColor="#E3F2FD" CornerRadius="15" Padding="12,6" 
+                                           HorizontalOptions="Start" HasShadow="False">
+                                        <Label Text="MATCHED" FontSize="12" TextColor="#1976D2" FontAttributes="Bold"/>
+                                    </Frame>
+                                    <Frame Grid.Column="1" BackgroundColor="#F5F5F5" CornerRadius="15" Padding="12,6" HasShadow="False">
+                                        <HorizontalStackLayout Spacing="5">
+                                            <Label Text="👁" FontSize="12"/>
+                                            <Label Text="View" FontSize="12" TextColor="#666"/>
+                                        </HorizontalStackLayout>
+                                    </Frame>
+                                </Grid>
+                            </VerticalStackLayout>
+                        </Frame>
+
+                    </VerticalStackLayout>
+
+                    <BoxView HeightRequest="20" BackgroundColor="Transparent"/>
+                </VerticalStackLayout>
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!-- Fixed Bottom Navigation -->
+        <Frame Grid.Row="1" BackgroundColor="White" CornerRadius="0" Padding="10,15" HasShadow="True">
+            <Grid ColumnDefinitions="*,*,*,*">
+                <VerticalStackLayout Grid.Column="0" Spacing="5" HorizontalOptions="Center">
+                    <Label Text="⊞" FontSize="24" TextColor="#888" HorizontalOptions="Center"/>
+                    <Label Text="Dashboard" FontSize="11" TextColor="#888" HorizontalOptions="Center"/>
+                </VerticalStackLayout>
+                <VerticalStackLayout Grid.Column="1" Spacing="5" HorizontalOptions="Center">
+                    <Label Text="📋" FontSize="22" TextColor="#B71C1C" HorizontalOptions="Center"/>
+                    <Label Text="Reports" FontSize="11" TextColor="#B71C1C" FontAttributes="Bold" HorizontalOptions="Center"/>
+                </VerticalStackLayout>
+                <VerticalStackLayout Grid.Column="2" Spacing="5" HorizontalOptions="Center">
+                    <Label Text="↩" FontSize="24" TextColor="#888" HorizontalOptions="Center"/>
+                    <Label Text="Return" FontSize="11" TextColor="#888" HorizontalOptions="Center"/>
+                </VerticalStackLayout>
+                <VerticalStackLayout Grid.Column="3" Spacing="5" HorizontalOptions="Center">
+                    <Label Text="⎋" FontSize="24" TextColor="#888" HorizontalOptions="Center"/>
+                    <Label Text="Log Out" FontSize="11" TextColor="#888" HorizontalOptions="Center"/>
+                </VerticalStackLayout>
+            </Grid>
+        </Frame>
+
+    </Grid>
 </ContentPage>

@@ -9,7 +9,7 @@ public partial class TeacherDashboard : ContentPage
 
     private async void OnReportTapped(object sender, TappedEventArgs e)
     {
-        await DisplayAlert("Report", "Create new report", "OK");
+        await Navigation.PushAsync(new ReportsModule());
     }
 
     private async void OnReceiveTapped(object sender, TappedEventArgs e)

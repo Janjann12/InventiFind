@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="InventiFind.ReturnModule"
+             Title="Return Module"
+             BackgroundColor="#F5E6E8">
+
+    <Grid RowDefinitions="*,Auto">
+
+        <!-- Main Scrollable Content -->
+        <ScrollView Grid.Row="0">
+            <VerticalStackLayout Spacing="0">
+
+                <!-- Header -->
+                <Grid BackgroundColor="#B71C1C" HeightRequest="120" VerticalOptions="Start">
+                    <Label Text="Return Module" FontSize="32" FontAttributes="Bold" TextColor="White"
+                           HorizontalOptions="Center" VerticalOptions="Center"/>
+                </Grid>
+
+                <BoxView HeightRequest="3" BackgroundColor="#9B59B6"/>
+
+                <VerticalStackLayout Padding="15" Spacing="15">
+
+                    <!-- Stats Cards Row -->
+                    <Grid ColumnDefinitions="*,*,*" ColumnSpacing="10">
+                        <Frame Grid.Column="0" BackgroundColor="#FFF9C4" CornerRadius="15" Padding="15" HasShadow="True">
+                            <VerticalStackLayout Spacing="8" HorizontalOptions="Center">
+                                <Label Text="12" FontSize="32" FontAttributes="Bold" TextColor="#F57F17" HorizontalOptions="Center"/>
+                                <Label Text="Pending Returns" FontSize="12" TextColor="#666" HorizontalOptions="Center"/>
+                            </VerticalStackLayout>
+                        </Frame>
+                        <Frame Grid.Column="1" BackgroundColor="#C8E6C9" CornerRadius="15" Padding="15" HasShadow="True">
+                            <VerticalStackLayout Spacing="8" HorizontalOptions="Center">
+                                <Label Text="48" FontSize="32" FontAttributes="Bold" TextColor="#2E7D32" HorizontalOptions="Center"/>
+                                <Label Text="Completed" FontSize="12" TextColor="#666" HorizontalOptions="Center"/>
+                            </VerticalStackLayout>
+                        </Frame>
+                        <Frame Grid.Column="2" BackgroundColor="#BBDEFB" CornerRadius="15" Padding="15" HasShadow="True">
+                            <VerticalStackLayout Spacing="8" HorizontalOptions="Center">
+                                <Label Text="60" FontSize="32" FontAttributes="Bold" TextColor="#1565C0" HorizontalOptions="Center"/>
+                                <Label Text="Total Items" FontSize="12" TextColor="#666" HorizontalOptions="Center"/>
+                            </VerticalStackLayout>
+                        </Frame>
+                    </Grid>
+
+                    <!-- Filter Tabs -->
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="15">
+                        <Frame Grid.Column="0" BackgroundColor="#B71C1C" CornerRadius="10" Padding="12" HasShadow="True">
+                            <Label Text="Pending" FontSize="14" FontAttributes="Bold" TextColor="White" HorizontalOptions="Center"/>
+                        </Frame>
+                        <Frame Grid.Column="1" BackgroundColor="#E0E0E0" CornerRadius="10" Padding="12" HasShadow="False">
+                            <Label Text="Returned" FontSize="14" TextColor="#666" HorizontalOptions="Center"/>
+                        </Frame>
+                    </Grid>
+
+                    <!-- Return Cards -->
+                    <VerticalStackLayout Spacing="15">
+
+                        <!-- Return Card 1 - Awaiting Pickup -->
+                        <Frame BackgroundColor="White" CornerRadius="15" Padding="20" HasShadow="True">
+                            <VerticalStackLayout Spacing="12">
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <Label Grid.Column="0" Text="Black Leather Wallet" FontSize="18" FontAttributes="Bold" TextColor="#333"/>
+                                    <Frame Grid.Column="1" BackgroundColor="#FFFDE7" CornerRadius="15" Padding="10,5" 
+                                           HasShadow="False" BorderColor="#F9A825">
+                                        <Label Text="AWAITING PICKUP" FontSize="11" TextColor="#F9A825" FontAttributes="Bold"/>
+                                    </Frame>
+                                </Grid>
+                                <Label Text="Black leather wallet found at Starbucks...." FontSize="13" TextColor="#666" LineBreakMode="TailTruncation"/>
+                                <VerticalStackLayout Spacing="8">
+                                    <HorizontalStackLayout Spacing="8">
+                                        <Label Text="👤" FontSize="14" TextColor="#666"/>
+                                        <Label Text="Owner: " FontSize="13" TextColor="#666"/>
+                                        <Label Text="Michael Brown" FontSize="13" TextColor="#333"/>
+                                    </HorizontalStackLayout>
+                                    <HorizontalStackLayout Spacing="8">
+                                        <Label Text="📞" FontSize="14" TextColor="#666"/>
+                                        <Label Text="+1 (555) 123-4567" FontSize="13" TextColor="#333"/>
+                                    </HorizontalStackLayout>
+                                    <HorizontalStackLayout Spacing="8">
+                                        <Label Text="📍" FontSize="14" TextColor="#666"/>
+                                        <Label Text="Lost &amp; Found Office, Building A" FontSize="13" TextColor="#333"/>
+                                    </HorizontalStackLayout>
+                                    <HorizontalStackLayout Spacing="8">
+                                        <Label Text="📦" FontSize="14" TextColor="#666"/>
+                                        <Label Text="Claim Code: " FontSize="13" TextColor="#666"/>
+                                        <Label Text="LF-2024-001" FontSize="13" TextColor="#B71C1C" FontAttributes="Bold"/>
+                                    </HorizontalStackLayout>
+                                    <HorizontalStackLayout Spacing="8">
+                                        <Label Text="📅" FontSize="14" TextColor="#666"/>
+                                        <Label Text="Matched: 2026-04-13" FontSize="13" TextColor="#666"/>
+                                    </HorizontalStackLayout>
+                                </VerticalStackLayout>
+                                <Frame BackgroundColor="#C62828" CornerRadius="25" Padding="15" HasShadow="True">
+                                    <HorizontalStackLayout HorizontalOptions="Center" Spacing="8">
+                                        <Label Text="✓" FontSize="18" TextColor="White" FontAttributes="Bold"/>
+                                        <Label Text="Process Return" FontSize="16" TextColor="White" FontAttributes="Bold"/>
+                                    </HorizontalStackLayout>
+                                </Frame>
+                            </VerticalStackLayout>
+                        </Frame>
+
+                        <!-- Return Card 2 - Ready for Return -->
+                        <Frame BackgroundColor="White" CornerRadius="15" Padding="20" HasShadow="True">
+                            <VerticalStackLayout Spacing="12">
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <Label Grid.Column="0" Text="Blue Backpack" FontSize="18" FontAttributes="Bold" TextColor="#333"/>
+                                    <Frame Grid.Column="1" BackgroundColor="#E3F2FD" CornerRadius="15" Padding="10,5" 
+                                           HasShadow="False" BorderColor="#1976D2">
+                                        <Label Text="READY FOR RETURN" FontSize="11" TextColor="#1976D2" FontAttributes="Bold"/>
+                                    </Frame>
+                                </Grid>
+                                <Label Text="Blue North Face backpack with laptop..." FontSize="13" TextColor="#666" LineBreakMode="TailTruncation"/>
+                                <VerticalStackLayout Spacing="8">
+                                    <HorizontalStackLayout Spacing="8">
+                                        <Label Text="👤" FontSize="14" TextColor="#666"/>
+                                        <Label Text="Owner: " FontSize="13" TextColor="#666"/>
+                                        <Label Text="David Brown" FontSize="13" TextColor="#333"/>
+                                    </HorizontalStackLayout>
+                                    <HorizontalStackLayout Spacing="8">
+                                        <Label Text="📞" FontSize="14" TextColor="#666"/>
+                                        <Label Text="+1 (555) 234-5678" FontSize="13" TextColor="#333"/>
+                                    </HorizontalStackLayout>
+                                    <HorizontalStackLayout Spacing="8">
+                                        <Label Text="📍" FontSize="14" TextColor="#666"/>
+                                        <Label Text="Security Office, Main Campus" FontSize="13" TextColor="#333"/>
+                                    </HorizontalStackLayout>
+                                    <HorizontalStackLayout Spacing="8">
+                                        <Label Text="📦" FontSize="14" TextColor="#666"/>
+                                        <Label Text="Claim Code: " FontSize="13" TextColor="#666"/>
+                                        <Label Text="LF-2024-002" FontSize="13" TextColor="#B71C1C" FontAttributes="Bold"/>
+                                    </HorizontalStackLayout>
+                                    <HorizontalStackLayout Spacing="8">
+                                        <Label Text="📅" FontSize="14" TextColor="#666"/>
+                                        <Label Text="Matched: 2026-04-11" FontSize="13" TextColor="#666"/>
+                                    </HorizontalStackLayout>
+                                </VerticalStackLayout>
+                                <Frame BackgroundColor="#C62828" CornerRadius="25" Padding="15" HasShadow="True">
+                                    <HorizontalStackLayout HorizontalOptions="Center" Spacing="8">
+                                        <Label Text="✓" FontSize="18" TextColor="White" FontAttributes="Bold"/>
+                                        <Label Text="Process Return" FontSize="16" TextColor="White" FontAttributes="Bold"/>
+                                    </HorizontalStackLayout>
+                                </Frame>
+                            </VerticalStackLayout>
+                        </Frame>
+
+                    </VerticalStackLayout>
+
+                    <BoxView HeightRequest="20" BackgroundColor="Transparent"/>
+                </VerticalStackLayout>
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!-- Fixed Bottom Navigation -->
+        <Frame Grid.Row="1" BackgroundColor="White" CornerRadius="0" Padding="10,15" HasShadow="True">
+            <Grid ColumnDefinitions="*,*,*,*">
+                <VerticalStackLayout Grid.Column="0" Spacing="5" HorizontalOptions="Center">
+                    <Label Text="⊞" FontSize="24" TextColor="#888" HorizontalOptions="Center"/>
+                    <Label Text="Dashboard" FontSize="11" TextColor="#888" HorizontalOptions="Center"/>
+                </VerticalStackLayout>
+                <VerticalStackLayout Grid.Column="1" Spacing="5" HorizontalOptions="Center">
+                    <Label Text="📋" FontSize="22" TextColor="#888" HorizontalOptions="Center"/>
+                    <Label Text="Reports" FontSize="11" TextColor="#888" HorizontalOptions="Center"/>
+                </VerticalStackLayout>
+                <VerticalStackLayout Grid.Column="2" Spacing="5" HorizontalOptions="Center">
+                    <Label Text="↩" FontSize="24" TextColor="#B71C1C" HorizontalOptions="Center"/>
+                    <Label Text="Return" FontSize="11" TextColor="#B71C1C" FontAttributes="Bold" HorizontalOptions="Center"/>
+                </VerticalStackLayout>
+                <VerticalStackLayout Grid.Column="3" Spacing="5" HorizontalOptions="Center">
+                    <Label Text="⎋" FontSize="24" TextColor="#888" HorizontalOptions="Center"/>
+                    <Label Text="Log Out" FontSize="11" TextColor="#888" HorizontalOptions="Center"/>
+                </VerticalStackLayout>
+            </Grid>
+        </Frame>
+
+    </Grid>
+</ContentPage>
