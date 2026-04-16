@@ -3,6 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="InventiFind.TeacherDashboard"
              Title="Teacher Panel"
+             Shell.NavBarIsVisible="False"
+             
              BackgroundColor="#F5E6E8">
 
     <Grid RowDefinitions="*,Auto">
@@ -144,22 +146,43 @@
         <!-- Fixed Bottom Navigation -->
         <Frame Grid.Row="1" BackgroundColor="White" CornerRadius="0" Padding="10,15" HasShadow="True">
             <Grid ColumnDefinitions="*,*,*,*">
+
+                <!-- Dashboard -->
                 <VerticalStackLayout Grid.Column="0" Spacing="5" HorizontalOptions="Center">
+                    <VerticalStackLayout.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnDashboardTapped"/>
+                    </VerticalStackLayout.GestureRecognizers>
                     <Label Text="⊞" FontSize="24" TextColor="#B71C1C" HorizontalOptions="Center"/>
                     <Label Text="Dashboard" FontSize="11" TextColor="#B71C1C" FontAttributes="Bold" HorizontalOptions="Center"/>
                 </VerticalStackLayout>
+
+                <!-- Reports -->
                 <VerticalStackLayout Grid.Column="1" Spacing="5" HorizontalOptions="Center">
+                    <VerticalStackLayout.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnReportsTapped"/>
+                    </VerticalStackLayout.GestureRecognizers>
                     <Label Text="📋" FontSize="22" TextColor="#888" HorizontalOptions="Center"/>
                     <Label Text="Reports" FontSize="11" TextColor="#888" HorizontalOptions="Center"/>
                 </VerticalStackLayout>
+
+                <!-- Return/Back -->
                 <VerticalStackLayout Grid.Column="2" Spacing="5" HorizontalOptions="Center">
+                    <VerticalStackLayout.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnReturnTapped"/>
+                    </VerticalStackLayout.GestureRecognizers>
                     <Label Text="↩" FontSize="24" TextColor="#888" HorizontalOptions="Center"/>
                     <Label Text="Return" FontSize="11" TextColor="#888" HorizontalOptions="Center"/>
                 </VerticalStackLayout>
+
+                <!-- Log Out -->
                 <VerticalStackLayout Grid.Column="3" Spacing="5" HorizontalOptions="Center">
+                    <VerticalStackLayout.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnLogoutTapped"/>
+                    </VerticalStackLayout.GestureRecognizers>
                     <Label Text="⎋" FontSize="24" TextColor="#888" HorizontalOptions="Center"/>
                     <Label Text="Log Out" FontSize="11" TextColor="#888" HorizontalOptions="Center"/>
                 </VerticalStackLayout>
+
             </Grid>
         </Frame>
 

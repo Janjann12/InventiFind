@@ -7,27 +7,35 @@ public partial class TeacherDashboard : ContentPage
         InitializeComponent();
     }
 
-    private async void OnReportTapped(object sender, TappedEventArgs e)
+
+    private async void OnDashboardTapped(object sender, TappedEventArgs e)
+    {
+        // Already on dashboard - optional: refresh or scroll to top
+        // Or navigate to main dashboard page
+        // await Navigation.PushAsync(new DashboardPage());
+    }
+
+    private async void OnReportsTapped(object sender, TappedEventArgs e)
     {
         await Navigation.PushAsync(new ReportsModule());
     }
 
-    private async void OnReceiveTapped(object sender, TappedEventArgs e)
+    private async void OnReturnTapped(object sender, TappedEventArgs e)
     {
-        await DisplayAlert("Receive", "Receive item", "OK");
+        await Navigation.PushAsync(new ReturnModule());
     }
 
-    private async void OnNewsTapped(object sender, TappedEventArgs e)
+    private async void OnLogoutTapped(object sender, TappedEventArgs e)
     {
-        await DisplayAlert("News", "View notifications", "OK");
-    }
+        bool confirm = await DisplayAlert("Log Out", "Are you sure you want to log out?", "Yes", "No");
 
-    private async void OnLogoutClicked(object sender, EventArgs e)
-    {
-        bool confirm = await DisplayAlert("Logout", "Are you sure you want to logout?", "Yes", "No");
         if (confirm)
         {
+        
+
+            // Navigate to login page and clear navigation stack
             await Navigation.PopToRootAsync();
+            // Or: Application.Current.MainPage = new NavigationPage(new MainPage());
         }
     }
 }
