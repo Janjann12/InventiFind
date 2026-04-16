@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="InventiFind.LostitemsPage"
+             BackgroundColor="#F0EBEB"
+             Shell.NavBarIsVisible="False">
+
+    <Shell.BackButtonBehavior>
+        <BackButtonBehavior IsVisible="False" IsEnabled="False" />
+    </Shell.BackButtonBehavior>
+
+    <Grid RowDefinitions="Auto,*,Auto">
+
+        <!-- Header -->
+        <Grid Grid.Row="0"
+              BackgroundColor="#8B0000"
+              Padding="20,50,20,20">
+            <Label Text="Lost item"
+                   FontSize="32"
+                   FontAttributes="Bold"
+                   TextColor="White"
+                   VerticalOptions="Center"/>
+        </Grid>
+
+        <!-- Content -->
+        <Grid Grid.Row="1" RowDefinitions="Auto,*">
+
+            <!-- Filter Buttons Row -->
+            <ScrollView Grid.Row="0"
+                        Orientation="Horizontal"
+                        HorizontalScrollBarVisibility="Never"
+                        Margin="12,14,12,0">
+                <HorizontalStackLayout Spacing="8">
+
+                    <Frame x:Name="AllItemsFrame"
+                           BackgroundColor="White"
+                           CornerRadius="20"
+                           Padding="16,8"
+                           HasShadow="False">
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnFilterTapped" CommandParameter="all"/>
+                        </Frame.GestureRecognizers>
+                        <Label x:Name="AllItemsLabel"
+                               Text="All Items"
+                               FontSize="13"
+                               FontAttributes="Bold"
+                               TextColor="#1A1A1A"/>
+                    </Frame>
+
+                    <Frame x:Name="LostItemsFrame"
+                           BackgroundColor="White"
+                           CornerRadius="20"
+                           Padding="16,8"
+                           HasShadow="False">
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnFilterTapped" CommandParameter="lost"/>
+                        </Frame.GestureRecognizers>
+                        <Label x:Name="LostItemsLabel"
+                               Text="Lost Items"
+                               FontSize="13"
+                               FontAttributes="Bold"
+                               TextColor="#1A1A1A"/>
+                    </Frame>
+
+                    <Frame x:Name="FoundItemsFrame"
+                           BackgroundColor="White"
+                           CornerRadius="20"
+                           Padding="16,8"
+                           HasShadow="False">
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnFilterTapped" CommandParameter="found"/>
+                        </Frame.GestureRecognizers>
+                        <Label x:Name="FoundItemsLabel"
+                               Text="Found Items"
+                               FontSize="13"
+                               FontAttributes="Bold"
+                               TextColor="#1A1A1A"/>
+                    </Frame>
+
+                    <!-- Status Dropdown (Picker styled as button) -->
+                    <Frame BackgroundColor="White"
+                           CornerRadius="20"
+                           Padding="4,0,4,0"
+                           HasShadow="False">
+                        <Picker x:Name="StatusPicker"
+                                Title="All Status"
+                                FontSize="13"
+                                FontAttributes="Bold"
+                                TextColor="#1A1A1A"
+                                TitleColor="#1A1A1A"
+                                MinimumWidthRequest="110"
+                                SelectedIndexChanged="OnStatusPickerChanged">
+                            <Picker.Items>
+                                <x:String>All Status</x:String>
+                                <x:String>Pending</x:String>
+                                <x:String>Confirmed</x:String>
+                                <x:String>Resolved</x:String>
+                            </Picker.Items>
+                        </Picker>
+                    </Frame>
+
+                </HorizontalStackLayout>
+            </ScrollView>
+
+            <!-- Items List -->
+            <CollectionView Grid.Row="1"
+                            x:Name="ItemsCollection"
+                            SelectionMode="None"
+                            Margin="12,12,12,0">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame BackgroundColor="White"
+                               CornerRadius="16"
+                               Padding="14"
+                               HasShadow="False"
+                               Margin="0,0,0,12">
+                            <Grid ColumnDefinitions="Auto,*,Auto"
+                                  RowDefinitions="Auto,Auto,Auto">
+
+                                <!-- Item Image Placeholder -->
+                                <Frame Grid.Column="0"
+                                       Grid.RowSpan="3"
+                                       BackgroundColor="#8B0000"
+                                       CornerRadius="12"
+                                       Padding="0"
+                                       HasShadow="False"
+                                       WidthRequest="72"
+                                       HeightRequest="72"
+                                       VerticalOptions="Center"
+                                       Margin="0,0,14,0">
+                                    <Image Source="{Binding ImageSource}"
+                                           Aspect="AspectFill"
+                                           IsVisible="{Binding HasImage}"/>
+                                </Frame>
+
+                                <!-- Item Name -->
+                                <Label Grid.Column="1" Grid.Row="0"
+                                       Text="{Binding Name}"
+                                       FontSize="16"
+                                       FontAttributes="Bold"
+                                       TextColor="#1A1A1A"
+                                       VerticalOptions="Center"/>
+
+                                <!-- Status Badge -->
+                                <Frame Grid.Column="2" Grid.Row="0"
+                                       BackgroundColor="{Binding StatusBadgeColor}"
+                                       CornerRadius="20"
+                                       Padding="12,5"
+                                       HasShadow="False"
+                                       VerticalOptions="Start">
+                                    <Label Text="{Binding Status}"
+                                           FontSize="11"
+                                           FontAttributes="Bold"
+                                           TextColor="White"/>
+                                </Frame>
+
+                                <!-- Reporter Name -->
+                                <Label Grid.Column="1" Grid.Row="1"
+                                       Text="{Binding ReporterName}"
+                                       FontSize="13"
+                                       TextColor="#555"
+                                       Margin="0,2,0,0"/>
+
+                                <!-- Date + Location -->
+                                <HorizontalStackLayout Grid.Column="1" Grid.Row="2"
+                                                       Grid.ColumnSpan="2"
+                                                       Spacing="14"
+                                                       Margin="0,6,0,0">
+                                    <HorizontalStackLayout Spacing="4">
+                                        <Label Text="📅" FontSize="12" TextColor="#999" VerticalOptions="Center"/>
+                                        <Label Text="{Binding DateString}"
+                                               FontSize="12"
+                                               TextColor="#777"
+                                               VerticalOptions="Center"/>
+                                    </HorizontalStackLayout>
+                                    <HorizontalStackLayout Spacing="4">
+                                        <Label Text="📍" FontSize="12" TextColor="#999" VerticalOptions="Center"/>
+                                        <Label Text="{Binding Location}"
+                                               FontSize="12"
+                                               TextColor="#777"
+                                               VerticalOptions="Center"/>
+                                    </HorizontalStackLayout>
+                                </HorizontalStackLayout>
+
+                            </Grid>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+
+                <CollectionView.EmptyView>
+                    <VerticalStackLayout HorizontalOptions="Center"
+                                         VerticalOptions="Center"
+                                         Spacing="8"
+                                         Margin="0,60,0,0">
+                        <Label Text="📭"
+                               FontSize="48"
+                               HorizontalOptions="Center"/>
+                        <Label Text="No items found"
+                               FontSize="16"
+                               TextColor="#999"
+                               HorizontalOptions="Center"/>
+                    </VerticalStackLayout>
+                </CollectionView.EmptyView>
+
+            </CollectionView>
+
+        </Grid>
+
+        <!-- Bottom Navigation Bar -->
+        <Grid Grid.Row="2"
+              BackgroundColor="#8B0000"
+              ColumnDefinitions="*,*,*,*,*"
+              Padding="0,10,0,20"
+              HeightRequest="70">
+
+            <VerticalStackLayout Grid.Column="0" Spacing="2" HorizontalOptions="Center">
+                <Label Text="≡" FontSize="24" HorizontalOptions="Center" TextColor="White"/>
+                <Label Text="Dashboard" FontSize="9" TextColor="White" HorizontalOptions="Center"/>
+            </VerticalStackLayout>
+
+            <VerticalStackLayout Grid.Column="1" Spacing="2" HorizontalOptions="Center">
+                <Label Text="≡" FontSize="24" HorizontalOptions="Center" TextColor="White"/>
+                <Label Text="Dashboard" FontSize="9" TextColor="White" HorizontalOptions="Center"/>
+            </VerticalStackLayout>
+
+            <VerticalStackLayout Grid.Column="2" Spacing="2" HorizontalOptions="Center">
+                <Label Text="≡" FontSize="24" HorizontalOptions="Center" TextColor="White"/>
+                <Label Text="Dashboard" FontSize="9" TextColor="White" HorizontalOptions="Center"/>
+            </VerticalStackLayout>
+
+            <VerticalStackLayout Grid.Column="3" Spacing="2" HorizontalOptions="Center">
+                <Label Text="≡" FontSize="24" HorizontalOptions="Center" TextColor="White"/>
+                <Label Text="Dashboard" FontSize="9" TextColor="White" HorizontalOptions="Center"/>
+            </VerticalStackLayout>
+
+            <VerticalStackLayout Grid.Column="4" Spacing="2" HorizontalOptions="Center">
+                <Label Text="≡" FontSize="24" HorizontalOptions="Center" TextColor="White"/>
+                <Label Text="Dashboard" FontSize="9" TextColor="White" HorizontalOptions="Center"/>
+            </VerticalStackLayout>
+
+        </Grid>
+
+    </Grid>
+</ContentPage>

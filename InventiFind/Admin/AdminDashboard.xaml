@@ -397,6 +397,9 @@
             <VerticalStackLayout Grid.Column="1" Spacing="2" HorizontalOptions="Center">
                 <Label Text="📄" FontSize="22" HorizontalOptions="Center" TextColor="#888"/>
                 <Label Text="Report" FontSize="10" TextColor="#888" HorizontalOptions="Center"/>
+                <VerticalStackLayout.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnLostTapped"/>
+                </VerticalStackLayout.GestureRecognizers>
             </VerticalStackLayout>
 
             <!-- Receive -->
