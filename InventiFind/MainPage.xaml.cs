@@ -70,12 +70,14 @@ public partial class MainPage : ContentPage
         }
 
         // Get actual role from database
-        var (isValid, actualRole) = await ValidateCredentials(email, password);
+        var (isValid, userId, actualRole) = await ValidateCredentials(email, password);
 
-        if (isValid && !string.IsNullOrEmpty(actualRole))
+        if (isValid && userId > 0 && !string.IsNullOrEmpty(actualRole))
         {
+            Preferences.Set("UserID", userId);
+
             await DisplayAlert("Success", $"Welcome back! Logged in as {actualRole}", "OK");
-            await NavigateBasedOnRole(actualRole);  // Use DB role, not email-detected role
+            await NavigateBasedOnRole(actualRole);
         }
         else
         {
@@ -89,7 +91,7 @@ public partial class MainPage : ContentPage
     // ==========================================
     // VALIDATE CREDENTIALS - Returns actual role from database
     // ==========================================
-    private async Task<(bool success, string role)> ValidateCredentials(string email, string password)
+    private async Task<(bool success, int userId, string role)> ValidateCredentials(string email, string password)
     {
         try
         {
@@ -97,27 +99,29 @@ public partial class MainPage : ContentPage
             await connection.OpenAsync();
 
             // Query to validate AND get the actual stored role
-            string query = @"SELECT Role FROM users 
+            string query = @"SELECT UserID, Role FROM users 
                         WHERE Email = @Email AND Password = @Password";
 
             using var command = new MySqlCommand(query, connection);
             command.Parameters.AddWithValue("@Email", email);
             command.Parameters.AddWithValue("@Password", password); // TODO: Use hashed passwords!
 
-            var result = await command.ExecuteScalarAsync();
+            using var reader = await command.ExecuteReaderAsync();
 
-            if (result != null)
+            if (await reader.ReadAsync())
             {
-                string actualRole = result.ToString().ToLower();
-                return (true, actualRole);  // Return actual role from DB
+                int userId = reader.GetInt32("UserID");
+                string actualRole = reader.GetString("Role").ToLower();
+
+                return (true, userId, actualRole);
             }
 
-            return (false, null);
+            return (false, 0, null);
         }
         catch (Exception ex)
         {
             System.Diagnostics.Debug.WriteLine($"Login error: {ex.Message}");
-            return (false, null);
+            return (false, 0, null);
         }
     }
 

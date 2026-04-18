@@ -28,48 +28,57 @@ public class ItemReport
     public bool HasImage => false; // extend when serving images from DB
     public string? ImageSource => null;
 }
-
-public partial class LostitemsPage : ContentPage
+public partial class SurrenderedItemPage : ContentPage
 {
-    private List<ItemReport> _allItems = new();
-    private string _activeTypeFilter = "all";   // all | lost | found
+    private List <ItemReport> _allItems = new();
+    private string _activeTypeFilter = "all";
     private string _activeStatus = "All Status";
 
-    public LostitemsPage()
-	{
-		InitializeComponent();
+    public SurrenderedItemPage()
+    {
+        InitializeComponent();
         StatusPicker.SelectedIndex = 0;
     }
+
     protected override async void OnAppearing()
     {
         base.OnAppearing();
-        await LoadItemsAsync();
+        await LoadDataAsync();
         ApplyActiveFilterStyle();
     }
 
     // ── Data loading ───────────────────────────────────────────────────────
 
-    private async Task LoadItemsAsync()
+    private async Task LoadDataAsync()
     {
         try
         {
             await using var conn = new MySqlConnection(DatabaseConfig.ConnectionString);
             await conn.OpenAsync();
 
-            // Join items with users to get reporter full name
+            // Summary counts (all unclaimed = "Pending" status proxy)
+            int total = await GetScalarAsync(conn, "SELECT COUNT(*) FROM items");
+            int lost = await GetScalarAsync(conn, "SELECT COUNT(*) FROM items WHERE r_type='lost'");
+            int found = await GetScalarAsync(conn, "SELECT COUNT(*) FROM items WHERE r_type='found'");
+
+            UnclaimedTotalLabel.Text = total.ToString();
+            UnclaimedLostLabel.Text = lost.ToString();
+            UnclaimedFoundLabel.Text = found.ToString();
+
+            // Items list
             const string sql = """
                 SELECT  i.L_ID, i.name, i.category, i.description,
                         i.location, i.date, i.r_type,
                         CONCAT(u.FirstName, ' ', u.Surname) AS reporter_name
                 FROM items i
-                LEFT JOIN users u ON u.UserID = i.L_ID   -- adjust FK if needed
+                LEFT JOIN users u ON u.UserID = i.L_ID
                 ORDER BY i.date DESC, i.L_ID DESC
             """;
 
+            _allItems.Clear();
             await using var cmd = new MySqlCommand(sql, conn);
             await using var reader = await cmd.ExecuteReaderAsync();
 
-            _allItems.Clear();
             while (await reader.ReadAsync())
             {
                 _allItems.Add(new ItemReport
@@ -84,7 +93,7 @@ public partial class LostitemsPage : ContentPage
                     ReporterName = reader.IsDBNull(reader.GetOrdinal("reporter_name"))
                                        ? "Unknown"
                                        : reader.GetString("reporter_name"),
-                    Status = "Confirmed"  // placeholder — add a status column to extend
+                    Status = "Confirmed"
                 });
             }
 
@@ -92,8 +101,15 @@ public partial class LostitemsPage : ContentPage
         }
         catch (Exception ex)
         {
-            await DisplayAlert("Error", $"Could not load items:\n{ex.Message}", "OK");
+            await DisplayAlert("Error", $"Could not load data:\n{ex.Message}", "OK");
         }
+    }
+
+    private static async Task<int> GetScalarAsync(MySqlConnection conn, string sql)
+    {
+        await using var cmd = new MySqlCommand(sql, conn);
+        var result = await cmd.ExecuteScalarAsync();
+        return result == null ? 0 : Convert.ToInt32(result);
     }
 
     // ── Filter logic ───────────────────────────────────────────────────────
@@ -102,12 +118,10 @@ public partial class LostitemsPage : ContentPage
     {
         var filtered = _allItems.AsEnumerable();
 
-        // Type filter
         if (_activeTypeFilter != "all")
             filtered = filtered.Where(i =>
                 i.RType.Equals(_activeTypeFilter, StringComparison.OrdinalIgnoreCase));
 
-        // Status filter
         if (_activeStatus != "All Status")
             filtered = filtered.Where(i =>
                 i.Status.Equals(_activeStatus, StringComparison.OrdinalIgnoreCase));
@@ -138,7 +152,6 @@ public partial class LostitemsPage : ContentPage
 
     private void ApplyActiveFilterStyle()
     {
-        // Reset all to white
         AllItemsFrame.BackgroundColor = Colors.White;
         LostItemsFrame.BackgroundColor = Colors.White;
         FoundItemsFrame.BackgroundColor = Colors.White;
@@ -146,7 +159,6 @@ public partial class LostitemsPage : ContentPage
         LostItemsLabel.TextColor = Color.FromArgb("#1A1A1A");
         FoundItemsLabel.TextColor = Color.FromArgb("#1A1A1A");
 
-        // Highlight active
         var (activeFrame, activeLabel) = _activeTypeFilter switch
         {
             "lost" => (LostItemsFrame, LostItemsLabel),

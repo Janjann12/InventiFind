@@ -176,26 +176,77 @@ namespace InventiFind
             {
                 await connection.OpenAsync();
 
-                string sql = @"INSERT INTO items (name, category, description, location, date, image, r_type) 
-                               VALUES (@name, @category, @description, @location, @date, @image, @r_type)";
-
-                using (var command = new MySqlCommand(sql, connection))
+                int userId = Preferences.Get("UserID", 0);
+                if (userId == 0)
                 {
+                    await DisplayAlert("Error", "No logged-in user found.", "OK");
+                    return false;
+                }
+
+                // ── Step 1: Insert the item ────────────────────────────────────
+                string insertSql = @"INSERT INTO items 
+                                (UserID, name, category, description, location, date, image, r_type, status) 
+                             VALUES 
+                                (@userId, @name, @category, @description, @location, @date, @image, @r_type, 'pending');
+                             SELECT LAST_INSERT_ID();";
+
+                int newItemId;
+                using (var command = new MySqlCommand(insertSql, connection))
+                {
+                    command.Parameters.AddWithValue("@userId", userId);
                     command.Parameters.AddWithValue("@name", ItemNameEntry.Text.Trim());
                     command.Parameters.AddWithValue("@category", CategoryPicker.SelectedItem.ToString().ToLower());
-                    command.Parameters.AddWithValue("@description",
-                        string.IsNullOrWhiteSpace(DescriptionEditor.Text) ? "" : DescriptionEditor.Text.Trim());
+                    command.Parameters.AddWithValue("@description", string.IsNullOrWhiteSpace(DescriptionEditor.Text)
+                                                                        ? "" : DescriptionEditor.Text.Trim());
                     command.Parameters.AddWithValue("@location", LocationEntry.Text.Trim());
                     command.Parameters.AddWithValue("@date", DatePicker.Date);
-
-
-
                     command.Parameters.AddWithValue("@image", selectedFileBytes ?? new byte[0]);
                     command.Parameters.AddWithValue("@r_type", reportType);
 
-                    int rowsAffected = await command.ExecuteNonQueryAsync();
-                    return rowsAffected > 0;
+                    var result = await command.ExecuteScalarAsync();
+                    newItemId = Convert.ToInt32(result);
                 }
+
+                if (newItemId == 0) return false;
+
+                // ── Step 2: Auto-match against the opposite type ───────────────
+                // If user reported LOST  → find matching FOUND items
+                // If user reported FOUND → find matching LOST  items
+                string oppositeType = reportType == "lost" ? "found" : "lost";
+                string lostColSql = reportType == "lost" ? "@newId" : "L_ID";
+                string foundColSql = reportType == "found" ? "@newId" : "L_ID";
+
+                // We score: same category (always true here) = 60 base
+                //           same name     = +30
+                //           same location = +10
+                string matchSql = $@"
+                    INSERT INTO matches (lost_id, surrendered_id, similarity, status, created_at)
+                    SELECT
+                        {(reportType == "lost" ? "@newId" : "L_ID")},
+                        {(reportType == "found" ? "@newId" : "L_ID")},
+                        (60
+                         + IF(name    = @name,     30, 0)
+                         + IF(location = @location, 10, 0)) AS similarity,
+                        'pending',
+                        NOW()
+                    FROM items
+                    WHERE r_type   = @oppositeType
+                      AND category  = @category
+                      AND status    = 'pending'
+                      AND L_ID     != @newId";
+
+                using (var matchCmd = new MySqlCommand(matchSql, connection))
+                {
+                    matchCmd.Parameters.AddWithValue("@newId", newItemId);
+                    matchCmd.Parameters.AddWithValue("@name", ItemNameEntry.Text.Trim());
+                    matchCmd.Parameters.AddWithValue("@location", LocationEntry.Text.Trim());
+                    matchCmd.Parameters.AddWithValue("@category", CategoryPicker.SelectedItem.ToString().ToLower());
+                    matchCmd.Parameters.AddWithValue("@oppositeType", oppositeType);
+
+                    await matchCmd.ExecuteNonQueryAsync();
+                }
+
+                return true;
             }
         }
 

@@ -17,10 +17,10 @@ public partial class StudentDashboard : ContentPage
         base.OnAppearing();
         await LoadDashboardDataAsync();
     }
-    private async void OnLostTapped(object sender, TappedEventArgs e)
-    {
-        await Navigation.PushModalAsync(new LostitemsPage());
-    }
+    //private async void OnLostTapped(object sender, TappedEventArgs e)
+    //{
+    //    await Navigation.PushModalAsync(new LostitemsPage());
+    //}
 
 
 
