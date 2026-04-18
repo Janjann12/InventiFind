@@ -28,22 +28,24 @@
                         <Frame Grid.Column="0" BackgroundColor="White" CornerRadius="15" Padding="15">
                             <VerticalStackLayout Spacing="8" HorizontalOptions="Center">
                                 <BoxView HeightRequest="45" WidthRequest="45" CornerRadius="12" BackgroundColor="#87CEEB"/>
-                                <Label Text="Total Reports" FontSize="12" TextColor="#666" HorizontalOptions="Center"/>
-                                <Label Text="1,234" FontSize="24" FontAttributes="Bold" TextColor="#333" HorizontalOptions="Center"/>
+                                <Label Text="{Binding TotalReports}" FontSize="24" FontAttributes="Bold" TextColor="#333" HorizontalOptions="Center"/>
+                                <Label Text="Total Reports" FontSize="12" FontAttributes="Bold" TextColor="#333" HorizontalOptions="Center"/> 
+                                
                             </VerticalStackLayout>
                         </Frame>
                         <Frame Grid.Column="1" BackgroundColor="White" CornerRadius="15" Padding="15">
                             <VerticalStackLayout Spacing="8" HorizontalOptions="Center">
                                 <BoxView HeightRequest="45" WidthRequest="45" CornerRadius="12" BackgroundColor="#F08080"/>
-                                <Label Text="Lost Items" FontSize="12" TextColor="#666" HorizontalOptions="Center"/>
-                                <Label Text="467" FontSize="24" FontAttributes="Bold" TextColor="#333" HorizontalOptions="Center"/>
+                                <Label Text="{Binding LostItems}" FontSize="24" FontAttributes="Bold" TextColor="#333" HorizontalOptions="Center"/>
+                                <Label Text="Lost Reports" FontSize="12" FontAttributes="Bold" TextColor="#333" HorizontalOptions="Center"/>
                             </VerticalStackLayout>
                         </Frame>
                         <Frame Grid.Column="2" BackgroundColor="White" CornerRadius="15" Padding="15">
                             <VerticalStackLayout Spacing="8" HorizontalOptions="Center">
                                 <BoxView HeightRequest="45" WidthRequest="45" CornerRadius="12" BackgroundColor="#98FB98"/>
-                                <Label Text="Found Items" FontSize="12" TextColor="#666" HorizontalOptions="Center"/>
-                                <Label Text="741" FontSize="24" FontAttributes="Bold" TextColor="#333" HorizontalOptions="Center"/>
+                                <Label Text="{Binding FoundItems}" FontSize="24" FontAttributes="Bold" TextColor="#333" HorizontalOptions="Center"/>
+                                <Label Text="Found Reports" FontSize="12" FontAttributes="Bold" TextColor="#333" HorizontalOptions="Center"/>
+
                             </VerticalStackLayout>
                         </Frame>
                     </Grid>
@@ -56,87 +58,223 @@
                             <!-- Phone -->
                             <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="10">
                                 <Label Grid.Column="0" Text="Phone" FontSize="14" TextColor="#666" VerticalOptions="Center"/>
-                                <ProgressBar Grid.Column="1" Progress="0.75" ProgressColor="#4169E1" HeightRequest="8" VerticalOptions="Center"/>
-                                <Label Grid.Column="2" Text="245" FontSize="14" FontAttributes="Bold" TextColor="#333" 
-                                       VerticalOptions="Center" WidthRequest="35" HorizontalTextAlignment="End"/>
+
+                                <!-- Progress Bar with Gray Track -->
+                                <Grid Grid.Column="1" VerticalOptions="Center" HeightRequest="8">
+                                    <!-- Gray background track -->
+                                    <BoxView BackgroundColor="#E0E0E0" 
+                         CornerRadius="4" 
+                         HeightRequest="8" 
+                         VerticalOptions="Center"/>
+                                    <!-- Colored progress fill -->
+                                    <ProgressBar Progress="{Binding PhoneProgress}" 
+                             ProgressColor="#4169E1" 
+                             HeightRequest="8" 
+                             VerticalOptions="Center"/>
+                                </Grid>
+
+                                <Label Grid.Column="2" 
+                   Text="{Binding PhoneCount}" 
+                   FontSize="14" 
+                   FontAttributes="Bold" 
+                   TextColor="#333" 
+                   VerticalOptions="Center" 
+                   WidthRequest="35" 
+                   HorizontalTextAlignment="End"/>
                             </Grid>
 
                             <!-- Wallet -->
                             <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="10">
                                 <Label Grid.Column="0" Text="Wallet" FontSize="14" TextColor="#666" VerticalOptions="Center"/>
-                                <ProgressBar Grid.Column="1" Progress="0.58" ProgressColor="#4169E1" HeightRequest="8" VerticalOptions="Center"/>
-                                <Label Grid.Column="2" Text="189" FontSize="14" FontAttributes="Bold" TextColor="#333" 
-                                       VerticalOptions="Center" WidthRequest="35" HorizontalTextAlignment="End"/>
+
+                                <Grid Grid.Column="1" VerticalOptions="Center" HeightRequest="8">
+                                    <BoxView BackgroundColor="#E0E0E0" 
+                         CornerRadius="4" 
+                         HeightRequest="8" 
+                         VerticalOptions="Center"/>
+                                    <ProgressBar Progress="{Binding WalletProgress}" 
+                             ProgressColor="#4169E1" 
+                             HeightRequest="8" 
+                             VerticalOptions="Center"/>
+                                </Grid>
+
+                                <Label Grid.Column="2" 
+                   Text="{Binding WalletCount}" 
+                   FontSize="14" 
+                   FontAttributes="Bold" 
+                   TextColor="#333" 
+                   VerticalOptions="Center" 
+                   WidthRequest="35" 
+                   HorizontalTextAlignment="End"/>
                             </Grid>
 
                             <!-- ID -->
                             <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="10">
                                 <Label Grid.Column="0" Text="ID" FontSize="14" TextColor="#666" VerticalOptions="Center"/>
-                                <ProgressBar Grid.Column="1" Progress="0.48" ProgressColor="#4169E1" HeightRequest="8" VerticalOptions="Center"/>
-                                <Label Grid.Column="2" Text="156" FontSize="14" FontAttributes="Bold" TextColor="#333" 
-                                       VerticalOptions="Center" WidthRequest="35" HorizontalTextAlignment="End"/>
+
+                                <Grid Grid.Column="1" VerticalOptions="Center" HeightRequest="8">
+                                    <BoxView BackgroundColor="#E0E0E0" 
+                         CornerRadius="4" 
+                         HeightRequest="8" 
+                         VerticalOptions="Center"/>
+                                    <ProgressBar Progress="{Binding IdProgress}" 
+                             ProgressColor="#4169E1" 
+                             HeightRequest="8" 
+                             VerticalOptions="Center"/>
+                                </Grid>
+
+                                <Label Grid.Column="2" 
+                   Text="{Binding IdCount}" 
+                   FontSize="14" 
+                   FontAttributes="Bold" 
+                   TextColor="#333" 
+                   VerticalOptions="Center" 
+                   WidthRequest="35" 
+                   HorizontalTextAlignment="End"/>
                             </Grid>
 
                             <!-- Watch -->
                             <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="10">
                                 <Label Grid.Column="0" Text="Watch" FontSize="14" TextColor="#666" VerticalOptions="Center"/>
-                                <ProgressBar Grid.Column="1" Progress="0.30" ProgressColor="#4169E1" HeightRequest="8" VerticalOptions="Center"/>
-                                <Label Grid.Column="2" Text="98" FontSize="14" FontAttributes="Bold" TextColor="#333" 
-                                       VerticalOptions="Center" WidthRequest="35" HorizontalTextAlignment="End"/>
+
+                                <Grid Grid.Column="1" VerticalOptions="Center" HeightRequest="8">
+                                    <BoxView BackgroundColor="#E0E0E0" 
+                         CornerRadius="4" 
+                         HeightRequest="8" 
+                         VerticalOptions="Center"/>
+                                    <ProgressBar Progress="{Binding WatchProgress}" 
+                             ProgressColor="#4169E1" 
+                             HeightRequest="8" 
+                             VerticalOptions="Center"/>
+                                </Grid>
+
+                                <Label Grid.Column="2" 
+                   Text="{Binding WatchCount}" 
+                   FontSize="14" 
+                   FontAttributes="Bold" 
+                   TextColor="#333" 
+                   VerticalOptions="Center" 
+                   WidthRequest="35" 
+                   HorizontalTextAlignment="End"/>
                             </Grid>
 
                             <!-- Others -->
                             <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="10">
                                 <Label Grid.Column="0" Text="Others" FontSize="14" TextColor="#666" VerticalOptions="Center"/>
-                                <ProgressBar Grid.Column="1" Progress="1.0" ProgressColor="#4169E1" HeightRequest="8" VerticalOptions="Center"/>
-                                <Label Grid.Column="2" Text="547" FontSize="14" FontAttributes="Bold" TextColor="#333" 
-                                       VerticalOptions="Center" WidthRequest="35" HorizontalTextAlignment="End"/>
+
+                                <Grid Grid.Column="1" VerticalOptions="Center" HeightRequest="8">
+                                    <BoxView BackgroundColor="#E0E0E0" 
+                         CornerRadius="4" 
+                         HeightRequest="8" 
+                         VerticalOptions="Center"/>
+                                    <ProgressBar Progress="{Binding OthersProgress}" 
+                             ProgressColor="#4169E1" 
+                             HeightRequest="8" 
+                             VerticalOptions="Center"/>
+                                </Grid>
+
+                                <Label Grid.Column="2" 
+                   Text="{Binding OthersCount}" 
+                   FontSize="14" 
+                   FontAttributes="Bold" 
+                   TextColor="#333" 
+                   VerticalOptions="Center" 
+                   WidthRequest="35" 
+                   HorizontalTextAlignment="End"/>
                             </Grid>
                         </VerticalStackLayout>
                     </Frame>
 
                     <!-- Recent Reports -->
-                    <Frame BackgroundColor="White" CornerRadius="15" Padding="20" HasShadow="True">
-                        <VerticalStackLayout Spacing="15">
-                            <Label Text="Recent Reports" FontSize="16" FontAttributes="Bold" TextColor="#333"/>
-                            <VerticalStackLayout Spacing="10">
-                                <Frame BackgroundColor="#F0F0F0" CornerRadius="12" Padding="15">
-                                    <Grid ColumnDefinitions="*,Auto">
-                                        <VerticalStackLayout Grid.Column="0" Spacing="5">
-                                            <HorizontalStackLayout Spacing="10">
-                                                <Label Text="iPhone 14 Pro Max" FontSize="14" FontAttributes="Bold" TextColor="#333"/>
-                                                <Frame BackgroundColor="#FFB6C1" CornerRadius="10" Padding="8,2" HasShadow="False">
-                                                    <Label Text="Lost" FontSize="11" TextColor="#8B0000" FontAttributes="Bold"/>
+                    <CollectionView ItemsSource="{Binding Reports}" 
+                Margin="0,5,0,0">
+                        <CollectionView.ItemsLayout>
+                            <LinearItemsLayout Orientation="Vertical" 
+                           ItemSpacing="12"/>
+                        </CollectionView.ItemsLayout>
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <Frame BackgroundColor="#F0F0F0" 
+                   CornerRadius="12" 
+                   Padding="15" 
+                   Margin="10,5">
+                                    <Grid ColumnDefinitions="Auto,*,Auto" 
+                      ColumnSpacing="15">
+
+                                        <!-- Item Image -->
+                                        <Frame Grid.Column="0" 
+                           WidthRequest="70" 
+                           HeightRequest="70" 
+                           CornerRadius="12" 
+                           Padding="0" 
+                           IsClippedToBounds="True" 
+                           VerticalOptions="Center"
+                           BackgroundColor="#E0E0E0">
+                                            <Image Source="{Binding ReportImage}" 
+                               Aspect="AspectFill" 
+                               WidthRequest="70" 
+                               HeightRequest="70"/>
+                                        </Frame>
+
+                                        <!-- Content -->
+                                        <VerticalStackLayout Grid.Column="1" 
+                                         Spacing="6" 
+                                         VerticalOptions="Center">
+
+                                            <HorizontalStackLayout Spacing="10" 
+                                               VerticalOptions="Center">
+                                                <Label Text="{Binding Title}"
+                                   FontSize="15"
+                                   FontAttributes="Bold"
+                                   TextColor="#333"
+                                   VerticalOptions="Center"/>
+
+                                                <!-- Status Badge - Direct Color Binding -->
+                                                <Frame CornerRadius="10"
+                                   Padding="8,3"
+                                   HasShadow="False"
+                                   VerticalOptions="Center"
+                                   BackgroundColor="{Binding StatusBgColor}">
+                                                    <Label Text="{Binding Status}"
+                                       FontSize="11"
+                                       FontAttributes="Bold"
+                                       TextColor="{Binding StatusTextColor}"/>
                                                 </Frame>
                                             </HorizontalStackLayout>
-                                            <Label Text="blablabla" FontSize="12" TextColor="#888"/>
-                                            <Label Text="⏱ 7 mins ago" FontSize="11" TextColor="#999"/>
+
+                                            <Label Text="{Binding Description}" 
+                               FontSize="12" 
+                               TextColor="#888"
+                               LineBreakMode="TailTruncation"
+                               MaxLines="2"/>
+
+                                            <Label Text="{Binding CreatedAt, StringFormat='⏱ {0:MMM d, h:mm tt}'}"
+                               FontSize="11"
+                               TextColor="#999"/>
                                         </VerticalStackLayout>
-                                        <Frame Grid.Column="1" BackgroundColor="#E6F3FF" CornerRadius="15" Padding="12,6" VerticalOptions="Center">
-                                            <Label Text="Status" FontSize="12" TextColor="#4169E1" FontAttributes="Bold"/>
+
+                                        <!-- Action Button -->
+                                        <Frame Grid.Column="2"
+                           BackgroundColor="#E6F3FF"
+                           CornerRadius="15"
+                           Padding="12,8"
+                           VerticalOptions="Center"
+                           HasShadow="False">
+                                            <Label Text="View"
+                               FontSize="12"
+                               TextColor="#4169E1"
+                               FontAttributes="Bold"/>
+                                            <Frame.GestureRecognizers>
+                                                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.ViewReportCommand}"
+                                                  CommandParameter="{Binding .}"/>
+                                            </Frame.GestureRecognizers>
                                         </Frame>
+
                                     </Grid>
                                 </Frame>
-                                <Frame BackgroundColor="#F0F0F0" CornerRadius="12" Padding="15">
-                                    <Grid ColumnDefinitions="*,Auto">
-                                        <VerticalStackLayout Grid.Column="0" Spacing="5">
-                                            <HorizontalStackLayout Spacing="10">
-                                                <Label Text="iPhone 14 Pro Max" FontSize="14" FontAttributes="Bold" TextColor="#333"/>
-                                                <Frame BackgroundColor="#90EE90" CornerRadius="10" Padding="8,2" HasShadow="False">
-                                                    <Label Text="Found" FontSize="11" TextColor="#006400" FontAttributes="Bold"/>
-                                                </Frame>
-                                            </HorizontalStackLayout>
-                                            <Label Text="blablabla" FontSize="12" TextColor="#888"/>
-                                            <Label Text="⏱ 7 mins ago" FontSize="11" TextColor="#999"/>
-                                        </VerticalStackLayout>
-                                        <Frame Grid.Column="1" BackgroundColor="#E6F3FF" CornerRadius="15" Padding="12,6" VerticalOptions="Center">
-                                            <Label Text="Status" FontSize="12" TextColor="#4169E1" FontAttributes="Bold"/>
-                                        </Frame>
-                                    </Grid>
-                                </Frame>
-                            </VerticalStackLayout>
-                        </VerticalStackLayout>
-                    </Frame>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
 
                     <BoxView HeightRequest="20" BackgroundColor="Transparent"/>
                 </VerticalStackLayout>
