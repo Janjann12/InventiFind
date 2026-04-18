@@ -230,41 +230,36 @@
 
             <!-- Home -->
             <VerticalStackLayout Grid.Column="0" 
-                                 Spacing="2"
-                                 HorizontalOptions="Center"
-                                 VerticalOptions="Center">
-                <Image Source="Images/home.png"
-                       WidthRequest="28"
-                       HeightRequest="33"
-                       HorizontalOptions="Center"/>
-                <Label Text="Home" FontSize="11" TextColor="#666" HorizontalOptions="Center"/>
+                         Spacing="2"
+                         HorizontalOptions="Center"
+                         VerticalOptions="Center">
+                <Image Source="home.png" WidthRequest="28" HeightRequest="28"/>
+                <Label Text="Home" FontSize="11" TextColor="#666"/>
                 <VerticalStackLayout.GestureRecognizers>
                     <TapGestureRecognizer Tapped="OnHomeTapped"/>
                 </VerticalStackLayout.GestureRecognizers>
             </VerticalStackLayout>
 
-            <!-- Report (Active) -->
+            <!-- Report -->
             <VerticalStackLayout Grid.Column="1" 
-                                 Spacing="2"
-                                 HorizontalOptions="Center"
-                                 VerticalOptions="Center">
-                <Image Source="Images/report.png"
-                       WidthRequest="28"
-                       HeightRequest="33"
-                       HorizontalOptions="Center"/>
-                <Label Text="Report" FontSize="11" TextColor="#B71C1C" FontAttributes="Bold" HorizontalOptions="Center"/>
+                         Spacing="2"
+                         HorizontalOptions="Center"
+                         VerticalOptions="Center">
+                <Image Source="report.png" WidthRequest="28" HeightRequest="28"/>
+                <Label Text="Home" FontSize="11" TextColor="#B71C1C"/>
+                <BoxView HeightRequest="2" BackgroundColor="#B71C1C" CornerRadius="1" Margin="0,-2,0,0"/>
+                <VerticalStackLayout.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnReportTapped"/>
+                </VerticalStackLayout.GestureRecognizers>
             </VerticalStackLayout>
 
-            <!-- Receive -->
+            <!-- Receive (Active) -->
             <VerticalStackLayout Grid.Column="2" 
-                                 Spacing="2"
-                                 HorizontalOptions="Center"
-                                 VerticalOptions="Center">
-                <Image Source="Images/box.png"
-                       WidthRequest="28"
-                       HeightRequest="33"
-                       HorizontalOptions="Center"/>
-                <Label Text="Receive" FontSize="11" TextColor="#666" HorizontalOptions="Center"/>
+                         Spacing="2"
+                         HorizontalOptions="Center"
+                         VerticalOptions="Center">
+                <Image Source="box.png" WidthRequest="28" HeightRequest="28"/>
+                <Label Text="Receive" FontSize="11" TextColor="#666" FontAttributes="Bold"/>
                 <VerticalStackLayout.GestureRecognizers>
                     <TapGestureRecognizer Tapped="OnReceiveTapped"/>
                 </VerticalStackLayout.GestureRecognizers>
@@ -272,14 +267,11 @@
 
             <!-- News -->
             <VerticalStackLayout Grid.Column="3" 
-                                 Spacing="2"
-                                 HorizontalOptions="Center"
-                                 VerticalOptions="Center">
-                <Image Source="Images/notif.png"
-                       WidthRequest="28"
-                       HeightRequest="33"
-                       HorizontalOptions="Center"/>
-                <Label Text="News" FontSize="11" TextColor="#666" HorizontalOptions="Center"/>
+                         Spacing="2"
+                         HorizontalOptions="Center"
+                         VerticalOptions="Center">
+                <Image Source="notif.png" WidthRequest="28" HeightRequest="28"/>
+                <Label Text="News" FontSize="11" TextColor="#666"/>
                 <VerticalStackLayout.GestureRecognizers>
                     <TapGestureRecognizer Tapped="OnNewsTapped"/>
                 </VerticalStackLayout.GestureRecognizers>
@@ -287,20 +279,15 @@
 
             <!-- Logout -->
             <VerticalStackLayout Grid.Column="4" 
-                                 Spacing="2"
-                                 HorizontalOptions="Center"
-                                 VerticalOptions="Center">
-                <Image Source="Images/logout.png"
-                       WidthRequest="28"
-                       HeightRequest="33"
-                       HorizontalOptions="Center">
-                    <Image.GestureRecognizers>
-                        <TapGestureRecognizer Tapped="OnLogoutClicked"/>
-                    </Image.GestureRecognizers>
-                </Image>
-                <Label Text="Logout" FontSize="11" TextColor="#666" HorizontalOptions="Center"/>
+                         Spacing="2"
+                         HorizontalOptions="Center"
+                         VerticalOptions="Center">
+                <Image Source="logout.png" WidthRequest="28" HeightRequest="28"/>
+                <Label Text="Logout" FontSize="11" TextColor="#666"/>
+                <VerticalStackLayout.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnLogoutTapped"/>
+                </VerticalStackLayout.GestureRecognizers>
             </VerticalStackLayout>
-
         </Grid>
 
     </Grid>

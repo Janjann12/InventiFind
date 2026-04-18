@@ -67,75 +67,101 @@
                        Margin="0,10,0,0"/>
 
                 <!-- Announcement Item 1 -->
-                <Frame BackgroundColor="#D6E4F0"
-                       BorderColor="#4A90E2"
-                       CornerRadius="12"
-                       Padding="15"
-                       HasShadow="False">
-                    <VerticalStackLayout Spacing="6">
-                        <HorizontalStackLayout Spacing="8">
-                            <Label Text="ℹ️" FontSize="16"/>
-                            <Label Text="Extended Hours This Weekend" 
-                                   FontSize="15" 
+                <CollectionView x:Name="ReportCollection"
+    SelectionMode="None"
+    Margin="5">
+
+                    <CollectionView.ItemsLayout>
+                        <LinearItemsLayout Orientation="Vertical" ItemSpacing="5"/>
+                    </CollectionView.ItemsLayout>
+
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+
+                            <!-- CARD -->
+                            <Frame BackgroundColor="#BFD9EC"
+                   CornerRadius="18"
+                   Padding="15"
+                   HasShadow="False"
+                   Margin="0,4">
+
+                                <VerticalStackLayout Spacing="10">
+
+                                    <!-- TOP ROW: TITLE + TYPE -->
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <Label Text="{Binding Title}"
+                               FontSize="16"
+                               FontAttributes="Bold"
+                               TextColor="Black"/>
+
+                                        <!-- LOST / FOUND TAG -->
+                                        <Frame Grid.Column="1"
+                               Padding="8,3"
+                               CornerRadius="8"
+                               HasShadow="False"
+                               BorderColor="{Binding RType, Converter={StaticResource TypeToColorConverter}}"
+                               BackgroundColor="{Binding RType, Converter={StaticResource TypeToColorConverter}}">
+                                            <Label Text="{Binding RType}"
+                                   FontSize="11"
                                    FontAttributes="Bold"
-                                   TextColor="#333"/>
-                        </HorizontalStackLayout>
-                        <Label Text="Our Lost &amp; Found office will be open extended hours this Saturday and Sunday from 8 AM to 8 PM to help more people reunite with their items"
-                               TextColor="#555"
+                                   TextColor="White"
+                                   HorizontalTextAlignment="Center"
+                                   VerticalTextAlignment="Center"/>
+                                        </Frame>
+                                    </Grid>
+
+                                    <!-- DESCRIPTION -->
+                                    <Label Text="{Binding Description}"
+                           FontSize="13"
+                           TextColor="Black"/>
+
+                                    <!-- DATE + VIEW BUTTON -->
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <Label Text="{Binding Date}"
+                               FontSize="11"
+                               TextColor="Black"
+                               Opacity="0.7"/>
+
+                                        <Frame Grid.Column="1"
+                               BackgroundColor="#7FB069"
+                               Padding="10,4"
+                               CornerRadius="10"
+                               HasShadow="False">
+                                            <Label Text="View"
+                                   FontSize="12"
+                                   FontAttributes="Bold"
+                                   TextColor="Black"/>
+                                        </Frame>
+                                    </Grid>
+
+                                    <!-- REPORTED BY -->
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <Label Text="Reported By:"
+                               FontSize="11"
+                               TextColor="Black"
+                               Opacity="0.7"/>
+
+                                        <Label Grid.Column="1"
+                               Text="{Binding Author}"
                                FontSize="13"
-                               LineHeight="1.3"/>
-                        <Grid ColumnDefinitions="*,Auto">
-                            <Label Text="2026-04-12"
-                                   TextColor="#888"
-                                   FontSize="11"
-                                   VerticalOptions="Center"/>
-                            <Label Text="by Admin Team"
-                                   Grid.Column="1"
-                                   TextColor="#888"
-                                   FontSize="11"
-                                   VerticalOptions="Center"/>
-                        </Grid>
-                    </VerticalStackLayout>
-                </Frame>
+                               TextColor="Black"
+                               FontAttributes="Bold"/>
+                                    </Grid>
+
+                                </VerticalStackLayout>
+                            </Frame>
+
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+
+
+
 
                 <!-- Announcement Item 2 -->
-                <Frame BackgroundColor="#FFF8E1"
-                       BorderColor="#F9A825"
-                       CornerRadius="12"
-                       Padding="15"
-                       HasShadow="False">
-                    <VerticalStackLayout Spacing="6">
-                        <HorizontalStackLayout Spacing="8">
-                            <Label Text="⚠️" FontSize="16"/>
-                            <Label Text="Spring Cleaning Event" 
-                                   FontSize="15" 
-                                   FontAttributes="Bold"
-                                   TextColor="#333"/>
-                        </HorizontalStackLayout>
-                        <Label Text="Unclaimed items older than 90 days will be donated to charity on April 30th. Please check if you have any pending claims."
-                               TextColor="#555"
-                               FontSize="13"
-                               LineHeight="1.3"/>
-                        <Grid ColumnDefinitions="*,Auto">
-                            <Label Text="2026-04-12"
-                                   TextColor="#888"
-                                   FontSize="11"
-                                   VerticalOptions="Center"/>
-                            <Label Text="by Admin Team"
-                                   Grid.Column="1"
-                                   TextColor="#888"
-                                   FontSize="11"
-                                   VerticalOptions="Center"/>
-                        </Grid>
-                    </VerticalStackLayout>
-                </Frame>
 
-                <!-- Empty Placeholder Card -->
-                <Frame BackgroundColor="#D6E4F0"
-                       BorderColor="#4A90E2"
-                       CornerRadius="12"
-                       HeightRequest="80"
-                       HasShadow="False"/>
+
 
             </VerticalStackLayout>
         </ScrollView>
@@ -215,6 +241,8 @@
                        TextColor="#B71C1C" 
                        FontAttributes="Bold" 
                        HorizontalOptions="Center"/>
+                <BoxView HeightRequest="2" BackgroundColor="#B71C1C" CornerRadius="1" Margin="0,-2,0,0"/>
+
                 <VerticalStackLayout.GestureRecognizers>
                     <TapGestureRecognizer Tapped="OnNewsTapped"/>
                 </VerticalStackLayout.GestureRecognizers>
@@ -226,9 +254,9 @@
                                  HorizontalOptions="Center"
                                  VerticalOptions="Center">
                 <Image Source="logout.png"
-                       WidthRequest="28"
-                       HeightRequest="33"
-                       HorizontalOptions="Center"/>
+                           WidthRequest="28"
+                           HeightRequest="33"
+                           HorizontalOptions="Center"/>
                 <Label Text="Logout" 
                        FontSize="11" 
                        TextColor="#666" 

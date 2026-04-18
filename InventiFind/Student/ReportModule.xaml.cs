@@ -42,21 +42,28 @@ namespace InventiFind
         // Bottom navigation taps
         private async void OnReportTapped(object sender, TappedEventArgs e)
         {
-            await Navigation.PushAsync(new ReportModule());
+            await Navigation.PushModalAsync(new ReportModule());
         }
 
         private async void OnReceiveTapped(object sender, TappedEventArgs e)
         {
-            await Navigation.PushAsync(new ReceiveModule());
+            await Navigation.PushModalAsync(new ReceiveModule());
 
         }
 
         private async void OnNewsTapped(object sender, TappedEventArgs e)
         {
-            await Navigation.PushAsync(new NotificationModule());
+            await Navigation.PushModalAsync(new NotificationModule());
 
         }
-
+        private async void OnLogoutTapped(object sender, TappedEventArgs e)
+        {
+            bool confirm = await DisplayAlert("Logout", "Are you sure?", "Yes", "No");
+            if (confirm)
+            {
+                await Shell.Current.GoToAsync("//MainPage");
+            }
+        }
         private void UpdateReportTypeUI()
         {
             if (reportType == "lost")
@@ -209,6 +216,20 @@ namespace InventiFind
 
                 if (newItemId == 0) return false;
 
+                // ── Step 1.5: Insert into reports table ─────────────────────────
+                string reportSql = @"INSERT INTO reports (I_id, user_id, title) 
+                     VALUES (@itemId, @userId, @title)";
+
+                using (var reportCmd = new MySqlCommand(reportSql, connection))
+                {
+                    reportCmd.Parameters.AddWithValue("@itemId", newItemId);
+                    reportCmd.Parameters.AddWithValue("@userId", userId);
+                    reportCmd.Parameters.AddWithValue("@title", ItemNameEntry.Text.Trim());
+
+                    await reportCmd.ExecuteNonQueryAsync();
+                }
+
+
                 // ── Step 2: Auto-match against the opposite type ───────────────
                 // If user reported LOST  → find matching FOUND items
                 // If user reported FOUND → find matching LOST  items
@@ -270,7 +291,7 @@ namespace InventiFind
         }
 
         // Navigation handlers...
-        private async void OnHomeTapped(object sender, EventArgs e) => await Navigation.PushAsync(new StudentDashboard());
+        private async void OnHomeTapped(object sender, EventArgs e) => await Navigation.PushModalAsync(new StudentDashboard());
         private void OnReceiveTapped(object sender, EventArgs e) { }
         private void OnNewsTapped(object sender, EventArgs e) { }
         private async void OnLogoutClicked(object sender, EventArgs e)

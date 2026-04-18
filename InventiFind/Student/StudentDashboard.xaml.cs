@@ -101,37 +101,35 @@ public partial class StudentDashboard : ContentPage
 
 
 
-
-    // View All tapped
-    private async void OnViewAllTapped(object sender, TappedEventArgs e)
+    private async void OnHomeTapped(object sender, TappedEventArgs e)
     {
-        await DisplayAlert("View All", "Show all items", "OK");
+        await Navigation.PushModalAsync(new StudentDashboard());
     }
 
-    // Bottom navigation taps
     private async void OnReportTapped(object sender, TappedEventArgs e)
     {
-        await Navigation.PushAsync(new ReportModule());
+        await Navigation.PushModalAsync(new ReportModule());
     }
 
     private async void OnReceiveTapped(object sender, TappedEventArgs e)
     {
-        await Navigation.PushAsync(new ReceiveModule());
+        await Navigation.PushModalAsync(new ReceiveModule());
+    }
+    private async void OnViewAllTapped(object sender, TappedEventArgs e)
+    {
 
     }
-
     private async void OnNewsTapped(object sender, TappedEventArgs e)
     {
-        await Navigation.PushAsync(new NotificationModule());
-
+        await Navigation.PushModalAsync(new NotificationModule());
     }
 
-    private async void OnLogoutClicked(object sender, EventArgs e)  // For Button.Clicked
+    private async void OnLogoutTapped(object sender, TappedEventArgs e)
     {
-        bool confirm = await DisplayAlert("Logout", "Are you sure you want to logout?", "Yes", "No");
+        bool confirm = await DisplayAlert("Logout", "Are you sure?", "Yes", "No");
         if (confirm)
         {
-            await Navigation.PopToRootAsync();
+            await Shell.Current.GoToAsync("//MainPage");
         }
     }
     public class ReportItem : INotifyPropertyChanged

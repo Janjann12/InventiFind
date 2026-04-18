@@ -13,12 +13,12 @@ public partial class ReceiveModule : ContentPage
 
     private async void OnHomeTapped(object sender, TappedEventArgs e)
     {
-        await Navigation.PushAsync(new StudentDashboard());
+        await Navigation.PushModalAsync(new StudentDashboard());
     }
 
     private async void OnReportTapped(object sender, TappedEventArgs e)
     {
-        await Navigation.PushAsync(new ReportModule());
+        await Navigation.PushModalAsync(new ReportModule());
     }
 
     private async void OnReceiveTapped(object sender, TappedEventArgs e)
@@ -29,7 +29,7 @@ public partial class ReceiveModule : ContentPage
 
     private async void OnNewsTapped(object sender, TappedEventArgs e)
     {
-        await Navigation.PushAsync(new NotificationModule());
+        await Navigation.PushModalAsync(new NotificationModule());
     }
 
     private async void OnLogoutTapped(object sender, TappedEventArgs e)
@@ -37,7 +37,8 @@ public partial class ReceiveModule : ContentPage
         bool confirm = await DisplayAlert("Logout", "Are you sure?", "Yes", "No");
         if (confirm)
         {
-            await Navigation.PopToRootAsync();
+            await Shell.Current.GoToAsync("//MainPage");
+
         }
     }
 }
