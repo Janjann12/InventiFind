@@ -13,21 +13,20 @@ public class ReportItem
         ? Color.FromArgb("#FF6B6B")
         : Color.FromArgb("#4CAF50");
 }
+
 public partial class AdminDashboard : ContentPage
 {
-	public AdminDashboard()
-	{
-		InitializeComponent();
-	}
+    public AdminDashboard()
+    {
+        InitializeComponent();
+    }
+
     protected override async void OnAppearing()
     {
         base.OnAppearing();
         await LoadDashboardDataAsync();
     }
-    private async void OnLostTapped(object sender, TappedEventArgs e)
-    {
-        await Navigation.PushModalAsync(new LostitemsPage());
-    }
+
     private async Task LoadDashboardDataAsync()
     {
         try

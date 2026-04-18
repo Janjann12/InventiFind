@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="InventiFind.LostItemDetailPage"
+             BackgroundColor="#F0EBEB"
+             Shell.NavBarIsVisible="False">
+
+    <Shell.BackButtonBehavior>
+        <BackButtonBehavior IsVisible="False" IsEnabled="False" />
+    </Shell.BackButtonBehavior>
+
+    <Grid RowDefinitions="Auto,*,Auto">
+
+        <!-- Header -->
+        <Grid Grid.Row="0"
+              BackgroundColor="#8B0000"
+              Padding="20,50,20,20">
+            <Label Text="Lost item"
+                   FontSize="32"
+                   FontAttributes="Bold"
+                   TextColor="White"
+                   VerticalOptions="Center"/>
+        </Grid>
+
+        <!-- Scrollable Content -->
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Padding="12" Spacing="12"
+                                 x:Name="MatchesStack">
+                <!-- Cards are added dynamically from code-behind -->
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!-- Bottom Navigation Bar -->
+        <Grid Grid.Row="2"
+              BackgroundColor="#8B0000"
+              ColumnDefinitions="*,*,*,*,*"
+              Padding="0,10,0,20"
+              HeightRequest="70">
+            <VerticalStackLayout Grid.Column="0" Spacing="2" HorizontalOptions="Center">
+                <Label Text="≡" FontSize="24" HorizontalOptions="Center" TextColor="White"/>
+                <Label Text="Dashboard" FontSize="9" TextColor="White" HorizontalOptions="Center"/>
+            </VerticalStackLayout>
+            <VerticalStackLayout Grid.Column="1" Spacing="2" HorizontalOptions="Center">
+                <Label Text="≡" FontSize="24" HorizontalOptions="Center" TextColor="White"/>
+                <Label Text="Dashboard" FontSize="9" TextColor="White" HorizontalOptions="Center"/>
+            </VerticalStackLayout>
+            <VerticalStackLayout Grid.Column="2" Spacing="2" HorizontalOptions="Center">
+                <Label Text="≡" FontSize="24" HorizontalOptions="Center" TextColor="White"/>
+                <Label Text="Dashboard" FontSize="9" TextColor="White" HorizontalOptions="Center"/>
+            </VerticalStackLayout>
+            <VerticalStackLayout Grid.Column="3" Spacing="2" HorizontalOptions="Center">
+                <Label Text="≡" FontSize="24" HorizontalOptions="Center" TextColor="White"/>
+                <Label Text="Dashboard" FontSize="9" TextColor="White" HorizontalOptions="Center"/>
+            </VerticalStackLayout>
+            <VerticalStackLayout Grid.Column="4" Spacing="2" HorizontalOptions="Center">
+                <Label Text="≡" FontSize="24" HorizontalOptions="Center" TextColor="White"/>
+                <Label Text="Dashboard" FontSize="9" TextColor="White" HorizontalOptions="Center"/>
+            </VerticalStackLayout>
+        </Grid>
+
+    </Grid>
+</ContentPage>

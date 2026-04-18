@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="InventiFind.VerifyDetailPage"
+             BackgroundColor="Transparent"
+             Shell.NavBarIsVisible="False">
+
+    <Grid RowDefinitions="*,Auto">
+
+        <!-- Dimmed background tap to dismiss -->
+        <BoxView Grid.Row="0"
+                 BackgroundColor="#80000000">
+            <BoxView.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnBackdropTapped"/>
+            </BoxView.GestureRecognizers>
+        </BoxView>
+
+        <!-- Bottom Sheet Panel -->
+        <Frame Grid.Row="1"
+               BackgroundColor="White"
+               CornerRadius="24"
+               Padding="0"
+               HasShadow="False"
+               Margin="0,-24,0,0">
+
+            <ScrollView>
+                <VerticalStackLayout Spacing="0">
+
+                    <!-- Drag Handle -->
+                    <BoxView HeightRequest="4"
+                             WidthRequest="40"
+                             CornerRadius="2"
+                             BackgroundColor="#8B0000"
+                             HorizontalOptions="Center"
+                             Margin="0,14,0,20"/>
+
+                    <!-- Content Padding -->
+                    <VerticalStackLayout Padding="20,0,20,32" Spacing="16">
+
+                        <!-- Item Name + Status Badge -->
+                        <Grid ColumnDefinitions="*,Auto">
+                            <Label Grid.Column="0"
+                                   x:Name="ItemNameLabel"
+                                   Text="ITEM NAME"
+                                   FontSize="22"
+                                   FontAttributes="Bold"
+                                   TextColor="#1A1A1A"
+                                   VerticalOptions="Center"/>
+                            <Frame Grid.Column="1"
+                                   x:Name="StatusBadgeFrame"
+                                   BackgroundColor="#5A9E5A"
+                                   CornerRadius="20"
+                                   Padding="14,6"
+                                   HasShadow="False"
+                                   VerticalOptions="Center">
+                                <Label x:Name="StatusBadgeLabel"
+                                       Text="Confirmed"
+                                       FontSize="13"
+                                       FontAttributes="Bold"
+                                       TextColor="White"/>
+                            </Frame>
+                        </Grid>
+
+                        <!-- Reporter Info Card -->
+                        <Frame BackgroundColor="#F0F0F0"
+                               CornerRadius="16"
+                               Padding="14"
+                               HasShadow="False">
+                            <Grid ColumnDefinitions="Auto,*">
+                                <!-- Profile Photo -->
+                                <Frame Grid.Column="0"
+                                       CornerRadius="28"
+                                       Padding="0"
+                                       HasShadow="False"
+                                       WidthRequest="56"
+                                       HeightRequest="56"
+                                       BackgroundColor="#CCCCCC"
+                                       IsClippedToBounds="True"
+                                       Margin="0,0,12,0">
+                                    <Image x:Name="ProfileImage"
+                                           Aspect="AspectFill"
+                                           IsVisible="False"/>
+                                </Frame>
+                                <!-- Name / ID / Course -->
+                                <VerticalStackLayout Grid.Column="1"
+                                                     VerticalOptions="Center"
+                                                     Spacing="2">
+                                    <Label x:Name="ReporterNameLabel"
+                                           Text="Amadeo"
+                                           FontSize="16"
+                                           FontAttributes="Bold"
+                                           TextColor="#1A1A1A"/>
+                                    <HorizontalStackLayout Spacing="12">
+                                        <Label x:Name="ReporterIdLabel"
+                                               Text="2022110790"
+                                               FontSize="13"
+                                               TextColor="#888"/>
+                                        <Label x:Name="ReporterCourseLabel"
+                                               Text="BSIT 2nd Year"
+                                               FontSize="13"
+                                               TextColor="#888"/>
+                                    </HorizontalStackLayout>
+                                </VerticalStackLayout>
+                            </Grid>
+                        </Frame>
+
+                        <!-- Lost Report ⇌ Surrendered -->
+                        <Grid ColumnDefinitions="*,Auto,*" ColumnSpacing="8">
+
+                            <Frame Grid.Column="0"
+                                   BackgroundColor="#F0F0F0"
+                                   CornerRadius="14"
+                                   Padding="14,12"
+                                   HasShadow="False">
+                                <VerticalStackLayout Spacing="4">
+                                    <Label Text="Lost report"
+                                           FontSize="13"
+                                           FontAttributes="Bold"
+                                           TextColor="#555"/>
+                                    <Label x:Name="LostReportNoLabel"
+                                           Text="12345678910"
+                                           FontSize="13"
+                                           TextColor="#1A1A1A"/>
+                                </VerticalStackLayout>
+                            </Frame>
+
+                            <Label Grid.Column="1"
+                                   Text="⇌"
+                                   FontSize="22"
+                                   TextColor="#888"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center"/>
+
+                            <Frame Grid.Column="2"
+                                   BackgroundColor="#F0F0F0"
+                                   CornerRadius="14"
+                                   Padding="14,12"
+                                   HasShadow="False">
+                                <VerticalStackLayout Spacing="4">
+                                    <Label Text="Surrendered"
+                                           FontSize="13"
+                                           FontAttributes="Bold"
+                                           TextColor="#555"/>
+                                    <Label x:Name="SurrenderedNoLabel"
+                                           Text="12345678910"
+                                           FontSize="13"
+                                           TextColor="#1A1A1A"/>
+                                </VerticalStackLayout>
+                            </Frame>
+
+                        </Grid>
+
+                        <!-- Ownership Proof -->
+                        <Frame BackgroundColor="#F0F0F0"
+                               CornerRadius="14"
+                               Padding="14,12"
+                               HasShadow="False">
+                            <VerticalStackLayout Spacing="6">
+                                <Label Text="Ownership proof"
+                                       FontSize="14"
+                                       FontAttributes="Bold"
+                                       TextColor="#555"/>
+                                <Label x:Name="OwnershipProofLabel"
+                                       Text="Lorem ipsum dolor sit amet"
+                                       FontSize="13"
+                                       TextColor="#333"
+                                       LineBreakMode="WordWrap"/>
+                            </VerticalStackLayout>
+                        </Frame>
+
+                        <!-- Uploaded Proof Image Card -->
+                        <Frame BackgroundColor="#F0F0F0"
+                               CornerRadius="14"
+                               Padding="0"
+                               HasShadow="False">
+                            <VerticalStackLayout Spacing="0">
+
+                                <!-- Header row -->
+                                <Grid ColumnDefinitions="Auto,*,Auto"
+                                      Padding="14,12">
+                                    <Label Grid.Column="0"
+                                           Text="🖼"
+                                           FontSize="18"
+                                           VerticalOptions="Center"/>
+                                    <Label Grid.Column="1"
+                                           Text="Uploaded Proof"
+                                           FontSize="14"
+                                           FontAttributes="Bold"
+                                           TextColor="#1A1A1A"
+                                           VerticalOptions="Center"
+                                           Margin="6,0,0,0"/>
+                                    <Label Grid.Column="2"
+                                           x:Name="SubmittedDateLabel"
+                                           Text="Submitted Feb 09, 2026"
+                                           FontSize="12"
+                                           TextColor="#999"
+                                           VerticalOptions="Center"/>
+                                </Grid>
+
+                                <!-- Proof image or placeholder -->
+                                <Frame CornerRadius="0"
+                                       Padding="0"
+                                       HasShadow="False"
+                                       HeightRequest="220"
+                                       BackgroundColor="#E0E0E0"
+                                       IsClippedToBounds="True">
+                                    <Image x:Name="ProofImage"
+                                           Aspect="AspectFit"
+                                           IsVisible="False"/>
+                                </Frame>
+
+                            </VerticalStackLayout>
+                        </Frame>
+
+                        <!-- Action Buttons -->
+                        <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+
+                            <Frame Grid.Column="0"
+                                   BackgroundColor="#FF6B6B"
+                                   CornerRadius="14"
+                                   Padding="0,16"
+                                   HasShadow="False">
+                                <Frame.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnRejectTapped"/>
+                                </Frame.GestureRecognizers>
+                                <Label Text="Reject"
+                                       FontSize="15"
+                                       FontAttributes="Bold"
+                                       TextColor="White"
+                                       HorizontalOptions="Center"/>
+                            </Frame>
+
+                            <Frame Grid.Column="1"
+                                   BackgroundColor="#5A9E5A"
+                                   CornerRadius="14"
+                                   Padding="0,16"
+                                   HasShadow="False">
+                                <Frame.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnConfirmTapped"/>
+                                </Frame.GestureRecognizers>
+                                <Label Text="Confirm"
+                                       FontSize="15"
+                                       FontAttributes="Bold"
+                                       TextColor="White"
+                                       HorizontalOptions="Center"/>
+                            </Frame>
+
+                        </Grid>
+
+                    </VerticalStackLayout>
+                </VerticalStackLayout>
+            </ScrollView>
+        </Frame>
+
+    </Grid>
+</ContentPage>
