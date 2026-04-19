@@ -6,8 +6,6 @@ public partial class VerifyDetailPage : ContentPage
 {
     private readonly MatchPair _pair;
 
-    // ── Constructor ────────────────────────────────────────────────────────
-
     public VerifyDetailPage(MatchPair pair)
     {
         InitializeComponent();
@@ -15,31 +13,21 @@ public partial class VerifyDetailPage : ContentPage
         PopulateUI();
     }
 
-    // ── Populate ───────────────────────────────────────────────────────────
-
     private void PopulateUI()
     {
-        // Header
         ItemNameLabel.Text = _pair.ItemName.ToUpper();
         StatusBadgeLabel.Text = _pair.Status;
         StatusBadgeFrame.BackgroundColor = _pair.StatusBadgeColor;
 
-        // Reporter
         ReporterNameLabel.Text = _pair.ReporterName.Split(' ').FirstOrDefault() ?? _pair.ReporterName;
-        ReporterIdLabel.Text = _pair.LostReportNo;    // use report no as student ID stand-in
-           // use category as course stand-in
-
-        // Report numbers
+        ReporterIdLabel.Text = _pair.LostReportNo;
+        ReporterCourseLabel.Text = _pair.Category;
         LostReportNoLabel.Text = _pair.LostReportNo;
         SurrenderedNoLabel.Text = _pair.SurrenderedNo;
 
-        // Ownership proof
         OwnershipProofLabel.Text = _pair.OwnershipProof;
-
-        // Submitted date
         SubmittedDateLabel.Text = $"Submitted {_pair.SubmittedDate}";
 
-        // Proof image — load from DB blob if available
         _ = LoadProofImageAsync();
     }
 
@@ -67,8 +55,6 @@ public partial class VerifyDetailPage : ContentPage
         }
     }
 
-    // ── Event handlers ─────────────────────────────────────────────────────
-
     private async void OnBackdropTapped(object sender, TappedEventArgs e)
         => await Navigation.PopModalAsync(animated: true);
 
@@ -81,7 +67,7 @@ public partial class VerifyDetailPage : ContentPage
 
         if (!confirm) return;
 
-        await UpdateStatusAsync("Rejected");
+        await UpdateStatusAsync("rejected");
         await Navigation.PopModalAsync(animated: true);
     }
 
@@ -94,7 +80,7 @@ public partial class VerifyDetailPage : ContentPage
 
         if (!confirm) return;
 
-        await UpdateStatusAsync("Confirmed");
+        await UpdateStatusAsync("confirmed");
         await Navigation.PopModalAsync(animated: true);
     }
 
@@ -105,19 +91,57 @@ public partial class VerifyDetailPage : ContentPage
             await using var conn = new MySqlConnection(DatabaseConfig.ConnectionString);
             await conn.OpenAsync();
 
-            // Update description as status proxy (replace with a real status column)
-            const string sql = """
-                UPDATE items
-                SET description = CONCAT('[{0}] ', description)
-                WHERE L_ID = @id
+            // 1. Update the match row status
+            const string updateMatch = """
+                UPDATE matches
+                SET status = @status
+                WHERE lost_id = @lostId
+                  AND surrendered_id = @surrenderedId
             """;
 
-            await using var cmd = new MySqlCommand(
-                sql.Replace("{0}", newStatus), conn);
-            cmd.Parameters.AddWithValue("@id", _pair.LostId);
-            await cmd.ExecuteNonQueryAsync();
+            await using var matchCmd = new MySqlCommand(updateMatch, conn);
+            matchCmd.Parameters.AddWithValue("@status", newStatus);
+            matchCmd.Parameters.AddWithValue("@lostId", _pair.LostId);
+            matchCmd.Parameters.AddWithValue("@surrenderedId", _pair.SurrenderedId);
+            await matchCmd.ExecuteNonQueryAsync();
 
-            await DisplayAlert("Done", $"Item marked as {newStatus}.", "OK");
+            if (newStatus == "confirmed")
+            {
+                // 2. Mark both items as resolved so they stop
+                //    appearing in future matches
+                const string updateItems = """
+                    UPDATE items
+                    SET status = 'resolved'
+                    WHERE L_ID IN (@lostId, @surrenderedId)
+                """;
+
+                await using var itemsCmd = new MySqlCommand(updateItems, conn);
+                itemsCmd.Parameters.AddWithValue("@lostId", _pair.LostId);
+                itemsCmd.Parameters.AddWithValue("@surrenderedId", _pair.SurrenderedId);
+                await itemsCmd.ExecuteNonQueryAsync();
+
+                // 3. Auto-reject all other pending matches that involve
+                //    either of these two items so the admin doesn't see
+                //    stale matches for already-resolved items
+                const string rejectOthers = """
+                    UPDATE matches
+                    SET status = 'rejected'
+                    WHERE status = 'pending'
+                      AND (lost_id = @lostId OR surrendered_id = @surrenderedId)
+                      AND NOT (lost_id = @lostId AND surrendered_id = @surrenderedId)
+                """;
+
+                await using var rejectCmd = new MySqlCommand(rejectOthers, conn);
+                rejectCmd.Parameters.AddWithValue("@lostId", _pair.LostId);
+                rejectCmd.Parameters.AddWithValue("@surrenderedId", _pair.SurrenderedId);
+                await rejectCmd.ExecuteNonQueryAsync();
+            }
+
+            await DisplayAlert("Done",
+                newStatus == "confirmed"
+                    ? "Match confirmed. Both items marked as resolved."
+                    : "Match rejected.",
+                "OK");
         }
         catch (Exception ex)
         {

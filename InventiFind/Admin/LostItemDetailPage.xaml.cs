@@ -69,7 +69,7 @@ public partial class LostItemDetailPage : ContentPage
                     CONCAT(U.FirstName, ' ', U.Surname) AS reporter_name
                 FROM matches m
                 JOIN  items L ON L.L_ID = m.lost_id
-                LEFT JOIN users U ON U.UserID = L.L_ID
+                LEFT JOIN users U ON U.UserID = L.UserID
                 ORDER BY m.created_at DESC
                 LIMIT 20
             """;

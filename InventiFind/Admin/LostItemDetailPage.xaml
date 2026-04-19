@@ -11,51 +11,73 @@
 
     <Grid RowDefinitions="Auto,*,Auto">
 
-        <!-- Header -->
+        <!-- 🔴 Header -->
         <Grid Grid.Row="0"
               BackgroundColor="#8B0000"
-              Padding="20,50,20,20">
-            <Label Text="Lost item"
-                   FontSize="32"
+              Padding="20,40,20,16">
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Back Icon (optional) -->
+            <Label Text="←"
+                   FontSize="22"
+                   TextColor="White"
+                   VerticalOptions="Center"
+                   HorizontalOptions="Start"/>
+
+            <!-- Title -->
+            <Label Grid.Column="1"
+                   Text="Lost Item"
+                   FontSize="24"
                    FontAttributes="Bold"
                    TextColor="White"
                    VerticalOptions="Center"/>
         </Grid>
 
-        <!-- Scrollable Content -->
+        <!-- 📜 Scrollable Content -->
         <ScrollView Grid.Row="1">
-            <VerticalStackLayout Padding="12" Spacing="12"
+            <VerticalStackLayout Padding="12"
+                                 Spacing="12"
                                  x:Name="MatchesStack">
-                <!-- Cards are added dynamically from code-behind -->
+                <!-- Cards dynamically added in code-behind -->
             </VerticalStackLayout>
         </ScrollView>
 
-        <!-- Bottom Navigation Bar -->
+        <!-- 🔻 Bottom Navigation -->
         <Grid Grid.Row="2"
               BackgroundColor="#8B0000"
               ColumnDefinitions="*,*,*,*,*"
               Padding="0,10,0,20"
               HeightRequest="70">
+
             <VerticalStackLayout Grid.Column="0" Spacing="2" HorizontalOptions="Center">
-                <Label Text="≡" FontSize="24" HorizontalOptions="Center" TextColor="White"/>
+                <Label Text="🏠" FontSize="20" TextColor="White" HorizontalOptions="Center"/>
                 <Label Text="Dashboard" FontSize="9" TextColor="White" HorizontalOptions="Center"/>
             </VerticalStackLayout>
+
             <VerticalStackLayout Grid.Column="1" Spacing="2" HorizontalOptions="Center">
-                <Label Text="≡" FontSize="24" HorizontalOptions="Center" TextColor="White"/>
-                <Label Text="Dashboard" FontSize="9" TextColor="White" HorizontalOptions="Center"/>
+                <Label Text="📄" FontSize="20" TextColor="White" HorizontalOptions="Center"/>
+                <Label Text="Reports" FontSize="9" TextColor="White" HorizontalOptions="Center"/>
             </VerticalStackLayout>
+
             <VerticalStackLayout Grid.Column="2" Spacing="2" HorizontalOptions="Center">
-                <Label Text="≡" FontSize="24" HorizontalOptions="Center" TextColor="White"/>
-                <Label Text="Dashboard" FontSize="9" TextColor="White" HorizontalOptions="Center"/>
+                <Label Text="📥" FontSize="20" TextColor="White" HorizontalOptions="Center"/>
+                <Label Text="Receive" FontSize="9" TextColor="White" HorizontalOptions="Center"/>
             </VerticalStackLayout>
+
             <VerticalStackLayout Grid.Column="3" Spacing="2" HorizontalOptions="Center">
-                <Label Text="≡" FontSize="24" HorizontalOptions="Center" TextColor="White"/>
-                <Label Text="Dashboard" FontSize="9" TextColor="White" HorizontalOptions="Center"/>
+                <Label Text="🔔" FontSize="20" TextColor="White" HorizontalOptions="Center"/>
+                <Label Text="Alerts" FontSize="9" TextColor="White" HorizontalOptions="Center"/>
             </VerticalStackLayout>
+
             <VerticalStackLayout Grid.Column="4" Spacing="2" HorizontalOptions="Center">
-                <Label Text="≡" FontSize="24" HorizontalOptions="Center" TextColor="White"/>
-                <Label Text="Dashboard" FontSize="9" TextColor="White" HorizontalOptions="Center"/>
+                <Label Text="👤" FontSize="20" TextColor="White" HorizontalOptions="Center"/>
+                <Label Text="Profile" FontSize="9" TextColor="White" HorizontalOptions="Center"/>
             </VerticalStackLayout>
+
         </Grid>
 
     </Grid>

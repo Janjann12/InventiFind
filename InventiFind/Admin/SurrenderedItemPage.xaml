@@ -15,7 +15,7 @@
         <Grid Grid.Row="0"
               BackgroundColor="#8B0000"
               Padding="20,50,20,20">
-            <Label Text="Surrendered item"
+            <Label Text="Surrendered Items"
                    FontSize="32"
                    FontAttributes="Bold"
                    TextColor="White"
@@ -32,12 +32,12 @@
                         Margin="12,14,12,4">
                 <HorizontalStackLayout Spacing="10">
 
-                    <!-- Unclaimed Total -->
                     <Frame BackgroundColor="White"
                            CornerRadius="16"
                            Padding="20,14"
                            HasShadow="False"
-                           WidthRequest="120">
+                           BorderColor="#E6E1E1"
+                           WidthRequest="130">
                         <VerticalStackLayout HorizontalOptions="Center" Spacing="2">
                             <Label x:Name="UnclaimedTotalLabel"
                                    Text="0"
@@ -45,19 +45,19 @@
                                    FontAttributes="Bold"
                                    TextColor="#1A1A1A"
                                    HorizontalOptions="Center"/>
-                            <Label Text="Unclaimed"
+                            <Label Text="Total Items"
                                    FontSize="12"
                                    TextColor="#888"
                                    HorizontalOptions="Center"/>
                         </VerticalStackLayout>
                     </Frame>
 
-                    <!-- Unclaimed Lost -->
                     <Frame BackgroundColor="White"
                            CornerRadius="16"
                            Padding="20,14"
                            HasShadow="False"
-                           WidthRequest="120">
+                           BorderColor="#E6E1E1"
+                           WidthRequest="130">
                         <VerticalStackLayout HorizontalOptions="Center" Spacing="2">
                             <Label x:Name="UnclaimedLostLabel"
                                    Text="0"
@@ -65,19 +65,19 @@
                                    FontAttributes="Bold"
                                    TextColor="#1A1A1A"
                                    HorizontalOptions="Center"/>
-                            <Label Text="Unclaimed"
+                            <Label Text="Lost Items"
                                    FontSize="12"
                                    TextColor="#888"
                                    HorizontalOptions="Center"/>
                         </VerticalStackLayout>
                     </Frame>
 
-                    <!-- Unclaimed Found -->
                     <Frame BackgroundColor="White"
                            CornerRadius="16"
                            Padding="20,14"
                            HasShadow="False"
-                           WidthRequest="120">
+                           BorderColor="#E6E1E1"
+                           WidthRequest="130">
                         <VerticalStackLayout HorizontalOptions="Center" Spacing="2">
                             <Label x:Name="UnclaimedFoundLabel"
                                    Text="0"
@@ -85,7 +85,7 @@
                                    FontAttributes="Bold"
                                    TextColor="#1A1A1A"
                                    HorizontalOptions="Center"/>
-                            <Label Text="Unclaimed"
+                            <Label Text="Found Items"
                                    FontSize="12"
                                    TextColor="#888"
                                    HorizontalOptions="Center"/>
@@ -106,7 +106,8 @@
                            BackgroundColor="White"
                            CornerRadius="20"
                            Padding="16,8"
-                           HasShadow="False">
+                           HasShadow="False"
+                           BorderColor="#E6E1E1">
                         <Frame.GestureRecognizers>
                             <TapGestureRecognizer Tapped="OnFilterTapped" CommandParameter="all"/>
                         </Frame.GestureRecognizers>
@@ -121,7 +122,8 @@
                            BackgroundColor="White"
                            CornerRadius="20"
                            Padding="16,8"
-                           HasShadow="False">
+                           HasShadow="False"
+                           BorderColor="#E6E1E1">
                         <Frame.GestureRecognizers>
                             <TapGestureRecognizer Tapped="OnFilterTapped" CommandParameter="lost"/>
                         </Frame.GestureRecognizers>
@@ -136,7 +138,8 @@
                            BackgroundColor="White"
                            CornerRadius="20"
                            Padding="16,8"
-                           HasShadow="False">
+                           HasShadow="False"
+                           BorderColor="#E6E1E1">
                         <Frame.GestureRecognizers>
                             <TapGestureRecognizer Tapped="OnFilterTapped" CommandParameter="found"/>
                         </Frame.GestureRecognizers>
@@ -149,15 +152,16 @@
 
                     <Frame BackgroundColor="White"
                            CornerRadius="20"
-                           Padding="4,0,4,0"
-                           HasShadow="False">
+                           Padding="8,0"
+                           HasShadow="False"
+                           BorderColor="#E6E1E1">
                         <Picker x:Name="StatusPicker"
                                 Title="All Status"
                                 FontSize="13"
                                 FontAttributes="Bold"
                                 TextColor="#1A1A1A"
                                 TitleColor="#1A1A1A"
-                                MinimumWidthRequest="110"
+                                MinimumWidthRequest="120"
                                 SelectedIndexChanged="OnStatusPickerChanged">
                             <Picker.Items>
                                 <x:String>All Status</x:String>
@@ -182,6 +186,7 @@
                                CornerRadius="16"
                                Padding="14"
                                HasShadow="False"
+                               BorderColor="#E6E1E1"
                                Margin="0,0,0,12">
                             <Grid ColumnDefinitions="Auto,*,Auto"
                                   RowDefinitions="Auto,Auto,Auto">
@@ -196,18 +201,27 @@
                                        WidthRequest="72"
                                        HeightRequest="72"
                                        VerticalOptions="Center"
-                                       Margin="0,0,14,0"/>
+                                       Margin="0,0,14,0">
+                                    <Label Text="📦"
+                                           FontSize="28"
+                                           TextColor="White"
+                                           HorizontalOptions="Center"
+                                           VerticalOptions="Center"/>
+                                </Frame>
 
                                 <!-- Item Name -->
-                                <Label Grid.Column="1" Grid.Row="0"
+                                <Label Grid.Column="1"
+                                       Grid.Row="0"
                                        Text="{Binding Name}"
                                        FontSize="16"
                                        FontAttributes="Bold"
                                        TextColor="#1A1A1A"
-                                       VerticalOptions="Center"/>
+                                       VerticalOptions="Center"
+                                       LineBreakMode="TailTruncation"/>
 
                                 <!-- Status Badge -->
-                                <Frame Grid.Column="2" Grid.Row="0"
+                                <Frame Grid.Column="2"
+                                       Grid.Row="0"
                                        BackgroundColor="{Binding StatusBadgeColor}"
                                        CornerRadius="20"
                                        Padding="12,5"
@@ -220,30 +234,41 @@
                                 </Frame>
 
                                 <!-- Reporter Name -->
-                                <Label Grid.Column="1" Grid.Row="1"
+                                <Label Grid.Column="1"
+                                       Grid.Row="1"
                                        Text="{Binding ReporterName}"
                                        FontSize="13"
                                        TextColor="#555"
-                                       Margin="0,2,0,0"/>
+                                       Margin="0,2,0,0"
+                                       LineBreakMode="TailTruncation"/>
 
                                 <!-- Date + Location -->
-                                <HorizontalStackLayout Grid.Column="1" Grid.Row="2"
+                                <HorizontalStackLayout Grid.Column="1"
+                                                       Grid.Row="2"
                                                        Grid.ColumnSpan="2"
                                                        Spacing="14"
                                                        Margin="0,6,0,0">
                                     <HorizontalStackLayout Spacing="4">
-                                        <Label Text="📅" FontSize="12" TextColor="#999" VerticalOptions="Center"/>
+                                        <Label Text="📅"
+                                               FontSize="12"
+                                               TextColor="#999"
+                                               VerticalOptions="Center"/>
                                         <Label Text="{Binding DateString}"
                                                FontSize="12"
                                                TextColor="#777"
                                                VerticalOptions="Center"/>
                                     </HorizontalStackLayout>
+
                                     <HorizontalStackLayout Spacing="4">
-                                        <Label Text="📍" FontSize="12" TextColor="#999" VerticalOptions="Center"/>
+                                        <Label Text="📍"
+                                               FontSize="12"
+                                               TextColor="#999"
+                                               VerticalOptions="Center"/>
                                         <Label Text="{Binding Location}"
                                                FontSize="12"
                                                TextColor="#777"
-                                               VerticalOptions="Center"/>
+                                               VerticalOptions="Center"
+                                               LineBreakMode="TailTruncation"/>
                                     </HorizontalStackLayout>
                                 </HorizontalStackLayout>
 
@@ -257,7 +282,9 @@
                                          VerticalOptions="Center"
                                          Spacing="8"
                                          Margin="0,60,0,0">
-                        <Label Text="📭" FontSize="48" HorizontalOptions="Center"/>
+                        <Label Text="📭"
+                               FontSize="48"
+                               HorizontalOptions="Center"/>
                         <Label Text="No surrendered items found"
                                FontSize="16"
                                TextColor="#999"
@@ -274,25 +301,76 @@
               ColumnDefinitions="*,*,*,*,*"
               Padding="0,10,0,20"
               HeightRequest="70">
-            <VerticalStackLayout Grid.Column="0" Spacing="2" HorizontalOptions="Center">
-                <Label Text="≡" FontSize="24" HorizontalOptions="Center" TextColor="White"/>
-                <Label Text="Dashboard" FontSize="9" TextColor="White" HorizontalOptions="Center"/>
+
+            <VerticalStackLayout Grid.Column="0"
+                                 Spacing="2"
+                                 HorizontalOptions="Center"
+                                 VerticalOptions="Center">
+                <Label Text="⊞"
+                       FontSize="22"
+                       HorizontalOptions="Center"
+                       TextColor="White"/>
+                <Label Text="Dashboard"
+                       FontSize="9"
+                       TextColor="White"
+                       HorizontalOptions="Center"/>
             </VerticalStackLayout>
-            <VerticalStackLayout Grid.Column="1" Spacing="2" HorizontalOptions="Center">
-                <Label Text="≡" FontSize="24" HorizontalOptions="Center" TextColor="White"/>
-                <Label Text="Dashboard" FontSize="9" TextColor="White" HorizontalOptions="Center"/>
+
+            <VerticalStackLayout Grid.Column="1"
+                                 Spacing="2"
+                                 HorizontalOptions="Center"
+                                 VerticalOptions="Center">
+                <Label Text="📄"
+                       FontSize="20"
+                       HorizontalOptions="Center"
+                       TextColor="White"/>
+                <Label Text="Reports"
+                       FontSize="9"
+                       TextColor="White"
+                       HorizontalOptions="Center"/>
             </VerticalStackLayout>
-            <VerticalStackLayout Grid.Column="2" Spacing="2" HorizontalOptions="Center">
-                <Label Text="≡" FontSize="24" HorizontalOptions="Center" TextColor="White"/>
-                <Label Text="Dashboard" FontSize="9" TextColor="White" HorizontalOptions="Center"/>
+
+            <VerticalStackLayout Grid.Column="2"
+                                 Spacing="2"
+                                 HorizontalOptions="Center"
+                                 VerticalOptions="Center">
+                <Label Text="📦"
+                       FontSize="20"
+                       HorizontalOptions="Center"
+                       TextColor="White"/>
+                <Label Text="Items"
+                       FontSize="9"
+                       TextColor="White"
+                       FontAttributes="Bold"
+                       HorizontalOptions="Center"/>
             </VerticalStackLayout>
-            <VerticalStackLayout Grid.Column="3" Spacing="2" HorizontalOptions="Center">
-                <Label Text="≡" FontSize="24" HorizontalOptions="Center" TextColor="White"/>
-                <Label Text="Dashboard" FontSize="9" TextColor="White" HorizontalOptions="Center"/>
+
+            <VerticalStackLayout Grid.Column="3"
+                                 Spacing="2"
+                                 HorizontalOptions="Center"
+                                 VerticalOptions="Center">
+                <Label Text="✓"
+                       FontSize="20"
+                       HorizontalOptions="Center"
+                       TextColor="White"/>
+                <Label Text="Verify"
+                       FontSize="9"
+                       TextColor="White"
+                       HorizontalOptions="Center"/>
             </VerticalStackLayout>
-            <VerticalStackLayout Grid.Column="4" Spacing="2" HorizontalOptions="Center">
-                <Label Text="≡" FontSize="24" HorizontalOptions="Center" TextColor="White"/>
-                <Label Text="Dashboard" FontSize="9" TextColor="White" HorizontalOptions="Center"/>
+
+            <VerticalStackLayout Grid.Column="4"
+                                 Spacing="2"
+                                 HorizontalOptions="Center"
+                                 VerticalOptions="Center">
+                <Label Text="✔"
+                       FontSize="20"
+                       HorizontalOptions="Center"
+                       TextColor="White"/>
+                <Label Text="Returned"
+                       FontSize="9"
+                       TextColor="White"
+                       HorizontalOptions="Center"/>
             </VerticalStackLayout>
         </Grid>
 

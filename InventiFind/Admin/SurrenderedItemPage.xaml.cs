@@ -30,7 +30,7 @@ public class ItemReport
 }
 public partial class SurrenderedItemPage : ContentPage
 {
-    private List <ItemReport> _allItems = new();
+    private List<ItemReport> _allItems = new();
     private string _activeTypeFilter = "all";
     private string _activeStatus = "All Status";
 
