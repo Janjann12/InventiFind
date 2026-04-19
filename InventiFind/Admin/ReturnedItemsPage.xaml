@@ -1,0 +1,371 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:InventiFind"
+             x:Class="InventiFind.ReturnedItemsPage"
+             Title="Returned Items"
+             BackgroundColor="#F5F5F5">
+
+    <Shell.NavBarIsVisible>False</Shell.NavBarIsVisible>
+
+    <Grid RowDefinitions="Auto,*,Auto">
+
+        <!-- Header -->
+        <VerticalStackLayout Grid.Row="0" Spacing="0">
+
+            <Grid BackgroundColor="#DC143C"
+                  Padding="20,40,20,28"
+                  HeightRequest="230">
+
+                <VerticalStackLayout Spacing="16">
+
+                    <!-- Title -->
+                    <HorizontalStackLayout Spacing="12">
+                        <Frame WidthRequest="42"
+                               HeightRequest="42"
+                               CornerRadius="21"
+                               BackgroundColor="#33FFFFFF"
+                               Padding="0"
+                               HasShadow="False"
+                               VerticalOptions="Center">
+                            <Label Text="✓"
+                                   FontSize="20"
+                                   TextColor="White"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center"/>
+                        </Frame>
+
+                        <VerticalStackLayout Spacing="2" VerticalOptions="Center">
+                            <Label Text="Returned Items"
+                                   FontSize="24"
+                                   FontAttributes="Bold"
+                                   TextColor="White"/>
+                            <Label x:Name="SubtitleLabel"
+                                   Text="Resolved matches"
+                                   FontSize="13"
+                                   TextColor="#FDECEC"/>
+                        </VerticalStackLayout>
+                    </HorizontalStackLayout>
+
+                    <!-- Stats -->
+                    <Grid ColumnDefinitions="*,*"
+                          ColumnSpacing="12">
+
+                        <Frame Grid.Column="0"
+                               BackgroundColor="#33FFFFFF"
+                               CornerRadius="14"
+                               Padding="14,12"
+                               HasShadow="False"
+                               BorderColor="#22FFFFFF">
+                            <VerticalStackLayout Spacing="2">
+                                <Label x:Name="TotalReturnedLabel"
+                                       Text="0"
+                                       FontSize="24"
+                                       FontAttributes="Bold"
+                                       TextColor="White"/>
+                                <Label Text="Total Returned"
+                                       FontSize="11"
+                                       TextColor="#FDECEC"/>
+                            </VerticalStackLayout>
+                        </Frame>
+
+                        <Frame Grid.Column="1"
+                               BackgroundColor="#33FFFFFF"
+                               CornerRadius="14"
+                               Padding="14,12"
+                               HasShadow="False"
+                               BorderColor="#22FFFFFF">
+                            <VerticalStackLayout Spacing="2">
+                                <Label x:Name="ThisMonthLabel"
+                                       Text="—"
+                                       FontSize="24"
+                                       FontAttributes="Bold"
+                                       TextColor="White"/>
+                                <Label Text="This Month"
+                                       FontSize="11"
+                                       TextColor="#FDECEC"/>
+                            </VerticalStackLayout>
+                        </Frame>
+                    </Grid>
+
+                    <!-- Generate report button -->
+                    <Button Text="Generate Report"
+                            Clicked="OnGenerateReportClicked"
+                            BackgroundColor="White"
+                            TextColor="#DC143C"
+                            FontAttributes="Bold"
+                            CornerRadius="12"
+                            Padding="14,0"
+                            HeightRequest="44"
+                            HorizontalOptions="End"/>
+                </VerticalStackLayout>
+            </Grid>
+        </VerticalStackLayout>
+
+        <!-- Timeline list -->
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Spacing="0">
+
+                <Label Text="RETURN TIMELINE"
+                       FontSize="11"
+                       FontAttributes="Bold"
+                       TextColor="#888780"
+                       CharacterSpacing="1.5"
+                       Margin="20,20,20,10"/>
+
+                <ActivityIndicator x:Name="LoadingIndicator"
+                                   IsRunning="True"
+                                   IsVisible="True"
+                                   Color="#DC143C"
+                                   HorizontalOptions="Center"
+                                   Margin="0,24"/>
+
+                <VerticalStackLayout x:Name="EmptyState"
+                                     IsVisible="False"
+                                     HorizontalOptions="Center"
+                                     Margin="0,50"
+                                     Spacing="8">
+                    <Label Text="📦"
+                           FontSize="40"
+                           HorizontalOptions="Center"/>
+                    <Label Text="No returned items yet"
+                           FontSize="15"
+                           TextColor="#888780"
+                           HorizontalOptions="Center"/>
+                </VerticalStackLayout>
+
+                <CollectionView x:Name="ReturnedCollection"
+                                IsVisible="False"
+                                SelectionMode="None">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="local:ReturnedItem">
+                            <Grid ColumnDefinitions="40,*"
+                                  Padding="16,0,16,0"
+                                  Margin="0,0,0,6">
+
+                                <!-- Timeline -->
+                                <Grid Grid.Column="0"
+                                      RowDefinitions="55,16,*"
+                                      HorizontalOptions="Center"
+                                      VerticalOptions="FillAndExpand">
+
+                                    <BoxView Grid.Row="0"
+                                             WidthRequest="2"
+                                             Color="#E4E4E4"
+                                             HorizontalOptions="Center"
+                                             VerticalOptions="Fill"/>
+
+                                    <Frame Grid.Row="1"
+                                           WidthRequest="16"
+                                           HeightRequest="16"
+                                           CornerRadius="8"
+                                           Padding="0"
+                                           HasShadow="False"
+                                           BackgroundColor="{Binding DotColor}"
+                                           BorderColor="#DC143C"
+                                           HorizontalOptions="Center"
+                                           VerticalOptions="Center">
+                                        <BoxView/>
+                                    </Frame>
+
+                                    <BoxView Grid.Row="2"
+                                             WidthRequest="2"
+                                             Color="#E4E4E4"
+                                             HorizontalOptions="Center"
+                                             VerticalOptions="Fill"/>
+                                </Grid>
+
+                                <!-- Card -->
+                                <Frame Grid.Column="1"
+                                       HeightRequest="120"
+                                       BackgroundColor="White"
+                                       CornerRadius="16"
+                                       Padding="14,12"
+                                       HasShadow="False"
+                                       BorderColor="#EAEAEA"
+                                       Margin="0,8,0,8">
+
+                                    <VerticalStackLayout Spacing="6">
+
+                                        <Grid ColumnDefinitions="Auto,*,Auto"
+                                              ColumnSpacing="10">
+
+                                            <Frame Grid.Column="0"
+                                                   WidthRequest="38"
+                                                   HeightRequest="38"
+                                                   CornerRadius="10"
+                                                   BackgroundColor="#FDEBEC"
+                                                   Padding="0"
+                                                   HasShadow="False">
+                                                <Label Text="{Binding CategoryIcon}"
+                                                       FontSize="17"
+                                                       HorizontalOptions="Center"
+                                                       VerticalOptions="Center"/>
+                                            </Frame>
+
+                                            <VerticalStackLayout Grid.Column="1"
+                                                                 VerticalOptions="Center"
+                                                                 Spacing="1">
+                                                <Label Text="{Binding ItemName}"
+                                                       FontSize="14"
+                                                       FontAttributes="Bold"
+                                                       TextColor="#1A1A1A"
+                                                       LineBreakMode="TailTruncation"/>
+                                                <Label Text="{Binding OwnerLine}"
+                                                       FontSize="12"
+                                                       TextColor="#777777"/>
+                                            </VerticalStackLayout>
+
+                                            <Frame Grid.Column="2"
+                                                   BackgroundColor="{Binding BadgeBg}"
+                                                   CornerRadius="20"
+                                                   Padding="8,3"
+                                                   HasShadow="False"
+                                                   BorderColor="Transparent"
+                                                   VerticalOptions="Center">
+                                                <Label Text="{Binding ConditionLabel}"
+                                                       FontSize="11"
+                                                       FontAttributes="Bold"
+                                                       TextColor="{Binding BadgeFg}"/>
+                                            </Frame>
+                                        </Grid>
+
+                                        <HorizontalStackLayout Spacing="16">
+                                            <HorizontalStackLayout Spacing="4">
+                                                <Label Text="📅"
+                                                       FontSize="11"
+                                                       VerticalOptions="Center"/>
+                                                <Label Text="{Binding ResolvedDate}"
+                                                       FontSize="11"
+                                                       TextColor="#888780"/>
+                                            </HorizontalStackLayout>
+
+                                            <HorizontalStackLayout Spacing="4">
+                                                <Label Text="👤"
+                                                       FontSize="11"
+                                                       VerticalOptions="Center"/>
+                                                <Label Text="{Binding VerifiedByName}"
+                                                       FontSize="11"
+                                                       TextColor="#888780"/>
+                                            </HorizontalStackLayout>
+                                        </HorizontalStackLayout>
+
+                                        <Label Text="{Binding Notes}"
+                                               FontSize="12"
+                                               TextColor="#888780"
+                                               LineBreakMode="TailTruncation"
+                                               MaxLines="2"
+                                               IsVisible="{Binding HasNotes}"/>
+                                    </VerticalStackLayout>
+                                </Frame>
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+                <BoxView HeightRequest="16" BackgroundColor="Transparent"/>
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!-- Bottom navigation -->
+        <Grid Grid.Row="2"
+              BackgroundColor="White"
+              HeightRequest="70"
+              ColumnDefinitions="*,*,*,*,*"
+              Padding="0,10">
+
+            <VerticalStackLayout Grid.Column="0"
+                                 Spacing="2"
+                                 HorizontalOptions="Center"
+                                 VerticalOptions="Center">
+                <Label Text="⊞"
+                       FontSize="20"
+                       HorizontalOptions="Center"
+                       TextColor="#666666"/>
+                <Label Text="Dashboard"
+                       FontSize="11"
+                       TextColor="#666666"
+                       HorizontalOptions="Center"/>
+            </VerticalStackLayout>
+
+            <VerticalStackLayout Grid.Column="1"
+                                 Spacing="2"
+                                 HorizontalOptions="Center"
+                                 VerticalOptions="Center">
+                <Label Text="📄"
+                       FontSize="20"
+                       HorizontalOptions="Center"
+                       TextColor="#666666"/>
+                <Label Text="Reports"
+                       FontSize="11"
+                       TextColor="#666666"
+                       HorizontalOptions="Center"/>
+            </VerticalStackLayout>
+
+            <VerticalStackLayout Grid.Column="2"
+                                 Spacing="2"
+                                 HorizontalOptions="Center"
+                                 VerticalOptions="Center">
+                <Label Text="🔍"
+                       FontSize="20"
+                       HorizontalOptions="Center"
+                       TextColor="#666666"/>
+                <Label Text="Items"
+                       FontSize="11"
+                       TextColor="#666666"
+                       HorizontalOptions="Center"/>
+            </VerticalStackLayout>
+
+            <Grid Grid.Column="3"
+                  HorizontalOptions="Center">
+                <VerticalStackLayout Spacing="2"
+                                     HorizontalOptions="Center"
+                                     VerticalOptions="Center">
+                    <Label Text="✓"
+                           FontSize="20"
+                           HorizontalOptions="Center"
+                           TextColor="#666666"/>
+                    <Label Text="Verify"
+                           FontSize="11"
+                           TextColor="#666666"
+                           HorizontalOptions="Center"/>
+                </VerticalStackLayout>
+
+                <Frame x:Name="VerifyBadge"
+                       WidthRequest="16"
+                       HeightRequest="16"
+                       CornerRadius="8"
+                       BackgroundColor="#DC143C"
+                       Padding="0"
+                       HasShadow="False"
+                       HorizontalOptions="End"
+                       VerticalOptions="Start"
+                       Margin="0,0,4,0">
+                    <Label x:Name="VerifyBadgeLabel"
+                           Text="0"
+                           FontSize="9"
+                           FontAttributes="Bold"
+                           TextColor="White"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center"/>
+                </Frame>
+            </Grid>
+
+            <VerticalStackLayout Grid.Column="4"
+                                 Spacing="2"
+                                 HorizontalOptions="Center"
+                                 VerticalOptions="Center">
+                <Label Text="✔"
+                       FontSize="20"
+                       HorizontalOptions="Center"
+                       TextColor="#8B0000"/>
+                <Label Text="Returned"
+                       FontSize="11"
+                       TextColor="#8B0000"
+                       FontAttributes="Bold"
+                       HorizontalOptions="Center"/>
+            </VerticalStackLayout>
+
+        </Grid>
+    </Grid>
+</ContentPage>
