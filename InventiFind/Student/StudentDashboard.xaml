@@ -193,18 +193,81 @@
         <ScrollView Grid.Row="1">
             <VerticalStackLayout Padding="20,10,20,20" Spacing="15">
 
-                <Frame BackgroundColor="White"
-       CornerRadius="16"
-       Padding="16"
-       HasShadow="False">
+                <CollectionView x:Name="RecentReportsCollection">
 
-                    <VerticalStackLayout Spacing="200">
-          
-                        
+                    <CollectionView.ItemsLayout>
+                        <LinearItemsLayout Orientation="Vertical" ItemSpacing="5"/>
+                    </CollectionView.ItemsLayout>
 
-                    </VerticalStackLayout>
-                </Frame>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Frame BackgroundColor="White"
+                           CornerRadius="16"
+                           Padding="16"
+                           HasShadow="False"
+                           Margin="0,0,0,10">
 
+                                <Grid ColumnDefinitions="80,*" ColumnSpacing="12">
+
+                                    <!-- Item Image -->
+                                    <Frame Grid.Column="0"
+                                   CornerRadius="10"
+                                   Padding="0"
+                                   IsClippedToBounds="True"
+                                   HasShadow="False"
+                                   HeightRequest="80"
+                                   WidthRequest="80">
+                                        <Image Source="{Binding ReportImage}"
+                                       Aspect="AspectFill"
+                                       HeightRequest="80"
+                                       WidthRequest="80"/>
+                                    </Frame>
+
+                                    <!-- Item Details -->
+                                    <VerticalStackLayout Grid.Column="1"
+                                                 Spacing="4"
+                                                 VerticalOptions="Center">
+
+                                        <!-- Name + Badge Row -->
+                                        <Grid ColumnDefinitions="*,Auto">
+                                            <Label Grid.Column="0"
+                                           Text="{Binding Name}"
+                                           FontSize="15"
+                                           FontAttributes="Bold"
+                                           TextColor="#1F2937"
+                                           LineBreakMode="TailTruncation"/>
+
+                                            <!-- R_Type Badge -->
+                                            <Frame Grid.Column="1"
+                                           BackgroundColor="{Binding BadgeColor}"
+                                           CornerRadius="8"
+                                           Padding="8,3"
+                                           HasShadow="False">
+                                                <Label Text="{Binding RType}"
+                                               FontSize="11"
+                                               TextColor="White"
+                                               FontAttributes="Bold"/>
+                                            </Frame>
+                                        </Grid>
+
+                                        <!-- Description -->
+                                        <Label Text="{Binding Description}"
+                                       FontSize="13"
+                                       TextColor="#6B7280"
+                                       LineBreakMode="TailTruncation"
+                                       MaxLines="2"/>
+
+                                        <!-- Time Ago -->
+                                        <Label Text="{Binding TimeAgo}"
+                                       FontSize="11"
+                                       TextColor="#9CA3AF"/>
+
+                                    </VerticalStackLayout>
+                                </Grid>
+                            </Frame>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
 
                 <!-- Bottom Spacing -->
                 <BoxView HeightRequest="20" BackgroundColor="Transparent"/>
