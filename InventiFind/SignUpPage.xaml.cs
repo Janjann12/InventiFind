@@ -17,7 +17,7 @@ public partial class SignUpPage : ContentPage
 
     private void OnPasswordTextChanged(object sender, TextChangedEventArgs e)
     {
-        string password = e.NewTextValue;
+        string password = e.NewTextValue ?? "";
         UpdatePasswordRequirements(password);
         CheckPasswordsMatch();
     }
@@ -120,7 +120,8 @@ public partial class SignUpPage : ContentPage
             return;
         }
 
-        var (emailExists, emailError) = await EmailExists(EmailEntry.Text);
+        var (emailExists, emailError) = await EmailExists(EmailEntry.Text.Trim());
+
         if (!string.IsNullOrEmpty(emailError))
         {
             await DisplayAlert("Database Error", $"Failed to check email: {emailError}", "OK");
@@ -146,7 +147,7 @@ public partial class SignUpPage : ContentPage
         }
     }
 
-    private async Task<(bool exists, string error)> EmailExists(string email)
+    private async Task<(bool exists, string? error)> EmailExists(string email)
     {
         try
         {
@@ -154,6 +155,7 @@ public partial class SignUpPage : ContentPage
             await connection.OpenAsync();
 
             string query = "SELECT COUNT(*) FROM users WHERE Email = @Email";
+
             using var command = new MySqlCommand(query, connection);
             command.Parameters.AddWithValue("@Email", email);
 
@@ -162,40 +164,38 @@ public partial class SignUpPage : ContentPage
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"Error checking email: {ex.Message}");
             return (false, ex.Message);
         }
     }
 
-    private async Task<(bool success, string error)> SaveUserToDatabase()
+    private async Task<(bool success, string? error)> SaveUserToDatabase()
     {
         try
         {
             using var connection = new MySqlConnection(DatabaseConfig.ConnectionString);
             await connection.OpenAsync();
 
-            string query = @"INSERT INTO users (FirstName, Surname, Email, Contact, Password, Role) 
-                           VALUES (@FirstName, @Surname, @Email, @Contact, @Password, @Role)";
+            string query = @"
+                INSERT INTO users (FirstName, Surname, Email, Contact, Password, Role)
+                VALUES (@FirstName, @Surname, @Email, @Contact, @Password, @Role)";
 
             using var command = new MySqlCommand(query, connection);
+
             command.Parameters.AddWithValue("@FirstName", FirstNameEntry.Text.Trim());
             command.Parameters.AddWithValue("@Surname", SurnameEntry.Text.Trim());
             command.Parameters.AddWithValue("@Email", EmailEntry.Text.Trim());
             command.Parameters.AddWithValue("@Contact", ContactEntry.Text.Trim());
             command.Parameters.AddWithValue("@Password", PasswordEntry.Text);
+
+            // Always student
             command.Parameters.AddWithValue("@Role", "student");
 
             int rowsAffected = await command.ExecuteNonQueryAsync();
+
             return (rowsAffected > 0, null);
-        }
-        catch (MySqlException sqlEx)
-        {
-            System.Diagnostics.Debug.WriteLine($"SQL Error {sqlEx.Number}: {sqlEx.Message}");
-            return (false, $"SQL Error {sqlEx.Number}: {sqlEx.Message}");
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"Error saving user: {ex.Message}");
             return (false, ex.Message);
         }
     }

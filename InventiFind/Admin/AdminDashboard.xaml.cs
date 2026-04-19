@@ -36,30 +36,30 @@ public partial class AdminDashboard : ContentPage
 
             // ── Total reports ──────────────────────────────────────────────
             int totalReports = await GetScalarAsync(conn,
-                "SELECT COUNT(*) FROM items");
+                "SELECT COUNT(*) FROM item_reports");
 
             int totalToday = await GetScalarAsync(conn,
-                "SELECT COUNT(*) FROM items WHERE date = CURDATE()");
+                "SELECT COUNT(*) FROM item_reports WHERE DATE(date_reported) = CURDATE()");
 
             TotalReportsLabel.Text = totalReports.ToString();
             TotalReportsTodayLabel.Text = $"+{totalToday} today";
 
             // ── Lost reports ───────────────────────────────────────────────
             int lostTotal = await GetScalarAsync(conn,
-                "SELECT COUNT(*) FROM items WHERE r_type = 'lost'");
+                "SELECT COUNT(*) FROM item_reports WHERE report_type = 'lost'");
 
             int lostToday = await GetScalarAsync(conn,
-                "SELECT COUNT(*) FROM items WHERE r_type = 'lost' AND date = CURDATE()");
+                "SELECT COUNT(*) FROM item_reports WHERE report_type = 'lost' AND DATE(date_reported) = CURDATE()");
 
             LostItemsLabel.Text = lostTotal.ToString();
             LostTodayLabel.Text = $"+{lostToday} today";
 
             // ── Found reports ──────────────────────────────────────────────
             int foundTotal = await GetScalarAsync(conn,
-                "SELECT COUNT(*) FROM items WHERE r_type = 'found'");
+                "SELECT COUNT(*) FROM item_reports WHERE report_type = 'found'");
 
             int foundToday = await GetScalarAsync(conn,
-                "SELECT COUNT(*) FROM items WHERE r_type = 'found' AND date = CURDATE()");
+                "SELECT COUNT(*) FROM item_reports WHERE report_type = 'found' AND DATE(date_reported) = CURDATE()");
 
             FoundItemsLabel.Text = foundTotal.ToString();
             FoundTodayLabel.Text = $"+{foundToday} today";
@@ -69,15 +69,15 @@ public partial class AdminDashboard : ContentPage
                 "SELECT COUNT(*) FROM users");
 
             TotalUsersLabel.Text = totalUsers.ToString();
-            UsersTodayLabel.Text = "+0 today"; // users table has no created_at
+            UsersTodayLabel.Text = "+0 today";
 
             // ── Recent reports (latest 10) ─────────────────────────────────
             var reports = new ObservableCollection<ReportItem>();
 
             const string sql = """
-                SELECT name, description, r_type, date
-                FROM items
-                ORDER BY date DESC, L_ID DESC
+                SELECT item_name, description, report_type, date_reported
+                FROM item_reports
+                ORDER BY date_reported DESC, report_id DESC
                 LIMIT 10
             """;
 
@@ -88,11 +88,14 @@ public partial class AdminDashboard : ContentPage
             {
                 var item = new ReportItem
                 {
-                    Name = reader.GetString("name"),
-                    Description = reader.GetString("description"),
-                    RType = CapitalizeFirst(reader.GetString("r_type")),
-                    TimeAgo = FormatTimeAgo(reader.GetDateTime("date"))
+                    Name = reader.GetString("item_name"),
+                    Description = reader.IsDBNull(reader.GetOrdinal("description"))
+                        ? ""
+                        : reader.GetString("description"),
+                    RType = CapitalizeFirst(reader.GetString("report_type")),
+                    TimeAgo = FormatTimeAgo(reader.GetDateTime("date_reported"))
                 };
+
                 reports.Add(item);
             }
 

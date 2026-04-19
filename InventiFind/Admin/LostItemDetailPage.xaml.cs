@@ -3,7 +3,7 @@ using MySqlConnector;
 namespace InventiFind;
 
 /// <summary>
-/// A matched pair: one lost report + one surrendered (found) report,
+/// A matched pair: one lost report + one found report,
 /// shown side-by-side with a similarity score and a Verify button.
 /// </summary>
 public class MatchPair
@@ -58,18 +58,18 @@ public partial class LostItemDetailPage : ContentPage
             const string sql = """
                 SELECT
                     m.match_id,
-                    m.lost_id,
-                    m.surrendered_id,
-                    m.similarity             AS score,
-                    m.status                 AS match_status,
-                    L.name                   AS item_name,
-                    L.category               AS item_category,
-                    L.description            AS ownership_proof,
-                    L.date                   AS submitted_date,
+                    m.lost_report_id,
+                    m.found_report_id,
+                    m.similarity_score AS score,
+                    m.match_status,
+                    L.item_name,
+                    L.category,
+                    L.description AS ownership_proof,
+                    L.date_reported,
                     CONCAT(U.FirstName, ' ', U.Surname) AS reporter_name
                 FROM matches m
-                JOIN  items L ON L.L_ID = m.lost_id
-                LEFT JOIN users U ON U.UserID = L.UserID
+                JOIN item_reports L ON L.report_id = m.lost_report_id
+                LEFT JOIN users U ON U.UserID = L.user_id
                 ORDER BY m.created_at DESC
                 LIMIT 20
             """;
@@ -80,23 +80,27 @@ public partial class LostItemDetailPage : ContentPage
             await using var reader = await cmd.ExecuteReaderAsync();
 
             bool hasRows = false;
+
             while (await reader.ReadAsync())
             {
                 hasRows = true;
+
                 var pair = new MatchPair
                 {
-                    LostId = reader.GetInt32("lost_id"),
-                    SurrenderedId = reader.GetInt32("surrendered_id"),
+                    LostId = reader.GetInt32("lost_report_id"),
+                    SurrenderedId = reader.GetInt32("found_report_id"),
                     ItemName = reader.GetString("item_name"),
-                    Category = reader.GetString("item_category"),
+                    Category = reader.GetString("category"),
                     ReporterName = reader.IsDBNull(reader.GetOrdinal("reporter_name"))
-                                          ? "Unknown"
-                                          : reader.GetString("reporter_name"),
-                    SubmittedDate = reader.GetDateTime("submitted_date").ToString("yyyy-MM-d"),
-                    OwnershipProof = reader.GetString("ownership_proof"),
+                        ? "Unknown"
+                        : reader.GetString("reporter_name"),
+                    SubmittedDate = reader.GetDateTime("date_reported").ToString("yyyy-MM-dd"),
+                    OwnershipProof = reader.IsDBNull(reader.GetOrdinal("ownership_proof"))
+                        ? ""
+                        : reader.GetString("ownership_proof"),
                     SimilarityScore = reader.GetInt32("score"),
-                    LostReportNo = reader.GetInt32("lost_id").ToString("D10"),
-                    SurrenderedNo = reader.GetInt32("surrendered_id").ToString("D10"),
+                    LostReportNo = reader.GetInt32("lost_report_id").ToString("D10"),
+                    SurrenderedNo = reader.GetInt32("found_report_id").ToString("D10"),
                     Status = CapFirst(reader.GetString("match_status"))
                 };
 
@@ -135,6 +139,7 @@ public partial class LostItemDetailPage : ContentPage
             Padding = new Thickness(12, 5),
             HasShadow = false
         };
+
         badge.Content = new Label
         {
             Text = pair.Status,
@@ -149,6 +154,7 @@ public partial class LostItemDetailPage : ContentPage
                 new ColumnDefinition { Width = GridLength.Star },
                 new ColumnDefinition { Width = GridLength.Auto })
         };
+
         vidRow.Add(new Label
         {
             Text = "V-ID",
@@ -156,6 +162,7 @@ public partial class LostItemDetailPage : ContentPage
             FontAttributes = FontAttributes.Bold,
             TextColor = Color.FromArgb("#1A1A1A")
         }, 0, 0);
+
         vidRow.Add(badge, 1, 0);
 
         var scoreBox = new Frame
@@ -167,6 +174,7 @@ public partial class LostItemDetailPage : ContentPage
             WidthRequest = 60,
             HeightRequest = 60
         };
+
         scoreBox.Content = new Label
         {
             Text = $"{pair.SimilarityScore}%",
@@ -177,7 +185,12 @@ public partial class LostItemDetailPage : ContentPage
             VerticalOptions = LayoutOptions.Center
         };
 
-        var nameBlock = new VerticalStackLayout { Spacing = 2, Margin = new Thickness(10, 0, 0, 0) };
+        var nameBlock = new VerticalStackLayout
+        {
+            Spacing = 2,
+            Margin = new Thickness(10, 0, 0, 0)
+        };
+
         nameBlock.Add(new Label
         {
             Text = pair.ItemName,
@@ -185,8 +198,20 @@ public partial class LostItemDetailPage : ContentPage
             FontAttributes = FontAttributes.Bold,
             TextColor = Color.FromArgb("#1A1A1A")
         });
-        nameBlock.Add(new Label { Text = pair.ReporterName, FontSize = 13, TextColor = Color.FromArgb("#555") });
-        nameBlock.Add(new Label { Text = $"Submitted: {pair.SubmittedDate}", FontSize = 12, TextColor = Color.FromArgb("#888") });
+
+        nameBlock.Add(new Label
+        {
+            Text = pair.ReporterName,
+            FontSize = 13,
+            TextColor = Color.FromArgb("#555")
+        });
+
+        nameBlock.Add(new Label
+        {
+            Text = $"Submitted: {pair.SubmittedDate}",
+            FontSize = 12,
+            TextColor = Color.FromArgb("#888")
+        });
 
         var scoreRow = new Grid
         {
@@ -195,6 +220,7 @@ public partial class LostItemDetailPage : ContentPage
                 new ColumnDefinition { Width = GridLength.Star }),
             Margin = new Thickness(0, 10, 0, 0)
         };
+
         scoreRow.Add(scoreBox, 0, 0);
         scoreRow.Add(nameBlock, 1, 0);
 
@@ -205,12 +231,25 @@ public partial class LostItemDetailPage : ContentPage
             Padding = new Thickness(12, 10),
             HasShadow = false
         };
+
         lostBox.Content = new VerticalStackLayout
         {
-            Children = {
-            new Label { Text = "Lost report", FontSize = 12, FontAttributes = FontAttributes.Bold, TextColor = Color.FromArgb("#555") },
-            new Label { Text = pair.LostReportNo, FontSize = 13, TextColor = Color.FromArgb("#1A1A1A") }
-        }
+            Children =
+            {
+                new Label
+                {
+                    Text = "Lost report",
+                    FontSize = 12,
+                    FontAttributes = FontAttributes.Bold,
+                    TextColor = Color.FromArgb("#555")
+                },
+                new Label
+                {
+                    Text = pair.LostReportNo,
+                    FontSize = 13,
+                    TextColor = Color.FromArgb("#1A1A1A")
+                }
+            }
         };
 
         var surrenderBox = new Frame
@@ -220,12 +259,25 @@ public partial class LostItemDetailPage : ContentPage
             Padding = new Thickness(12, 10),
             HasShadow = false
         };
+
         surrenderBox.Content = new VerticalStackLayout
         {
-            Children = {
-            new Label { Text = "Surrendered", FontSize = 12, FontAttributes = FontAttributes.Bold, TextColor = Color.FromArgb("#555") },
-            new Label { Text = pair.SurrenderedNo, FontSize = 13, TextColor = Color.FromArgb("#1A1A1A") }
-        }
+            Children =
+            {
+                new Label
+                {
+                    Text = "Found report",
+                    FontSize = 12,
+                    FontAttributes = FontAttributes.Bold,
+                    TextColor = Color.FromArgb("#555")
+                },
+                new Label
+                {
+                    Text = pair.SurrenderedNo,
+                    FontSize = 13,
+                    TextColor = Color.FromArgb("#1A1A1A")
+                }
+            }
         };
 
         var reportsRow = new Grid
@@ -236,6 +288,7 @@ public partial class LostItemDetailPage : ContentPage
                 new ColumnDefinition { Width = GridLength.Star }),
             Margin = new Thickness(0, 10, 0, 0)
         };
+
         reportsRow.Add(lostBox, 0, 0);
         reportsRow.Add(new Label
         {
@@ -255,13 +308,26 @@ public partial class LostItemDetailPage : ContentPage
             HasShadow = false,
             Margin = new Thickness(0, 10, 0, 0)
         };
+
         proofBox.Content = new VerticalStackLayout
         {
             Spacing = 4,
-            Children = {
-            new Label { Text = "Ownership proof", FontSize = 13, FontAttributes = FontAttributes.Bold, TextColor = Color.FromArgb("#555") },
-            new Label { Text = pair.OwnershipProof, FontSize = 13, TextColor = Color.FromArgb("#333") }
-        }
+            Children =
+            {
+                new Label
+                {
+                    Text = "Ownership proof",
+                    FontSize = 13,
+                    FontAttributes = FontAttributes.Bold,
+                    TextColor = Color.FromArgb("#555")
+                },
+                new Label
+                {
+                    Text = pair.OwnershipProof,
+                    FontSize = 13,
+                    TextColor = Color.FromArgb("#333")
+                }
+            }
         };
 
         var verifyBtn = new Frame
@@ -272,6 +338,7 @@ public partial class LostItemDetailPage : ContentPage
             HasShadow = false,
             Margin = new Thickness(0, 10, 0, 0)
         };
+
         verifyBtn.Content = new Label
         {
             Text = "Verify",

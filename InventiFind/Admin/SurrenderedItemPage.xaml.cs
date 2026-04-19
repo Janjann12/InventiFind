@@ -15,19 +15,19 @@ public class ItemReport
     public string ReporterName { get; set; } = "";
     public string Status { get; set; } = "Pending";
 
-    // Derived display properties
     public string DateString => Date.ToString("MM/dd/yyyy");
 
     public Color StatusBadgeColor => Status?.ToLower() switch
     {
+        "claimed" => Color.FromArgb("#2563EB"),
         "confirmed" => Color.FromArgb("#5A9E5A"),
-        "resolved" => Color.FromArgb("#2563EB"),
-        _ => Color.FromArgb("#F59E0B")   // Pending = amber
+        _ => Color.FromArgb("#F59E0B")
     };
 
-    public bool HasImage => false; // extend when serving images from DB
+    public bool HasImage => false;
     public string? ImageSource => null;
 }
+
 public partial class SurrenderedItemPage : ContentPage
 {
     private List<ItemReport> _allItems = new();
@@ -47,7 +47,7 @@ public partial class SurrenderedItemPage : ContentPage
         ApplyActiveFilterStyle();
     }
 
-    // ── Data loading ───────────────────────────────────────────────────────
+    // ── DATA ─────────────────────────────────────────────
 
     private async Task LoadDataAsync()
     {
@@ -56,26 +56,39 @@ public partial class SurrenderedItemPage : ContentPage
             await using var conn = new MySqlConnection(DatabaseConfig.ConnectionString);
             await conn.OpenAsync();
 
-            // Summary counts (all unclaimed = "Pending" status proxy)
-            int total = await GetScalarAsync(conn, "SELECT COUNT(*) FROM items");
-            int lost = await GetScalarAsync(conn, "SELECT COUNT(*) FROM items WHERE r_type='lost'");
-            int found = await GetScalarAsync(conn, "SELECT COUNT(*) FROM items WHERE r_type='found'");
+            // ✔ COUNTS (only OPEN items = unclaimed)
+            int total = await GetScalarAsync(conn,
+                "SELECT COUNT(*) FROM item_reports WHERE status = 'open'");
 
+            int lost = await GetScalarAsync(conn,
+                "SELECT COUNT(*) FROM item_reports WHERE report_type = 'lost' AND status = 'open'");
+
+            int found = await GetScalarAsync(conn,
+                "SELECT COUNT(*) FROM item_reports WHERE report_type = 'found' AND status = 'open'");
             UnclaimedTotalLabel.Text = total.ToString();
             UnclaimedLostLabel.Text = lost.ToString();
             UnclaimedFoundLabel.Text = found.ToString();
 
-            // Items list
+            // ✔ LIST DATA
             const string sql = """
-                SELECT  i.L_ID, i.name, i.category, i.description,
-                        i.location, i.date, i.r_type,
+                    SELECT
+                        i.report_id,
+                        i.item_name,
+                        i.category,
+                        i.description,
+                        i.location,
+                        i.date_reported,
+                        i.report_type,
+                        i.status,
                         CONCAT(u.FirstName, ' ', u.Surname) AS reporter_name
-                FROM items i
-                LEFT JOIN users u ON u.UserID = i.L_ID
-                ORDER BY i.date DESC, i.L_ID DESC
-            """;
+                    FROM item_reports i
+                    LEFT JOIN users u ON u.UserID = i.user_id
+                    WHERE i.status = 'open'
+                    ORDER BY i.date_reported DESC, i.report_id DESC
+                """;
 
             _allItems.Clear();
+
             await using var cmd = new MySqlCommand(sql, conn);
             await using var reader = await cmd.ExecuteReaderAsync();
 
@@ -83,17 +96,17 @@ public partial class SurrenderedItemPage : ContentPage
             {
                 _allItems.Add(new ItemReport
                 {
-                    LId = reader.GetInt32("L_ID"),
-                    Name = reader.GetString("name"),
+                    LId = reader.GetInt32("report_id"),
+                    Name = reader.GetString("item_name"),
                     Category = reader.GetString("category"),
-                    Description = reader.GetString("description"),
-                    Location = reader.GetString("location"),
-                    Date = reader.GetDateTime("date"),
-                    RType = reader.GetString("r_type"),
+                    Description = reader.IsDBNull(reader.GetOrdinal("description")) ? "" : reader.GetString("description"),
+                    Location = reader.IsDBNull(reader.GetOrdinal("location")) ? "" : reader.GetString("location"),
+                    Date = reader.GetDateTime("date_reported"),
+                    RType = reader.GetString("report_type"),
                     ReporterName = reader.IsDBNull(reader.GetOrdinal("reporter_name"))
-                                       ? "Unknown"
-                                       : reader.GetString("reporter_name"),
-                    Status = "Confirmed"
+                        ? "Unknown"
+                        : reader.GetString("reporter_name"),
+                    Status = reader.GetString("status")
                 });
             }
 
@@ -112,25 +125,29 @@ public partial class SurrenderedItemPage : ContentPage
         return result == null ? 0 : Convert.ToInt32(result);
     }
 
-    // ── Filter logic ───────────────────────────────────────────────────────
+    // ── FILTERS ─────────────────────────────────────────
 
     private void ApplyFilters()
     {
         var filtered = _allItems.AsEnumerable();
 
         if (_activeTypeFilter != "all")
+        {
             filtered = filtered.Where(i =>
                 i.RType.Equals(_activeTypeFilter, StringComparison.OrdinalIgnoreCase));
+        }
 
         if (_activeStatus != "All Status")
+        {
             filtered = filtered.Where(i =>
                 i.Status.Equals(_activeStatus, StringComparison.OrdinalIgnoreCase));
+        }
 
         ItemsCollection.ItemsSource =
             new ObservableCollection<ItemReport>(filtered.ToList());
     }
 
-    // ── Event handlers ─────────────────────────────────────────────────────
+    // ── EVENTS ──────────────────────────────────────────
 
     private void OnFilterTapped(object sender, TappedEventArgs e)
     {
@@ -148,13 +165,14 @@ public partial class SurrenderedItemPage : ContentPage
         ApplyFilters();
     }
 
-    // ── UI helpers ─────────────────────────────────────────────────────────
+    // ── UI STYLE ────────────────────────────────────────
 
     private void ApplyActiveFilterStyle()
     {
         AllItemsFrame.BackgroundColor = Colors.White;
         LostItemsFrame.BackgroundColor = Colors.White;
         FoundItemsFrame.BackgroundColor = Colors.White;
+
         AllItemsLabel.TextColor = Color.FromArgb("#1A1A1A");
         LostItemsLabel.TextColor = Color.FromArgb("#1A1A1A");
         FoundItemsLabel.TextColor = Color.FromArgb("#1A1A1A");

@@ -1,7 +1,8 @@
 using Microsoft.Maui.Controls;
+using Microsoft.Maui.Storage;
 using MySqlConnector;
 using System;
-using System.Globalization;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -13,12 +14,11 @@ namespace InventiFind
         private byte[] selectedFileBytes = null;
         private string reportType = "lost"; // Default to lost
 
-
         public ReportModule()
         {
             InitializeComponent();
             DatePicker.Date = DateTime.Now;
-            UpdateReportTypeUI(); 
+            UpdateReportTypeUI();
         }
 
         // ========== REPORT TYPE TOGGLE ==========
@@ -48,14 +48,13 @@ namespace InventiFind
         private async void OnReceiveTapped(object sender, TappedEventArgs e)
         {
             await Navigation.PushModalAsync(new ReceiveModule());
-
         }
 
         private async void OnNewsTapped(object sender, TappedEventArgs e)
         {
             await Navigation.PushModalAsync(new NotificationModule());
-
         }
+
         private async void OnLogoutTapped(object sender, TappedEventArgs e)
         {
             bool confirm = await DisplayAlert("Logout", "Are you sure?", "Yes", "No");
@@ -64,6 +63,7 @@ namespace InventiFind
                 await Shell.Current.GoToAsync("//MainPage");
             }
         }
+
         private void UpdateReportTypeUI()
         {
             if (reportType == "lost")
@@ -111,7 +111,6 @@ namespace InventiFind
                 {
                     selectedFilePath = result.FullPath;
 
-                    // Convert to byte array for database
                     using (var stream = await result.OpenReadAsync())
                     using (var memoryStream = new MemoryStream())
                     {
@@ -119,7 +118,6 @@ namespace InventiFind
                         selectedFileBytes = memoryStream.ToArray();
                     }
 
-                    // Update UI
                     UploadText.Text = result.FileName;
                     UploadSubtext.Text = "File selected - tap to change";
                     UploadIcon.Text = "📎";
@@ -132,13 +130,9 @@ namespace InventiFind
             }
         }
 
-
-
-
         // ========== SUBMIT TO DATABASE ==========
         private async void OnSubmitTapped(object sender, EventArgs e)
         {
-            // Validation
             if (string.IsNullOrWhiteSpace(ItemNameEntry.Text))
             {
                 await DisplayAlert("Validation", "Please enter an item name", "OK");
@@ -179,96 +173,127 @@ namespace InventiFind
 
         private async Task<bool> InsertReportToDatabase()
         {
-            using (var connection = new MySqlConnection(DatabaseConfig.ConnectionString))
+            using var connection = new MySqlConnection(DatabaseConfig.ConnectionString);
+            await connection.OpenAsync();
+
+            int userId = Preferences.Get("UserID", 0);
+            if (userId == 0)
             {
-                await connection.OpenAsync();
-
-                int userId = Preferences.Get("UserID", 0);
-                if (userId == 0)
-                {
-                    await DisplayAlert("Error", "No logged-in user found.", "OK");
-                    return false;
-                }
-
-                // ── Step 1: Insert the item ────────────────────────────────────
-                string insertSql = @"INSERT INTO items 
-                                (UserID, name, category, description, location, date, image, r_type, status) 
-                             VALUES 
-                                (@userId, @name, @category, @description, @location, @date, @image, @r_type, 'pending');
-                             SELECT LAST_INSERT_ID();";
-
-                int newItemId;
-                using (var command = new MySqlCommand(insertSql, connection))
-                {
-                    command.Parameters.AddWithValue("@userId", userId);
-                    command.Parameters.AddWithValue("@name", ItemNameEntry.Text.Trim());
-                    command.Parameters.AddWithValue("@category", CategoryPicker.SelectedItem.ToString().ToLower());
-                    command.Parameters.AddWithValue("@description", string.IsNullOrWhiteSpace(DescriptionEditor.Text)
-                                                                        ? "" : DescriptionEditor.Text.Trim());
-                    command.Parameters.AddWithValue("@location", LocationEntry.Text.Trim());
-                    command.Parameters.AddWithValue("@date", DatePicker.Date);
-                    command.Parameters.AddWithValue("@image", selectedFileBytes ?? new byte[0]);
-                    command.Parameters.AddWithValue("@r_type", reportType);
-
-                    var result = await command.ExecuteScalarAsync();
-                    newItemId = Convert.ToInt32(result);
-                }
-
-                if (newItemId == 0) return false;
-
-                // ── Step 1.5: Insert into reports table ─────────────────────────
-                string reportSql = @"INSERT INTO reports (I_id, user_id, title) 
-                     VALUES (@itemId, @userId, @title)";
-
-                using (var reportCmd = new MySqlCommand(reportSql, connection))
-                {
-                    reportCmd.Parameters.AddWithValue("@itemId", newItemId);
-                    reportCmd.Parameters.AddWithValue("@userId", userId);
-                    reportCmd.Parameters.AddWithValue("@title", ItemNameEntry.Text.Trim());
-
-                    await reportCmd.ExecuteNonQueryAsync();
-                }
-
-
-                // ── Step 2: Auto-match against the opposite type ───────────────
-                // If user reported LOST  → find matching FOUND items
-                // If user reported FOUND → find matching LOST  items
-                string oppositeType = reportType == "lost" ? "found" : "lost";
-                string lostColSql = reportType == "lost" ? "@newId" : "L_ID";
-                string foundColSql = reportType == "found" ? "@newId" : "L_ID";
-
-                // We score: same category (always true here) = 60 base
-                //           same name     = +30
-                //           same location = +10
-                string matchSql = $@"
-                    INSERT INTO matches (lost_id, surrendered_id, similarity, status, created_at)
-                    SELECT
-                        {(reportType == "lost" ? "@newId" : "L_ID")},
-                        {(reportType == "found" ? "@newId" : "L_ID")},
-                        (60
-                         + IF(name    = @name,     30, 0)
-                         + IF(location = @location, 10, 0)) AS similarity,
-                        'pending',
-                        NOW()
-                    FROM items
-                    WHERE r_type   = @oppositeType
-                      AND category  = @category
-                      AND status    = 'pending'
-                      AND L_ID     != @newId";
-
-                using (var matchCmd = new MySqlCommand(matchSql, connection))
-                {
-                    matchCmd.Parameters.AddWithValue("@newId", newItemId);
-                    matchCmd.Parameters.AddWithValue("@name", ItemNameEntry.Text.Trim());
-                    matchCmd.Parameters.AddWithValue("@location", LocationEntry.Text.Trim());
-                    matchCmd.Parameters.AddWithValue("@category", CategoryPicker.SelectedItem.ToString().ToLower());
-                    matchCmd.Parameters.AddWithValue("@oppositeType", oppositeType);
-
-                    await matchCmd.ExecuteNonQueryAsync();
-                }
-
-                return true;
+                await DisplayAlert("Error", "No logged-in user found.", "OK");
+                return false;
             }
+
+            // 1) Insert new report into item_reports
+            string insertSql = @"
+                INSERT INTO item_reports
+                (user_id, report_type, item_name, category, description, location, image, status, date_reported)
+                VALUES
+                (@userId, @reportType, @itemName, @category, @description, @location, @image, 'open', @dateReported);
+                SELECT LAST_INSERT_ID();";
+
+            int newReportId;
+
+            using (var insertCmd = new MySqlCommand(insertSql, connection))
+            {
+                insertCmd.Parameters.AddWithValue("@userId", userId);
+                insertCmd.Parameters.AddWithValue("@reportType", reportType);
+                insertCmd.Parameters.AddWithValue("@itemName", ItemNameEntry.Text.Trim());
+                insertCmd.Parameters.AddWithValue("@category", CategoryPicker.SelectedItem.ToString().ToLower());
+                insertCmd.Parameters.AddWithValue("@description",
+                    string.IsNullOrWhiteSpace(DescriptionEditor.Text) ? "" : DescriptionEditor.Text.Trim());
+                insertCmd.Parameters.AddWithValue("@location", LocationEntry.Text.Trim());
+                insertCmd.Parameters.AddWithValue("@image", selectedFileBytes ?? Array.Empty<byte>());
+                insertCmd.Parameters.AddWithValue("@dateReported", DatePicker.Date);
+
+                var result = await insertCmd.ExecuteScalarAsync();
+                newReportId = Convert.ToInt32(result);
+            }
+
+            if (newReportId == 0)
+                return false;
+
+            // 2) Build the newly inserted report as ItemData
+            var newItem = new ItemData
+            {
+                Id = newReportId,
+                Name = ItemNameEntry.Text.Trim(),
+                Category = CategoryPicker.SelectedItem.ToString().ToLower(),
+                Description = string.IsNullOrWhiteSpace(DescriptionEditor.Text) ? "" : DescriptionEditor.Text.Trim(),
+                Location = LocationEntry.Text.Trim(),
+                Date = DatePicker.Date ?? DateTime.Now
+            };
+
+            // 3) Get opposite-type candidate reports with same category
+            string oppositeType = reportType == "lost" ? "found" : "lost";
+
+            string candidateSql = @"
+                SELECT report_id, item_name, category, description, location, date_reported
+                FROM item_reports
+                WHERE report_type = @oppositeType
+                  AND category = @category
+                  AND status = 'open'
+                  AND report_id <> @newReportId";
+
+            var candidates = new List<ItemData>();
+
+            using (var candidateCmd = new MySqlCommand(candidateSql, connection))
+            {
+                candidateCmd.Parameters.AddWithValue("@oppositeType", oppositeType);
+                candidateCmd.Parameters.AddWithValue("@category", CategoryPicker.SelectedItem.ToString().ToLower());
+                candidateCmd.Parameters.AddWithValue("@newReportId", newReportId);
+
+                using var reader = await candidateCmd.ExecuteReaderAsync();
+
+                while (await reader.ReadAsync())
+                {
+                    candidates.Add(new ItemData
+                    {
+                        Id = reader.GetInt32("report_id"),
+                        Name = reader.GetString("item_name"),
+                        Category = reader.GetString("category"),
+                        Description = reader.IsDBNull(reader.GetOrdinal("description")) ? "" : reader.GetString("description"),
+                        Location = reader.IsDBNull(reader.GetOrdinal("location")) ? "" : reader.GetString("location"),
+                        Date = reader.GetDateTime("date_reported")
+                    });
+                }
+            }
+
+            // 4) Use ItemMatcher to calculate similarity, then insert into matches
+            foreach (var candidate in candidates)
+            {
+                ItemData lostItem;
+                ItemData foundItem;
+
+                if (reportType == "lost")
+                {
+                    lostItem = newItem;
+                    foundItem = candidate;
+                }
+                else
+                {
+                    lostItem = candidate;
+                    foundItem = newItem;
+                }
+
+                int similarity = ItemMatcher.CalculateSimilarity(lostItem, foundItem);
+
+                // Optional threshold to ignore weak matches
+                if (similarity < 40)
+                    continue;
+
+                string matchInsertSql = @"
+                    INSERT INTO matches (lost_report_id, found_report_id, similarity_score, match_status, created_at)
+                    VALUES (@lostReportId, @foundReportId, @similarityScore, 'pending', NOW())";
+
+                using var matchCmd = new MySqlCommand(matchInsertSql, connection);
+                matchCmd.Parameters.AddWithValue("@lostReportId", lostItem.Id);
+                matchCmd.Parameters.AddWithValue("@foundReportId", foundItem.Id);
+                matchCmd.Parameters.AddWithValue("@similarityScore", similarity);
+
+                await matchCmd.ExecuteNonQueryAsync();
+            }
+
+            return true;
         }
 
         private void ClearForm()
@@ -290,10 +315,11 @@ namespace InventiFind
             UpdateReportTypeUI();
         }
 
-        // Navigation handlers...
+        // Navigation handlers
         private async void OnHomeTapped(object sender, EventArgs e) => await Navigation.PushModalAsync(new StudentDashboard());
         private void OnReceiveTapped(object sender, EventArgs e) { }
         private void OnNewsTapped(object sender, EventArgs e) { }
+
         private async void OnLogoutClicked(object sender, EventArgs e)
         {
             if (await DisplayAlert("Logout", "Are you sure?", "Yes", "No"))

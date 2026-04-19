@@ -100,7 +100,7 @@ public partial class MainPage : ContentPage
 
             // Query to validate AND get the actual stored role
             string query = @"SELECT UserID, Role FROM users 
-                        WHERE Email = @Email AND Password = @Password";
+                        WHERE email = @Email AND password = @Password";
 
             using var command = new MySqlCommand(query, connection);
             command.Parameters.AddWithValue("@Email", email);

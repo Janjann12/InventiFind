@@ -1,4 +1,3 @@
-
 using MySqlConnector;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -17,14 +16,6 @@ public partial class StudentDashboard : ContentPage
         base.OnAppearing();
         await LoadDashboardDataAsync();
     }
-    //private async void OnLostTapped(object sender, TappedEventArgs e)
-    //{
-    //    await Navigation.PushModalAsync(new LostitemsPage());
-    //}
-
-
-
-
 
     private async Task LoadDashboardDataAsync()
     {
@@ -33,16 +24,15 @@ public partial class StudentDashboard : ContentPage
             await using var conn = new MySqlConnection(DatabaseConfig.ConnectionString);
             await conn.OpenAsync();
 
-            // ── Recent reports (latest 10) ─────────────────────────────────
             var reports = new ObservableCollection<ReportItem>();
 
-            // Changed from image_data to image
+            // ✅ UPDATED QUERY (new database)
             const string sql = """
-            SELECT name, description, r_type, date, image
-            FROM items
-            ORDER BY date DESC, L_ID DESC
+            SELECT item_name, description, report_type, date_reported, image
+            FROM item_reports
+            ORDER BY date_reported DESC, report_id DESC
             LIMIT 10
-        """;
+            """;
 
             await using var cmd = new MySqlCommand(sql, conn);
             await using var reader = await cmd.ExecuteReaderAsync();
@@ -51,12 +41,12 @@ public partial class StudentDashboard : ContentPage
             {
                 var item = new ReportItem
                 {
-                    Name = reader.GetString("name"),
+                    // ✅ UPDATED COLUMN NAMES
+                    Name = reader.GetString("item_name"),
                     Description = reader.GetString("description"),
-                    RType = CapitalizeFirst(reader.GetString("r_type")),
-                    TimeAgo = FormatTimeAgo(reader.GetDateTime("date")),
+                    RType = CapitalizeFirst(reader.GetString("report_type")),
+                    TimeAgo = FormatTimeAgo(reader.GetDateTime("date_reported")),
 
-                    // Changed from image_data to image
                     ImageData = reader.IsDBNull(reader.GetOrdinal("image"))
                         ? null
                         : (byte[])reader["image"]
@@ -72,8 +62,6 @@ public partial class StudentDashboard : ContentPage
             await DisplayAlert("Error", $"Failed to load dashboard data:\n{ex.Message}", "OK");
         }
     }
-
-
 
     private static async Task<int> GetScalarAsync(MySqlConnection conn, string sql)
     {
@@ -98,9 +86,6 @@ public partial class StudentDashboard : ContentPage
     private static string CapitalizeFirst(string s) =>
         string.IsNullOrEmpty(s) ? s : char.ToUpper(s[0]) + s[1..];
 
-
-
-
     private async void OnHomeTapped(object sender, TappedEventArgs e)
     {
         await Navigation.PushModalAsync(new StudentDashboard());
@@ -115,10 +100,12 @@ public partial class StudentDashboard : ContentPage
     {
         await Navigation.PushModalAsync(new ReceiveModule());
     }
+
     private async void OnViewAllTapped(object sender, TappedEventArgs e)
     {
-
+        // Optional: navigate to full reports page
     }
+
     private async void OnNewsTapped(object sender, TappedEventArgs e)
     {
         await Navigation.PushModalAsync(new NotificationModule());
@@ -132,6 +119,7 @@ public partial class StudentDashboard : ContentPage
             await Shell.Current.GoToAsync("//MainPage");
         }
     }
+
     public class ReportItem : INotifyPropertyChanged
     {
         private byte[] _imageData;
@@ -142,33 +130,29 @@ public partial class StudentDashboard : ContentPage
         public string RType { get; set; }
         public string TimeAgo { get; set; }
 
-        // Stores the raw byte array from database
         public byte[] ImageData
         {
             get => _imageData;
             set
             {
                 _imageData = value;
-                // Convert byte array to ImageSource when data is set
                 ReportImage = value != null
                     ? ImageSource.FromStream(() => new MemoryStream(value))
                     : null;
+
                 OnPropertyChanged(nameof(ImageData));
             }
         }
 
-        // This is what the XAML binds to for the Image Source
         public ImageSource ReportImage
         {
             get
             {
-                // Return actual image if data exists
                 if (_imageData != null && _imageData.Length > 0)
                 {
                     return ImageSource.FromStream(() => new MemoryStream(_imageData));
                 }
 
-                // Return embedded placeholder image
                 return ImageSource.FromFile("noimg.png");
             }
             private set
@@ -178,16 +162,14 @@ public partial class StudentDashboard : ContentPage
             }
         }
 
-        // Add this property for visibility binding
         public bool HasImage => _imageData != null && _imageData.Length > 0;
 
-        // Badge color based on report type
         public Color BadgeColor => RType?.ToLower() switch
         {
-            "lost" => Color.FromArgb("#EF4444"),      // Red
-            "found" => Color.FromArgb("#22C55E"),     // Green
-            "claimed" => Color.FromArgb("#3B82F6"),   // Blue
-            _ => Color.FromArgb("#6B7280")             // Gray default
+            "lost" => Color.FromArgb("#EF4444"),
+            "found" => Color.FromArgb("#22C55E"),
+            "claimed" => Color.FromArgb("#3B82F6"),
+            _ => Color.FromArgb("#6B7280")
         };
 
         public event PropertyChangedEventHandler PropertyChanged;
