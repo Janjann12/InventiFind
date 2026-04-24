@@ -1,19 +1,17 @@
 using MySqlConnector;
 using System.Collections.ObjectModel;
+using System.Globalization;
 
 namespace InventiFind;
 
 public partial class NotificationModule : ContentPage
 {
-    // ── All records fetched from DB ──────────────────────────────────────────
     private List<ReportItem> _allReports = new();
 
-    // ── Pagination ───────────────────────────────────────────────────────────
     private int _currentPage = 1;
     private const int PageSize = 5;
     private int TotalPages => Math.Max(1, (int)Math.Ceiling(_allReports.Count / (double)PageSize));
 
-    // ── Displayed slice bound to the CollectionView ──────────────────────────
     public ObservableCollection<ReportItem> Reports { get; set; } = new();
 
     public NotificationModule()
@@ -23,7 +21,6 @@ public partial class NotificationModule : ContentPage
         LoadReports();
     }
 
-    // ── Load all reports from DB, then render page 1 ─────────────────────────
     private async Task LoadReports()
     {
         try
@@ -73,10 +70,8 @@ ORDER BY ir.date_reported DESC";
         }
     }
 
-    // ── Render current page slice + rebuild page buttons ─────────────────────
     private void RenderPage()
     {
-        // Slice for current page
         var slice = _allReports
             .Skip((_currentPage - 1) * PageSize)
             .Take(PageSize)
@@ -89,11 +84,6 @@ ORDER BY ir.date_reported DESC";
         BuildPageButtons();
     }
 
-    // ── Build numbered buttons with ellipsis logic ────────────────────────────
-    //    Example outputs:
-    //      [1] 2 3               (total ≤ 3, near start)
-    //      1 … 4 [5] 6 … 10     (middle)
-    //      1 … 8 9 [10]          (near end)
     private void BuildPageButtons()
     {
         PageButtonsLayout.Children.Clear();
@@ -113,7 +103,6 @@ ORDER BY ir.date_reported DESC";
         }
     }
 
-    /// <summary>Returns sorted page numbers to show: always first, last, and ±1 window around current.</summary>
     private IEnumerable<int> GetPageNumbers()
     {
         var set = new SortedSet<int> { 1, TotalPages };
@@ -122,15 +111,14 @@ ORDER BY ir.date_reported DESC";
         return set;
     }
 
-    // ── Button factories ──────────────────────────────────────────────────────
     private Frame MakePageButton(int page)
     {
         bool active = page == _currentPage;
 
         var frame = new Frame
         {
-            BackgroundColor = active ? Color.FromArgb("#B71C1C") : Colors.White,
-            BorderColor = Color.FromArgb("#B71C1C"),
+            BackgroundColor = active ? Color.FromArgb("#C8102E") : Colors.White,
+            BorderColor = Color.FromArgb("#C8102E"),
             CornerRadius = 8,
             Padding = new Thickness(10, 4),
             HasShadow = false,
@@ -139,7 +127,7 @@ ORDER BY ir.date_reported DESC";
                 Text = page.ToString(),
                 FontSize = 12,
                 FontAttributes = FontAttributes.Bold,
-                TextColor = active ? Colors.White : Color.FromArgb("#B71C1C"),
+                TextColor = active ? Colors.White : Color.FromArgb("#C8102E"),
                 HorizontalTextAlignment = TextAlignment.Center,
                 VerticalTextAlignment = TextAlignment.Center
             }
@@ -157,12 +145,27 @@ ORDER BY ir.date_reported DESC";
     {
         Text = "…",
         FontSize = 12,
-        TextColor = Color.FromArgb("#B71C1C"),
+        TextColor = Color.FromArgb("#C8102E"),
         VerticalOptions = LayoutOptions.Center,
         VerticalTextAlignment = TextAlignment.Center
     };
 
-    // ── Navigation ────────────────────────────────────────────────────────────
+    public class TypeToColorConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return value?.ToString() switch
+            {
+                "Lost" => Color.FromArgb("#C8102E"),
+                "Found" => Color.FromArgb("#2E7D32"),
+                _ => Color.FromArgb("#9CA3AF")
+            };
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+            => throw new NotImplementedException();
+    }
+
     private void GoToPage(int page)
     {
         if (page < 1 || page > TotalPages || page == _currentPage) return;
@@ -170,7 +173,6 @@ ORDER BY ir.date_reported DESC";
         RenderPage();
     }
 
-    // ── Bottom nav handlers ───────────────────────────────────────────────────
     private async void OnHomeTapped(object sender, TappedEventArgs e)
         => await Navigation.PushModalAsync(new StudentDashboard());
 
@@ -189,7 +191,6 @@ ORDER BY ir.date_reported DESC";
             await Shell.Current.GoToAsync("//MainPage");
     }
 
-    // ── Model ─────────────────────────────────────────────────────────────────
     public class ReportItem
     {
         public string Title { get; set; }

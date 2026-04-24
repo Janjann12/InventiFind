@@ -5,19 +5,18 @@
              Title="Student Dashboard"
              NavigationPage.HasNavigationBar="False"
              Shell.NavBarIsVisible="False"
-             BackgroundColor="#F5F5F5">
+             BackgroundColor="#F2F4F7">
 
     <Grid RowDefinitions="Auto,*,Auto">
 
-        <!-- Fixed Header Content (Not Scrollable) -->
+        <!-- ── HEADER ─────────────────────────────────────────────────── -->
         <VerticalStackLayout Grid.Row="0" Spacing="0">
 
-            <!-- Header with Red Background -->
-            <Grid BackgroundColor="#DC143C" 
+            <!-- Red hero band -->
+            <Grid BackgroundColor="#C8102E"
                   Padding="20,40,20,30"
                   HeightRequest="180">
 
-                <!-- App Name -->
                 <Label Text="InventiFind"
                        FontSize="32"
                        FontAttributes="Bold"
@@ -25,49 +24,52 @@
                        HorizontalOptions="Center"
                        VerticalOptions="Start"/>
 
-                <!-- Search Bar -->
                 <Frame BackgroundColor="White"
-                       CornerRadius="25"
+                       CornerRadius="16"
                        Padding="15,0"
-                       HasShadow="True"
+                       HasShadow="False"
                        Margin="0,20,0,0"
                        VerticalOptions="End"
-                       HeightRequest="50">
+                       HeightRequest="52">
                     <HorizontalStackLayout Spacing="10" VerticalOptions="Center">
-                        <Label Text="🔍" 
-                               FontSize="16" 
-                               TextColor="#999"
+                        <Label Text="🔍"
+                               FontSize="16"
+                               TextColor="#9CA3AF"
                                VerticalOptions="Center"/>
-                        <Entry Placeholder="Search lost or Found Item"
-                               PlaceholderColor="#999"
-                               TextColor="#333"
+                        <Entry x:Name="SearchEntry"
+                               Placeholder="Search lost or found item…"
+                               PlaceholderColor="#9CA3AF"
+                               TextColor="#1F2937"
                                FontSize="14"
                                VerticalOptions="Center"
-                               HorizontalOptions="FillAndExpand"/>
+                               HorizontalOptions="FillAndExpand"
+                               TextChanged="OnSearchTextChanged"/>
                     </HorizontalStackLayout>
                 </Frame>
             </Grid>
 
-            <!-- Categories Section -->
-            <VerticalStackLayout Padding="20,25,20,15" Spacing="15">
+            <!-- ── CATEGORIES ───────────────────────────────────────── -->
+            <VerticalStackLayout Padding="20,22,20,14" Spacing="14"
+                                 BackgroundColor="#F2F4F7">
 
                 <Label Text="Categories"
-                       FontSize="18"
+                       FontSize="17"
                        FontAttributes="Bold"
-                       TextColor="#1a1a1a"/>
+                       TextColor="#111827"/>
 
-                <!-- Category Icons Grid - Fixed: 5 columns -->
-                <Grid ColumnDefinitions="*,*,*,*,*" 
+                <Grid ColumnDefinitions="*,*,*,*,*"
                       RowDefinitions="Auto"
                       ColumnSpacing="10">
 
                     <!-- Phone -->
-                    <VerticalStackLayout Grid.Column="0" Spacing="8">
-                        <Frame BackgroundColor="White"
-                               CornerRadius="15"
+                    <VerticalStackLayout Grid.Column="0" Spacing="7"
+                                         x:Name="CatPhone">
+                        <Frame x:Name="CatPhoneFrame"
+                               BackgroundColor="White"
+                               CornerRadius="16"
                                Padding="15"
                                HasShadow="False"
-                               BorderColor="#E0E0E0"
+                               BorderColor="#E5E7EB"
                                HeightRequest="70"
                                WidthRequest="70"
                                HorizontalOptions="Center">
@@ -76,19 +78,26 @@
                                    HeightRequest="35"
                                    WidthRequest="35"/>
                         </Frame>
-                        <Label Text="Phone"
+                        <Label x:Name="CatPhoneLabel"
+                               Text="Phone"
                                FontSize="12"
-                               TextColor="#333"
+                               TextColor="#374151"
                                HorizontalOptions="Center"/>
+                        <VerticalStackLayout.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnCategoryTapped"
+                                                  CommandParameter="Phone"/>
+                        </VerticalStackLayout.GestureRecognizers>
                     </VerticalStackLayout>
 
                     <!-- Wallet -->
-                    <VerticalStackLayout Grid.Column="1" Spacing="8">
-                        <Frame BackgroundColor="White"
-                               CornerRadius="15"
+                    <VerticalStackLayout Grid.Column="1" Spacing="7"
+                                         x:Name="CatWallet">
+                        <Frame x:Name="CatWalletFrame"
+                               BackgroundColor="White"
+                               CornerRadius="16"
                                Padding="15"
                                HasShadow="False"
-                               BorderColor="#E0E0E0"
+                               BorderColor="#E5E7EB"
                                HeightRequest="70"
                                WidthRequest="70"
                                HorizontalOptions="Center">
@@ -97,19 +106,26 @@
                                    HeightRequest="35"
                                    WidthRequest="35"/>
                         </Frame>
-                        <Label Text="Wallet"
+                        <Label x:Name="CatWalletLabel"
+                               Text="Wallet"
                                FontSize="12"
-                               TextColor="#333"
+                               TextColor="#374151"
                                HorizontalOptions="Center"/>
+                        <VerticalStackLayout.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnCategoryTapped"
+                                                  CommandParameter="Wallet"/>
+                        </VerticalStackLayout.GestureRecognizers>
                     </VerticalStackLayout>
 
-                    <!-- Keys -->
-                    <VerticalStackLayout Grid.Column="2" Spacing="8">
-                        <Frame BackgroundColor="White"
-                               CornerRadius="15"
+                    <!-- ID -->
+                    <VerticalStackLayout Grid.Column="2" Spacing="7"
+                                         x:Name="CatID">
+                        <Frame x:Name="CatIDFrame"
+                               BackgroundColor="White"
+                               CornerRadius="16"
                                Padding="15"
                                HasShadow="False"
-                               BorderColor="#E0E0E0"
+                               BorderColor="#E5E7EB"
                                HeightRequest="70"
                                WidthRequest="70"
                                HorizontalOptions="Center">
@@ -118,19 +134,26 @@
                                    HeightRequest="35"
                                    WidthRequest="35"/>
                         </Frame>
-                        <Label Text="ID"
+                        <Label x:Name="CatIDLabel"
+                               Text="ID"
                                FontSize="12"
-                               TextColor="#333"
+                               TextColor="#374151"
                                HorizontalOptions="Center"/>
+                        <VerticalStackLayout.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnCategoryTapped"
+                                                  CommandParameter="ID"/>
+                        </VerticalStackLayout.GestureRecognizers>
                     </VerticalStackLayout>
 
                     <!-- Watch -->
-                    <VerticalStackLayout Grid.Column="3" Spacing="8">
-                        <Frame BackgroundColor="White"
-                               CornerRadius="15"
+                    <VerticalStackLayout Grid.Column="3" Spacing="7"
+                                         x:Name="CatWatch">
+                        <Frame x:Name="CatWatchFrame"
+                               BackgroundColor="White"
+                               CornerRadius="16"
                                Padding="15"
                                HasShadow="False"
-                               BorderColor="#E0E0E0"
+                               BorderColor="#E5E7EB"
                                HeightRequest="70"
                                WidthRequest="70"
                                HorizontalOptions="Center">
@@ -139,19 +162,26 @@
                                    HeightRequest="35"
                                    WidthRequest="35"/>
                         </Frame>
-                        <Label Text="Watch"
+                        <Label x:Name="CatWatchLabel"
+                               Text="Watch"
                                FontSize="12"
-                               TextColor="#333"
+                               TextColor="#374151"
                                HorizontalOptions="Center"/>
+                        <VerticalStackLayout.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnCategoryTapped"
+                                                  CommandParameter="Watch"/>
+                        </VerticalStackLayout.GestureRecognizers>
                     </VerticalStackLayout>
 
                     <!-- Others -->
-                    <VerticalStackLayout Grid.Column="4" Spacing="8">
-                        <Frame BackgroundColor="White"
-                               CornerRadius="15"
+                    <VerticalStackLayout Grid.Column="4" Spacing="7"
+                                         x:Name="CatOthers">
+                        <Frame x:Name="CatOthersFrame"
+                               BackgroundColor="White"
+                               CornerRadius="16"
                                Padding="15"
                                HasShadow="False"
-                               BorderColor="#E0E0E0"
+                               BorderColor="#E5E7EB"
                                HeightRequest="70"
                                WidthRequest="70"
                                HorizontalOptions="Center">
@@ -160,25 +190,31 @@
                                    HeightRequest="35"
                                    WidthRequest="35"/>
                         </Frame>
-                        <Label Text="Others"
+                        <Label x:Name="CatOthersLabel"
+                               Text="Others"
                                FontSize="12"
-                               TextColor="#333"
+                               TextColor="#374151"
                                HorizontalOptions="Center"/>
+                        <VerticalStackLayout.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnCategoryTapped"
+                                                  CommandParameter="Others"/>
+                        </VerticalStackLayout.GestureRecognizers>
                     </VerticalStackLayout>
 
                 </Grid>
             </VerticalStackLayout>
 
-            <!-- Recent Post Header (Fixed) -->
-            <Grid ColumnDefinitions="*,Auto" Padding="20,10,20,10">
+            <!-- ── RECENT POST HEADER ───────────────────────────────── -->
+            <Grid ColumnDefinitions="*,Auto" Padding="20,10,20,10"
+                  BackgroundColor="#F2F4F7">
                 <Label Text="Recent Post"
-                       FontSize="18"
+                       FontSize="17"
                        FontAttributes="Bold"
-                       TextColor="#1a1a1a"
+                       TextColor="#111827"
                        VerticalOptions="Center"/>
                 <Label Text="View All"
                        FontSize="14"
-                       TextColor="#DC143C"
+                       TextColor="#C8102E"
                        FontAttributes="Bold"
                        Grid.Column="1"
                        VerticalOptions="Center">
@@ -187,80 +223,77 @@
                     </Label.GestureRecognizers>
                 </Label>
             </Grid>
+
         </VerticalStackLayout>
 
-        <!-- Scrollable Recent Post Section Only -->
+        <!-- ── SCROLLABLE CARDS ───────────────────────────────────────── -->
         <ScrollView Grid.Row="1">
-            <VerticalStackLayout Padding="20,10,20,20" Spacing="15">
+            <VerticalStackLayout Padding="16,6,16,20" Spacing="0">
 
                 <CollectionView x:Name="RecentReportsCollection">
-
                     <CollectionView.ItemsLayout>
-                        <LinearItemsLayout Orientation="Vertical" ItemSpacing="5"/>
+                        <LinearItemsLayout Orientation="Vertical" ItemSpacing="10"/>
                     </CollectionView.ItemsLayout>
 
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
                             <Frame BackgroundColor="White"
-                           CornerRadius="16"
-                           Padding="16"
-                           HasShadow="False"
-                           Margin="0,0,0,10">
-
-                                <Grid ColumnDefinitions="80,*" ColumnSpacing="12">
-
-                                    <!-- Item Image -->
-                                    <Frame Grid.Column="0"
-                                   CornerRadius="10"
-                                   Padding="0"
-                                   IsClippedToBounds="True"
+                                   CornerRadius="20"
+                                   Padding="14"
                                    HasShadow="False"
-                                   HeightRequest="80"
-                                   WidthRequest="80">
+                                   Margin="0,0,0,2">
+
+                                <Grid ColumnDefinitions="80,*" ColumnSpacing="14">
+
+                                    <Frame Grid.Column="0"
+                                           CornerRadius="14"
+                                           Padding="0"
+                                           IsClippedToBounds="True"
+                                           HasShadow="False"
+                                           HeightRequest="80"
+                                           WidthRequest="80"
+                                           BorderColor="{Binding BadgeColor}">
                                         <Image Source="{Binding ReportImage}"
-                                       Aspect="AspectFill"
-                                       HeightRequest="80"
-                                       WidthRequest="80"/>
+                                               Aspect="AspectFill"
+                                               HeightRequest="80"
+                                               WidthRequest="80"/>
                                     </Frame>
 
-                                    <!-- Item Details -->
                                     <VerticalStackLayout Grid.Column="1"
-                                                 Spacing="4"
-                                                 VerticalOptions="Center">
+                                                         Spacing="5"
+                                                         VerticalOptions="Center">
 
-                                        <!-- Name + Badge Row -->
-                                        <Grid ColumnDefinitions="*,Auto">
+                                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="6">
                                             <Label Grid.Column="0"
-                                           Text="{Binding Name}"
-                                           FontSize="15"
-                                           FontAttributes="Bold"
-                                           TextColor="#1F2937"
-                                           LineBreakMode="TailTruncation"/>
+                                                   Text="{Binding Name}"
+                                                   FontSize="15"
+                                                   FontAttributes="Bold"
+                                                   TextColor="#111827"
+                                                   LineBreakMode="TailTruncation"
+                                                   VerticalOptions="Center"/>
 
-                                            <!-- R_Type Badge -->
                                             <Frame Grid.Column="1"
-                                           BackgroundColor="{Binding BadgeColor}"
-                                           CornerRadius="8"
-                                           Padding="8,3"
-                                           HasShadow="False">
+                                                   BackgroundColor="{Binding BadgeColor}"
+                                                   CornerRadius="8"
+                                                   Padding="9,4"
+                                                   HasShadow="False"
+                                                   VerticalOptions="Center">
                                                 <Label Text="{Binding RType}"
-                                               FontSize="11"
-                                               TextColor="White"
-                                               FontAttributes="Bold"/>
+                                                       FontSize="10"
+                                                       TextColor="White"
+                                                       FontAttributes="Bold"/>
                                             </Frame>
                                         </Grid>
 
-                                        <!-- Description -->
                                         <Label Text="{Binding Description}"
-                                       FontSize="13"
-                                       TextColor="#6B7280"
-                                       LineBreakMode="TailTruncation"
-                                       MaxLines="2"/>
+                                               FontSize="13"
+                                               TextColor="#4B5563"
+                                               LineBreakMode="TailTruncation"
+                                               MaxLines="2"/>
 
-                                        <!-- Time Ago -->
                                         <Label Text="{Binding TimeAgo}"
-                                       FontSize="11"
-                                       TextColor="#9CA3AF"/>
+                                               FontSize="11"
+                                               TextColor="#9CA3AF"/>
 
                                     </VerticalStackLayout>
                                 </Grid>
@@ -269,75 +302,103 @@
                     </CollectionView.ItemTemplate>
                 </CollectionView>
 
-                <!-- Bottom Spacing -->
+                <!-- ── EMPTY STATE ────────────────────────────────── -->
+                <VerticalStackLayout x:Name="EmptyState"
+                                     IsVisible="False"
+                                     HorizontalOptions="Center"
+                                     Spacing="8"
+                                     Margin="0,40,0,0">
+                    <Label Text="🔍"
+                           FontSize="40"
+                           HorizontalOptions="Center"/>
+                    <Label x:Name="EmptyStateLabel"
+                           Text="No items found"
+                           FontSize="16"
+                           FontAttributes="Bold"
+                           TextColor="#374151"
+                           HorizontalOptions="Center"/>
+                    <Label x:Name="EmptyStateSubLabel"
+                           Text="Try a different search or category"
+                           FontSize="13"
+                           TextColor="#9CA3AF"
+                           HorizontalOptions="Center"/>
+                </VerticalStackLayout>
+
+                <!-- ── PAGINATION ─────────────────────────────────── -->
+                <HorizontalStackLayout x:Name="PageButtonsLayout"
+                                       HorizontalOptions="End"
+                                       Spacing="6"
+                                       Margin="0,10,4,4"/>
+
                 <BoxView HeightRequest="20" BackgroundColor="Transparent"/>
 
             </VerticalStackLayout>
         </ScrollView>
 
-        <!-- Bottom Navigation Bar -->
-        <Grid Grid.Row="2" 
+        <!-- ── BOTTOM NAV ─────────────────────────────────────────────── -->
+        <Grid Grid.Row="2"
               BackgroundColor="White"
               HeightRequest="70"
               ColumnDefinitions="*,*,*,*,*"
               Padding="0,10">
 
-            <!-- Home -->
-            <VerticalStackLayout Grid.Column="0" 
-                         Spacing="2"
-                         HorizontalOptions="Center"
-                         VerticalOptions="Center">
+            <!-- Home (active) -->
+            <VerticalStackLayout Grid.Column="0"
+                                 Spacing="2"
+                                 HorizontalOptions="Center"
+                                 VerticalOptions="Center">
                 <Image Source="home.png" WidthRequest="28" HeightRequest="28"/>
-                <Label Text="Home" FontSize="11" TextColor="#B71C1C"/>
-                <BoxView HeightRequest="2" BackgroundColor="#B71C1C" CornerRadius="1" Margin="0,-2,0,0"/>
+                <Label Text="Home" FontSize="11" TextColor="#C8102E" FontAttributes="Bold"/>
+                <BoxView HeightRequest="2" BackgroundColor="#C8102E"
+                         CornerRadius="1" Margin="0,-2,0,0"/>
                 <VerticalStackLayout.GestureRecognizers>
                     <TapGestureRecognizer Tapped="OnHomeTapped"/>
                 </VerticalStackLayout.GestureRecognizers>
             </VerticalStackLayout>
 
             <!-- Report -->
-            <VerticalStackLayout Grid.Column="1" 
-                         Spacing="2"
-                         HorizontalOptions="Center"
-                         VerticalOptions="Center">
+            <VerticalStackLayout Grid.Column="1"
+                                 Spacing="2"
+                                 HorizontalOptions="Center"
+                                 VerticalOptions="Center">
                 <Image Source="report.png" WidthRequest="28" HeightRequest="28"/>
-                <Label Text="Report" FontSize="11" TextColor="#666"/>
+                <Label Text="Report" FontSize="11" TextColor="#9CA3AF"/>
                 <VerticalStackLayout.GestureRecognizers>
                     <TapGestureRecognizer Tapped="OnReportTapped"/>
                 </VerticalStackLayout.GestureRecognizers>
             </VerticalStackLayout>
 
-            <!-- Receive (Active) -->
-            <VerticalStackLayout Grid.Column="2" 
-                         Spacing="2"
-                         HorizontalOptions="Center"
-                         VerticalOptions="Center">
+            <!-- Receive -->
+            <VerticalStackLayout Grid.Column="2"
+                                 Spacing="2"
+                                 HorizontalOptions="Center"
+                                 VerticalOptions="Center">
                 <Image Source="box.png" WidthRequest="28" HeightRequest="28"/>
-                <Label Text="Receive" FontSize="11" TextColor="#666" FontAttributes="Bold"/>
+                <Label Text="Receive" FontSize="11" TextColor="#9CA3AF"/>
                 <VerticalStackLayout.GestureRecognizers>
                     <TapGestureRecognizer Tapped="OnReceiveTapped"/>
                 </VerticalStackLayout.GestureRecognizers>
             </VerticalStackLayout>
 
             <!-- News -->
-            <VerticalStackLayout Grid.Column="3" 
-                         Spacing="2"
-                         HorizontalOptions="Center"
-                         VerticalOptions="Center">
+            <VerticalStackLayout Grid.Column="3"
+                                 Spacing="2"
+                                 HorizontalOptions="Center"
+                                 VerticalOptions="Center">
                 <Image Source="notif.png" WidthRequest="28" HeightRequest="28"/>
-                <Label Text="News" FontSize="11" TextColor="#666"/>
+                <Label Text="News" FontSize="11" TextColor="#9CA3AF"/>
                 <VerticalStackLayout.GestureRecognizers>
                     <TapGestureRecognizer Tapped="OnNewsTapped"/>
                 </VerticalStackLayout.GestureRecognizers>
             </VerticalStackLayout>
 
             <!-- Logout -->
-            <VerticalStackLayout Grid.Column="4" 
-                         Spacing="2"
-                         HorizontalOptions="Center"
-                         VerticalOptions="Center">
+            <VerticalStackLayout Grid.Column="4"
+                                 Spacing="2"
+                                 HorizontalOptions="Center"
+                                 VerticalOptions="Center">
                 <Image Source="logout.png" WidthRequest="28" HeightRequest="28"/>
-                <Label Text="Logout" FontSize="11" TextColor="#666"/>
+                <Label Text="Logout" FontSize="11" TextColor="#9CA3AF"/>
                 <VerticalStackLayout.GestureRecognizers>
                     <TapGestureRecognizer Tapped="OnLogoutTapped"/>
                 </VerticalStackLayout.GestureRecognizers>
