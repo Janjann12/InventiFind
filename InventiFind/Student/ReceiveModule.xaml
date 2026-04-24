@@ -58,109 +58,89 @@
 
                 <!-- Item Cards -->
                 <CollectionView x:Name="ItemsCollectionView"
-                                ItemsSource="{Binding LostItems}">
+    ItemsSource="{Binding LostItems}">
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
                             <Border BackgroundColor="White"
-                                    Stroke="#E0E0E0"
-                                    StrokeThickness="1"
-                                    Padding="15"
-                                    Margin="0,5">
+                Stroke="#E0E0E0"
+                StrokeThickness="1"
+                Padding="15"
+                Margin="0,5">
                                 <Border.StrokeShape>
                                     <RoundRectangle CornerRadius="12"/>
                                 </Border.StrokeShape>
-                                <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto" 
-                                      ColumnDefinitions="*,Auto">
 
-                                    <!-- Item Name & Status -->
+                                <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto"
+                    ColumnDefinitions="*,Auto">
+
+                                    <!-- Item Name -->
                                     <Label Grid.Row="0" Grid.Column="0"
-                                           Text="{Binding ItemName}"
-                                           FontSize="20"
-                                           FontAttributes="Bold"
-                                           TextColor="Black"/>
+                        Text="{Binding ItemName}"
+                        FontSize="20"
+                        FontAttributes="Bold"
+                        TextColor="Black"/>
+
+                                    <!-- Claim Code -->
                                     <Border Grid.Row="0" Grid.Column="1"
-                                            BackgroundColor="#A5D6A7"
-                                            StrokeThickness="0"
-                                            Padding="8,4">
+                        Padding="8,4"
+                        StrokeThickness="0">
                                         <Border.StrokeShape>
                                             <RoundRectangle CornerRadius="15"/>
                                         </Border.StrokeShape>
-                                        <Label Text="READY TO CLAIM"
-                                               FontSize="10"
-                                               FontAttributes="Bold"
-                                               TextColor="#2E7D32"/>
+
+                                        <Label Text="{Binding ClaimCode}"
+                            FontSize="10"
+                            FontAttributes="Bold"
+                            TextColor="White"/>
                                     </Border>
 
                                     <!-- Description -->
-                                    <Label Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
-                                           Text="{Binding Description}"
-                                           FontSize="14"
-                                           TextColor="#666666"
-                                           Margin="0,2,0,8"/>
+                                    <Label Grid.Row="1" Grid.ColumnSpan="2"
+                        Text="{Binding Description}"
+                        FontSize="14"
+                        TextColor="#666666"
+                        Margin="0,2,0,8"/>
 
-                                    <!-- Location -->
-                                    <HorizontalStackLayout Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Spacing="5">
-                                        <Image Source="location_icon.png"
-                                               HeightRequest="16"
-                                               WidthRequest="16"
-                                               Aspect="AspectFit"/>
-                                        <Label Text="{Binding Location}"
-                                               FontSize="13"
-                                               TextColor="#666666"/>
-                                    </HorizontalStackLayout>
-
-                                    <!-- Found Date -->
-                                    <HorizontalStackLayout Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Spacing="5">
+                                    <!-- Date -->
+                                    <HorizontalStackLayout Grid.Row="2" Grid.ColumnSpan="2" Spacing="5">
                                         <Image Source="clock_icon.png"
-                                               HeightRequest="16"
-                                               WidthRequest="16"
-                                               Aspect="AspectFit"/>
+                            HeightRequest="16"
+                            WidthRequest="16"/>
                                         <Label Text="{Binding FoundDate, StringFormat='Found on {0:MM-dd-yyyy}'}"
-                                               FontSize="13"
-                                               TextColor="#666666"/>
+                            FontSize="13"
+                            TextColor="#666666"/>
                                     </HorizontalStackLayout>
 
-                                    <!-- Claim Code -->
-                                    <HorizontalStackLayout Grid.Row="4" Grid.Column="0" Spacing="5" Margin="0,5,0,0">
-                                        <Image Source="tag_icon.png"
-                                               HeightRequest="16"
-                                               WidthRequest="16"
-                                               Aspect="AspectFit"/>
-                                        <Label Text="{Binding ClaimCode, StringFormat='Claim Code : {0}'}"
-                                               FontSize="13"
-                                               TextColor="#666666"/>
+                                    <!-- Author -->
+                                    <HorizontalStackLayout Grid.Row="3" Grid.Column="0" Spacing="5">
+                                        <Label Text="Reported by:"
+                            FontSize="13"
+                            TextColor="#999"/>
+                                        <Label Text="{Binding Author}"
+                            FontSize="13"
+                            FontAttributes="Bold"
+                            TextColor="#333"/>
                                     </HorizontalStackLayout>
 
-                                    <!-- Action Buttons -->
-                                    <HorizontalStackLayout Grid.Row="4"
-                                                           Grid.Column="1" 
-                                                           Spacing="10"
-                                                           HorizontalOptions="End"
-                                                           VerticalOptions="End">
-                                        <Button Text="Claim Item"
-                                                BackgroundColor="#B71C1C"
-                                                TextColor="White"
-                                                FontSize="12"
-                                                FontAttributes="Bold"
-                                                Padding="15,8"
-                                                CornerRadius="8"
-                                                Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.ClaimItemCommand}"
-                                                CommandParameter="{Binding .}"/>
-                                        <Button Text="Contact"
-                                                BackgroundColor="#B0BEC5"
-                                                TextColor="White"
-                                                FontSize="12"
-                                                FontAttributes="Bold"
-                                                Padding="15,8"
-                                                CornerRadius="8"
-                                                Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.ContactCommand}"
-                                                CommandParameter="{Binding .}"/>
-                                    </HorizontalStackLayout>
+                                    <!-- Claim Button -->
+                                    <Button Grid.Row="3" Grid.Column="1"
+                        Text="Claim"
+                        FontSize="13"
+                        FontAttributes="Bold"
+                        TextColor="White"
+                        BackgroundColor="#4CAF50"
+                        CornerRadius="8"
+                        Padding="14,6"
+                        VerticalOptions="Center"
+                        Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.ClaimItemCommand}"
+                        CommandParameter="{Binding .}"/>
+
                                 </Grid>
                             </Border>
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
                 </CollectionView>
+
 
             </VerticalStackLayout>
         </ScrollView>

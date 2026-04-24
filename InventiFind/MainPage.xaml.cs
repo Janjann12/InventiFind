@@ -30,18 +30,15 @@ public partial class MainPage : ContentPage
         if (email.Contains("@admin.") || email.Contains(".admin@") || email.EndsWith("@ue.edu.admin"))
         {
             detectedRole = "Admin";           // ← ADD THIS
-            RoleDisplayFrame.IsVisible = true;
             // Optional: Update role display label text/color
         }
         else if (email.Contains("@teacher.") || email.Contains(".teacher@") || email.EndsWith("@ue.edu.teacher") || email.Contains("@prof."))
         {
             detectedRole = "teacher";         // ← ADD THIS
-            RoleDisplayFrame.IsVisible = true;
         }
         else
         {
             detectedRole = "student";         // ← ADD THIS (or "User")
-            RoleDisplayFrame.IsVisible = true;
         }
 
         UpdateLoginButtonText(detectedRole);
@@ -52,7 +49,7 @@ public partial class MainPage : ContentPage
     // ==========================================
     private void UpdateLoginButtonText(string role)
     {
-        LoginButton.Text = $"Login as {role}";
+        LoginButton.Text = $"Login";
     }
 
     // ==========================================
@@ -138,7 +135,7 @@ public partial class MainPage : ContentPage
             case "admin":
                 await Navigation.PushAsync(new AdminDashboard());
                 break;
-            case "teacher":      // lowercase to match detectedRole
+            case "staff":      // lowercase to match detectedRole
                 await Navigation.PushAsync(new TeacherDashboard());
                 break;
             default:  // student or user

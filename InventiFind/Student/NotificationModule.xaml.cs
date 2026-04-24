@@ -26,20 +26,19 @@ public partial class NotificationModule : ContentPage
             using (var conn = new MySqlConnection(DatabaseConfig.ConnectionString))
             {
                 await conn.OpenAsync();
+
                 string query = @"
 SELECT 
-    r.title,
-    i.description,
-    i.date,
-    i.r_type,
+    ir.item_name,
+    ir.description,
+    ir.date_reported,
+    ir.report_type,
     u.FirstName,
     u.Surname
-FROM reports r
-JOIN items i ON r.I_id = i.L_ID
-JOIN users u ON r.user_id = u.UserID
-WHERE r.user_id != @currentUser";
-
-
+FROM item_reports ir
+JOIN users u ON ir.user_id = u.UserID
+WHERE ir.user_id != @currentUser
+ORDER BY ir.date_reported DESC";
 
                 using (var cmd = new MySqlCommand(query, conn))
                 {
@@ -53,14 +52,12 @@ WHERE r.user_id != @currentUser";
                         {
                             Reports.Add(new ReportItem
                             {
-                                Title = reader["title"].ToString(),
-                                Description = reader["description"].ToString(),
-                                Date = Convert.ToDateTime(reader["date"]).ToString("yyyy-MM-dd"),
+                                Title = reader["item_name"].ToString(),
+                                Description = reader["description"]?.ToString(),
+                                Date = Convert.ToDateTime(reader["date_reported"]).ToString("yyyy-MM-dd"),
                                 Author = $"{reader["FirstName"]} {reader["Surname"]}",
-                                RType = reader["r_type"].ToString()
+                                RType = reader["report_type"].ToString()
                             });
-
-
                         }
                     }
                 }
@@ -72,13 +69,12 @@ WHERE r.user_id != @currentUser";
         }
     }
 
-public class ReportItem
+    public class ReportItem
     {
         public string Title { get; set; }
         public string Description { get; set; }
         public string Date { get; set; }
         public string Author { get; set; }
-
         public string RType { get; set; }
     }
 

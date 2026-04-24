@@ -15,7 +15,7 @@ namespace InventiFind
 
         protected override Window CreateWindow(IActivationState? activationState)
         {
-            return new Window(new ReturnedItemsPage());
+            return new Window(new  AppShell());
 
 
         }
