@@ -9,7 +9,7 @@
     <Grid RowDefinitions="Auto,*,Auto">
 
         <!-- Header -->
-        <Border Grid.Row="0" 
+        <Border Grid.Row="0"
                 BackgroundColor="#B71C1C"
                 StrokeThickness="0"
                 Padding="0,25,0,20">
@@ -56,107 +56,25 @@
                     </VerticalStackLayout>
                 </Border>
 
-                <!-- Item Cards -->
-                <CollectionView x:Name="ItemsCollectionView"
-    ItemsSource="{Binding LostItems}">
-                    <CollectionView.ItemTemplate>
-                        <DataTemplate>
-                            <Border BackgroundColor="White"
-                Stroke="#E0E0E0"
-                StrokeThickness="1"
-                Padding="15"
-                Margin="0,5">
-                                <Border.StrokeShape>
-                                    <RoundRectangle CornerRadius="12"/>
-                                </Border.StrokeShape>
-
-                                <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto"
-                    ColumnDefinitions="*,Auto">
-
-                                    <!-- Item Name -->
-                                    <Label Grid.Row="0" Grid.Column="0"
-                        Text="{Binding ItemName}"
-                        FontSize="20"
-                        FontAttributes="Bold"
-                        TextColor="Black"/>
-
-                                    <!-- Claim Code -->
-                                    <Border Grid.Row="0" Grid.Column="1"
-                        Padding="8,4"
-                        StrokeThickness="0">
-                                        <Border.StrokeShape>
-                                            <RoundRectangle CornerRadius="15"/>
-                                        </Border.StrokeShape>
-
-                                        <Label Text="{Binding ClaimCode}"
-                            FontSize="10"
-                            FontAttributes="Bold"
-                            TextColor="White"/>
-                                    </Border>
-
-                                    <!-- Description -->
-                                    <Label Grid.Row="1" Grid.ColumnSpan="2"
-                        Text="{Binding Description}"
-                        FontSize="14"
-                        TextColor="#666666"
-                        Margin="0,2,0,8"/>
-
-                                    <!-- Date -->
-                                    <HorizontalStackLayout Grid.Row="2" Grid.ColumnSpan="2" Spacing="5">
-                                        <Image Source="clock_icon.png"
-                            HeightRequest="16"
-                            WidthRequest="16"/>
-                                        <Label Text="{Binding FoundDate, StringFormat='Found on {0:MM-dd-yyyy}'}"
-                            FontSize="13"
-                            TextColor="#666666"/>
-                                    </HorizontalStackLayout>
-
-                                    <!-- Author -->
-                                    <HorizontalStackLayout Grid.Row="3" Grid.Column="0" Spacing="5">
-                                        <Label Text="Reported by:"
-                            FontSize="13"
-                            TextColor="#999"/>
-                                        <Label Text="{Binding Author}"
-                            FontSize="13"
-                            FontAttributes="Bold"
-                            TextColor="#333"/>
-                                    </HorizontalStackLayout>
-
-                                    <!-- Claim Button -->
-                                    <Button Grid.Row="3" Grid.Column="1"
-                        Text="Claim"
-                        FontSize="13"
-                        FontAttributes="Bold"
-                        TextColor="White"
-                        BackgroundColor="#4CAF50"
-                        CornerRadius="8"
-                        Padding="14,6"
-                        VerticalOptions="Center"
-                        Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.ClaimItemCommand}"
-                        CommandParameter="{Binding .}"/>
-
-                                </Grid>
-                            </Border>
-                        </DataTemplate>
-                    </CollectionView.ItemTemplate>
-                </CollectionView>
-
+                <!-- Match Cards (dynamically added in code-behind) -->
+                <VerticalStackLayout x:Name="MatchesStack" Spacing="12"/>
 
             </VerticalStackLayout>
         </ScrollView>
 
-        <Grid Grid.Row="2" 
-      BackgroundColor="White"
-      HeightRequest="70"
-      ColumnDefinitions="*,*,*,*,*"
-      Padding="0,10"
-      Shadow="{Shadow Brush=#20000000, Offset='0,-2', Radius=4}">
+        <!-- Bottom Navigation -->
+        <Grid Grid.Row="2"
+              BackgroundColor="White"
+              HeightRequest="70"
+              ColumnDefinitions="*,*,*,*,*"
+              Padding="0,10"
+              Shadow="{Shadow Brush=#20000000, Offset='0,-2', Radius=4}">
 
             <!-- Home -->
-            <VerticalStackLayout Grid.Column="0" 
-                         Spacing="2"
-                         HorizontalOptions="Center"
-                         VerticalOptions="Center">
+            <VerticalStackLayout Grid.Column="0"
+                                 Spacing="2"
+                                 HorizontalOptions="Center"
+                                 VerticalOptions="Center">
                 <Image Source="home.png" WidthRequest="28" HeightRequest="28"/>
                 <Label Text="Home" FontSize="11" TextColor="#666"/>
                 <VerticalStackLayout.GestureRecognizers>
@@ -165,10 +83,10 @@
             </VerticalStackLayout>
 
             <!-- Report -->
-            <VerticalStackLayout Grid.Column="1" 
-                         Spacing="2"
-                         HorizontalOptions="Center"
-                         VerticalOptions="Center">
+            <VerticalStackLayout Grid.Column="1"
+                                 Spacing="2"
+                                 HorizontalOptions="Center"
+                                 VerticalOptions="Center">
                 <Image Source="report.png" WidthRequest="28" HeightRequest="28"/>
                 <Label Text="Report" FontSize="11" TextColor="#666"/>
                 <VerticalStackLayout.GestureRecognizers>
@@ -177,10 +95,10 @@
             </VerticalStackLayout>
 
             <!-- Receive (Active) -->
-            <VerticalStackLayout Grid.Column="2" 
-                         Spacing="2"
-                         HorizontalOptions="Center"
-                         VerticalOptions="Center">
+            <VerticalStackLayout Grid.Column="2"
+                                 Spacing="2"
+                                 HorizontalOptions="Center"
+                                 VerticalOptions="Center">
                 <Image Source="box.png" WidthRequest="28" HeightRequest="28"/>
                 <Label Text="Receive" FontSize="11" TextColor="#B71C1C" FontAttributes="Bold"/>
                 <BoxView HeightRequest="2" BackgroundColor="#B71C1C" CornerRadius="1" Margin="0,-2,0,0"/>
@@ -190,10 +108,10 @@
             </VerticalStackLayout>
 
             <!-- News -->
-            <VerticalStackLayout Grid.Column="3" 
-                         Spacing="2"
-                         HorizontalOptions="Center"
-                         VerticalOptions="Center">
+            <VerticalStackLayout Grid.Column="3"
+                                 Spacing="2"
+                                 HorizontalOptions="Center"
+                                 VerticalOptions="Center">
                 <Image Source="notif.png" WidthRequest="28" HeightRequest="28"/>
                 <Label Text="News" FontSize="11" TextColor="#666"/>
                 <VerticalStackLayout.GestureRecognizers>
@@ -202,10 +120,10 @@
             </VerticalStackLayout>
 
             <!-- Logout -->
-            <VerticalStackLayout Grid.Column="4" 
-                         Spacing="2"
-                         HorizontalOptions="Center"
-                         VerticalOptions="Center">
+            <VerticalStackLayout Grid.Column="4"
+                                 Spacing="2"
+                                 HorizontalOptions="Center"
+                                 VerticalOptions="Center">
                 <Image Source="logout.png" WidthRequest="28" HeightRequest="28"/>
                 <Label Text="Logout" FontSize="11" TextColor="#666"/>
                 <VerticalStackLayout.GestureRecognizers>

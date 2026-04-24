@@ -22,8 +22,7 @@
                    Margin="0,20,0,0"/>
 
             <!-- Curved Bottom -->
-            <BoxView Grid.Row="0"
-                     BackgroundColor="#F5E6E0"
+            <BoxView BackgroundColor="#F5E6E0"
                      HeightRequest="30"
                      VerticalOptions="End"
                      CornerRadius="30,30,0,0"
@@ -32,7 +31,7 @@
 
         <!-- Content -->
         <ScrollView Grid.Row="1" Margin="0,-10,0,0">
-            <VerticalStackLayout Spacing="15" Padding="20,0">
+            <VerticalStackLayout Spacing="15" Padding="20,0,20,20">
 
                 <!-- Latest Update Card -->
                 <Frame BackgroundColor="#D32F2F"
@@ -66,102 +65,95 @@
                        TextColor="#333"
                        Margin="0,10,0,0"/>
 
-                <!-- Announcement Item 1 -->
+                <!-- Report Collection -->
                 <CollectionView x:Name="ReportCollection"
-    SelectionMode="None"
-    Margin="5">
-
+                                SelectionMode="None"
+                                Margin="5">
                     <CollectionView.ItemsLayout>
                         <LinearItemsLayout Orientation="Vertical" ItemSpacing="5"/>
                     </CollectionView.ItemsLayout>
 
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
-
-                            <!-- CARD -->
                             <Frame BackgroundColor="#BFD9EC"
-                   CornerRadius="18"
-                   Padding="15"
-                   HasShadow="False"
-                   Margin="0,4">
+                                   CornerRadius="18"
+                                   Padding="15"
+                                   HasShadow="False"
+                                   Margin="0,4">
 
                                 <VerticalStackLayout Spacing="10">
 
                                     <!-- TOP ROW: TITLE + TYPE -->
                                     <Grid ColumnDefinitions="*,Auto">
                                         <Label Text="{Binding Title}"
-                               FontSize="16"
-                               FontAttributes="Bold"
-                               TextColor="Black"/>
+                                               FontSize="16"
+                                               FontAttributes="Bold"
+                                               TextColor="Black"/>
 
-                                        <!-- LOST / FOUND TAG -->
                                         <Frame Grid.Column="1"
-                               Padding="8,3"
-                               CornerRadius="8"
-                               HasShadow="False"
-                               BorderColor="{Binding RType, Converter={StaticResource TypeToColorConverter}}"
-                               BackgroundColor="{Binding RType, Converter={StaticResource TypeToColorConverter}}">
+                                               Padding="8,3"
+                                               CornerRadius="8"
+                                               HasShadow="False"
+                                               BorderColor="{Binding RType, Converter={StaticResource TypeToColorConverter}}"
+                                               BackgroundColor="{Binding RType, Converter={StaticResource TypeToColorConverter}}">
                                             <Label Text="{Binding RType}"
-                                   FontSize="11"
-                                   FontAttributes="Bold"
-                                   TextColor="White"
-                                   HorizontalTextAlignment="Center"
-                                   VerticalTextAlignment="Center"/>
+                                                   FontSize="11"
+                                                   FontAttributes="Bold"
+                                                   TextColor="White"
+                                                   HorizontalTextAlignment="Center"
+                                                   VerticalTextAlignment="Center"/>
                                         </Frame>
                                     </Grid>
 
                                     <!-- DESCRIPTION -->
                                     <Label Text="{Binding Description}"
-                           FontSize="13"
-                           TextColor="Black"/>
+                                           FontSize="13"
+                                           TextColor="Black"/>
 
                                     <!-- DATE + VIEW BUTTON -->
                                     <Grid ColumnDefinitions="*,Auto">
                                         <Label Text="{Binding Date}"
-                               FontSize="11"
-                               TextColor="Black"
-                               Opacity="0.7"/>
+                                               FontSize="11"
+                                               TextColor="Black"
+                                               Opacity="0.7"/>
 
                                         <Frame Grid.Column="1"
-                               BackgroundColor="#7FB069"
-                               Padding="10,4"
-                               CornerRadius="10"
-                               HasShadow="False">
+                                               BackgroundColor="#7FB069"
+                                               Padding="10,4"
+                                               CornerRadius="10"
+                                               HasShadow="False">
                                             <Label Text="View"
-                                   FontSize="12"
-                                   FontAttributes="Bold"
-                                   TextColor="Black"/>
+                                                   FontSize="12"
+                                                   FontAttributes="Bold"
+                                                   TextColor="Black"/>
                                         </Frame>
                                     </Grid>
 
                                     <!-- REPORTED BY -->
                                     <Grid ColumnDefinitions="*,Auto">
                                         <Label Text="Reported By:"
-                               FontSize="11"
-                               TextColor="Black"
-                               Opacity="0.7"/>
+                                               FontSize="11"
+                                               TextColor="Black"
+                                               Opacity="0.7"/>
 
                                         <Label Grid.Column="1"
-                               Text="{Binding Author}"
-                               FontSize="13"
-                               TextColor="Black"
-                               FontAttributes="Bold"/>
+                                               Text="{Binding Author}"
+                                               FontSize="13"
+                                               TextColor="Black"
+                                               FontAttributes="Bold"/>
                                     </Grid>
 
                                 </VerticalStackLayout>
                             </Frame>
-
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
                 </CollectionView>
 
-
-
-
-
-                <!-- Announcement Item 2 -->
-
-
+                <!-- Pagination — bottom-right, inside the scroll area -->
+                <HorizontalStackLayout x:Name="PageButtonsLayout"
+                                       HorizontalOptions="End"
+                                       Spacing="5"
+                                       Margin="0,2,4,10"/>
 
             </VerticalStackLayout>
         </ScrollView>
@@ -174,93 +166,46 @@
               Padding="0,10">
 
             <!-- Home -->
-            <VerticalStackLayout Grid.Column="0" 
-                                 Spacing="2"
-                                 HorizontalOptions="Center"
-                                 VerticalOptions="Center">
-                <Image Source="home.png"
-                       WidthRequest="28"
-                       HeightRequest="33"
-                       HorizontalOptions="Center"/>
-                <Label Text="Home" 
-                       FontSize="11" 
-                       TextColor="#666" 
-                       HorizontalOptions="Center"/>
+            <VerticalStackLayout Grid.Column="0" Spacing="2" HorizontalOptions="Center" VerticalOptions="Center">
+                <Image Source="home.png" WidthRequest="28" HeightRequest="33" HorizontalOptions="Center"/>
+                <Label Text="Home" FontSize="11" TextColor="#666" HorizontalOptions="Center"/>
                 <VerticalStackLayout.GestureRecognizers>
                     <TapGestureRecognizer Tapped="OnHomeTapped"/>
                 </VerticalStackLayout.GestureRecognizers>
             </VerticalStackLayout>
 
             <!-- Report -->
-            <VerticalStackLayout Grid.Column="1" 
-                                 Spacing="2"
-                                 HorizontalOptions="Center"
-                                 VerticalOptions="Center">
-                <Image Source="report.png"
-                       WidthRequest="28"
-                       HeightRequest="33"
-                       HorizontalOptions="Center"/>
-                <Label Text="Report" 
-                       FontSize="11" 
-                       TextColor="#666" 
-                       HorizontalOptions="Center"/>
+            <VerticalStackLayout Grid.Column="1" Spacing="2" HorizontalOptions="Center" VerticalOptions="Center">
+                <Image Source="report.png" WidthRequest="28" HeightRequest="33" HorizontalOptions="Center"/>
+                <Label Text="Report" FontSize="11" TextColor="#666" HorizontalOptions="Center"/>
                 <VerticalStackLayout.GestureRecognizers>
                     <TapGestureRecognizer Tapped="OnReportTapped"/>
                 </VerticalStackLayout.GestureRecognizers>
             </VerticalStackLayout>
 
             <!-- Receive -->
-            <VerticalStackLayout Grid.Column="2" 
-                                 Spacing="2"
-                                 HorizontalOptions="Center"
-                                 VerticalOptions="Center">
-                <Image Source="box.png"
-                       WidthRequest="28"
-                       HeightRequest="33"
-                       HorizontalOptions="Center"/>
-                <Label Text="Receive" 
-                       FontSize="11" 
-                       TextColor="#666" 
-                       HorizontalOptions="Center"/>
+            <VerticalStackLayout Grid.Column="2" Spacing="2" HorizontalOptions="Center" VerticalOptions="Center">
+                <Image Source="box.png" WidthRequest="28" HeightRequest="33" HorizontalOptions="Center"/>
+                <Label Text="Receive" FontSize="11" TextColor="#666" HorizontalOptions="Center"/>
                 <VerticalStackLayout.GestureRecognizers>
                     <TapGestureRecognizer Tapped="OnReceiveTapped"/>
                 </VerticalStackLayout.GestureRecognizers>
             </VerticalStackLayout>
 
             <!-- News (Active) -->
-            <VerticalStackLayout Grid.Column="3" 
-                                 Spacing="2"
-                                 HorizontalOptions="Center"
-                                 VerticalOptions="Center">
-                <Image Source="notif.png"
-                       WidthRequest="28"
-                       HeightRequest="33"
-                       HorizontalOptions="Center"/>
-                <Label Text="News" 
-                       FontSize="11" 
-                       TextColor="#B71C1C" 
-                       FontAttributes="Bold" 
-                       HorizontalOptions="Center"/>
+            <VerticalStackLayout Grid.Column="3" Spacing="2" HorizontalOptions="Center" VerticalOptions="Center">
+                <Image Source="notif.png" WidthRequest="28" HeightRequest="33" HorizontalOptions="Center"/>
+                <Label Text="News" FontSize="11" TextColor="#B71C1C" FontAttributes="Bold" HorizontalOptions="Center"/>
                 <BoxView HeightRequest="2" BackgroundColor="#B71C1C" CornerRadius="1" Margin="0,-2,0,0"/>
-
                 <VerticalStackLayout.GestureRecognizers>
                     <TapGestureRecognizer Tapped="OnNewsTapped"/>
                 </VerticalStackLayout.GestureRecognizers>
             </VerticalStackLayout>
 
             <!-- Logout -->
-            <VerticalStackLayout Grid.Column="4" 
-                                 Spacing="2"
-                                 HorizontalOptions="Center"
-                                 VerticalOptions="Center">
-                <Image Source="logout.png"
-                           WidthRequest="28"
-                           HeightRequest="33"
-                           HorizontalOptions="Center"/>
-                <Label Text="Logout" 
-                       FontSize="11" 
-                       TextColor="#666" 
-                       HorizontalOptions="Center"/>
+            <VerticalStackLayout Grid.Column="4" Spacing="2" HorizontalOptions="Center" VerticalOptions="Center">
+                <Image Source="logout.png" WidthRequest="28" HeightRequest="33" HorizontalOptions="Center"/>
+                <Label Text="Logout" FontSize="11" TextColor="#666" HorizontalOptions="Center"/>
                 <VerticalStackLayout.GestureRecognizers>
                     <TapGestureRecognizer Tapped="OnLogoutTapped"/>
                 </VerticalStackLayout.GestureRecognizers>
