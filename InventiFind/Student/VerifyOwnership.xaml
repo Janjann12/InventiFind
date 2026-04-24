@@ -88,124 +88,130 @@
                     </VerticalStackLayout>
                 </Border>
 
-                <!-- Full Name -->
+                <!-- Description -->
                 <VerticalStackLayout Spacing="6">
-                    <Label Text="Full Name"
-                           FontSize="13"
-                           FontAttributes="Bold"
-                           TextColor="#444"/>
+                    <Label Text="Description"
+           FontSize="13"
+           FontAttributes="Bold"
+           TextColor="#444"/>
+                    <Label Text="Describe the item in detail — color, brand, markings, contents, etc."
+           FontSize="12"
+           TextColor="#888"/>
                     <Border BackgroundColor="White"
-                            Stroke="#E0E0E0"
-                            StrokeThickness="1"
-                            Padding="14,12">
+            Stroke="#E0E0E0"
+            StrokeThickness="1"
+            Padding="14,12">
                         <Border.StrokeShape>
                             <RoundRectangle CornerRadius="10"/>
                         </Border.StrokeShape>
-                      
+                        <Editor x:Name="DescriptionEditor"
+                Placeholder="e.g. Blue iPhone 14 with black case and keychain"
+                FontSize="14"
+                PlaceholderColor="#BBB"
+                TextColor="#1A1A1A"
+                AutoSize="TextChanges"
+                MinimumHeightRequest="100"/>
                     </Border>
                 </VerticalStackLayout>
 
-                <!-- Item Description -->
+                <!-- Lost At -->
                 <VerticalStackLayout Spacing="6">
-                    <Label Text="Item Description"
-                           FontSize="13"
-                           FontAttributes="Bold"
-                           TextColor="#444"/>
-                    <Label Text="Describe the item in detail — color, brand, markings, contents, etc."
-                           FontSize="12"
-                           TextColor="#888"/>
+                    <Label Text="Lost At"
+           FontSize="13"
+           FontAttributes="Bold"
+           TextColor="#444"/>
+                    <Label Text="Enter where the item was lost"
+           FontSize="12"
+           TextColor="#888"/>
                     <Border BackgroundColor="White"
-                            Stroke="#E0E0E0"
-                            StrokeThickness="1"
-                            Padding="14,12">
+            Stroke="#E0E0E0"
+            StrokeThickness="1"
+            Padding="14,12">
                         <Border.StrokeShape>
                             <RoundRectangle CornerRadius="10"/>
                         </Border.StrokeShape>
-                        <Editor x:Name="ItemDescriptionEditor"
-                                Placeholder="e.g. Black leather wallet with a small scratch on the left corner, contains student ID..."
-                                FontSize="14"
-                                PlaceholderColor="#BBB"
-                                TextColor="#1A1A1A"
-                                AutoSize="TextChanges"
-                                MinimumHeightRequest="100"/>
+                        <Entry x:Name="LostAtEntry"
+               Placeholder="e.g. Room 402, Cafeteria, Library"
+               FontSize="14"
+               PlaceholderColor="#BBB"
+               TextColor="#1A1A1A"/>
                     </Border>
                 </VerticalStackLayout>
 
                 <!-- Date Lost -->
                 <VerticalStackLayout Spacing="6">
                     <Label Text="Date Lost"
-                           FontSize="13"
-                           FontAttributes="Bold"
-                           TextColor="#444"/>
+           FontSize="13"
+           FontAttributes="Bold"
+           TextColor="#444"/>
                     <Border BackgroundColor="White"
-                            Stroke="#E0E0E0"
-                            StrokeThickness="1"
-                            Padding="14,10">
+            Stroke="#E0E0E0"
+            StrokeThickness="1"
+            Padding="14,10">
                         <Border.StrokeShape>
                             <RoundRectangle CornerRadius="10"/>
                         </Border.StrokeShape>
                         <DatePicker x:Name="DateLostPicker"
-            Format="MMMM dd, yyyy"
-            FontSize="14"
-            TextColor="#1A1A1A"/>
-
+                    Format="MMMM dd, yyyy"
+                    FontSize="14"
+                    TextColor="#1A1A1A"/>
                     </Border>
                 </VerticalStackLayout>
 
                 <!-- Proof Photo -->
                 <VerticalStackLayout Spacing="6">
                     <Label Text="Proof Photo"
-                           FontSize="13"
-                           FontAttributes="Bold"
-                           TextColor="#444"/>
-                    <Label Text="Upload a photo that helps prove ownership (e.g. a photo of you with the item, receipt, etc.)"
-                           FontSize="12"
-                           TextColor="#888"/>
+           FontSize="13"
+           FontAttributes="Bold"
+           TextColor="#444"/>
+                    <Label Text="Upload a photo that helps prove ownership"
+           FontSize="12"
+           TextColor="#888"/>
 
                     <!-- Upload button -->
                     <Border x:Name="PhotoPickerBorder"
-                            BackgroundColor="White"
-                            Stroke="#E0E0E0"
-                            StrokeThickness="1"
-                            Padding="0">
+            BackgroundColor="White"
+            Stroke="#E0E0E0"
+            StrokeThickness="1"
+            Padding="0">
                         <Border.StrokeShape>
                             <RoundRectangle CornerRadius="10"/>
                         </Border.StrokeShape>
                         <VerticalStackLayout Padding="14,18" Spacing="6">
                             <Label Text="📎"
-                                   FontSize="28"
-                                   HorizontalOptions="Center"/>
+                   FontSize="28"
+                   HorizontalOptions="Center"/>
                             <Label Text="Tap to choose a photo"
-                                   FontSize="13"
-                                   TextColor="#888"
-                                   HorizontalOptions="Center"/>
+                   FontSize="13"
+                   TextColor="#888"
+                   HorizontalOptions="Center"/>
                         </VerticalStackLayout>
                         <Border.GestureRecognizers>
                             <TapGestureRecognizer Tapped="OnPickPhotoTapped"/>
                         </Border.GestureRecognizers>
                     </Border>
 
-                    <!-- Preview (hidden until photo picked) -->
+                    <!-- Preview -->
                     <Border x:Name="PhotoPreviewBorder"
-                            IsVisible="False"
-                            BackgroundColor="White"
-                            Stroke="#E0E0E0"
-                            StrokeThickness="1"
-                            Padding="0">
+            IsVisible="False"
+            BackgroundColor="White"
+            Stroke="#E0E0E0"
+            StrokeThickness="1"
+            Padding="0">
                         <Border.StrokeShape>
                             <RoundRectangle CornerRadius="10"/>
                         </Border.StrokeShape>
                         <Grid RowDefinitions="Auto,Auto">
                             <Image x:Name="PhotoPreviewImage"
-                                   Grid.Row="0"
-                                   HeightRequest="200"
-                                   Aspect="AspectFill"/>
+                   Grid.Row="0"
+                   HeightRequest="200"
+                   Aspect="AspectFill"/>
                             <Button Grid.Row="1"
-                                    Text="Remove photo"
-                                    FontSize="13"
-                                    TextColor="#B71C1C"
-                                    BackgroundColor="Transparent"
-                                    Clicked="OnRemovePhotoClicked"/>
+                    Text="Remove photo"
+                    FontSize="13"
+                    TextColor="#B71C1C"
+                    BackgroundColor="Transparent"
+                    Clicked="OnRemovePhotoClicked"/>
                         </Grid>
                     </Border>
                 </VerticalStackLayout>

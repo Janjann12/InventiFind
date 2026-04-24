@@ -33,35 +33,38 @@ public partial class ReceiveModule : ContentPage
 
             // CHANGE THIS to your actual logged in user id
             int currentUserId = Preferences.Get("UserID", 0);
-
             const string sql = """
-                SELECT
-                    m.match_id,
-                    m.lost_report_id,
-                    m.found_report_id,
-                    m.similarity_score AS score,
-                    m.match_status,
+    SELECT
+        m.match_id,
+        m.lost_report_id,
+        m.found_report_id,
+        m.similarity_score AS score,
+        m.match_status,
 
-                    L.item_name,
-                    L.category,
-                    L.description AS ownership_proof,
-                    L.date_reported,
-                    L.user_id AS lost_user_id,
+        L.item_name,
+        L.category,
+        L.description AS ownership_proof,
+        L.date_reported,
+        L.user_id AS lost_user_id,
 
-                    F.user_id AS found_user_id,
+        F.user_id AS found_user_id,
 
-                    CONCAT(U.FirstName, ' ', U.Surname) AS reporter_name
-                FROM matches m
-                JOIN item_reports L ON L.report_id = m.lost_report_id
-                JOIN item_reports F ON F.report_id = m.found_report_id
-                LEFT JOIN users U ON U.UserID = L.user_id
-                ORDER BY m.created_at DESC
-                LIMIT 20
-            """;
+        CONCAT(U.FirstName, ' ', U.Surname) AS reporter_name
+    FROM matches m
+    JOIN item_reports L ON L.report_id = m.lost_report_id
+    JOIN item_reports F ON F.report_id = m.found_report_id
+    LEFT JOIN users U ON U.UserID = L.user_id
+    WHERE L.user_id = @currentUserId
+       OR F.user_id = @currentUserId
+    ORDER BY m.created_at DESC
+    LIMIT 20
+""";
 
             MatchesStack.Children.Clear();
 
             await using var cmd = new MySqlCommand(sql, conn);
+            cmd.Parameters.AddWithValue("@currentUserId", currentUserId);
+
             await using var reader = await cmd.ExecuteReaderAsync();
 
             bool hasRows = false;

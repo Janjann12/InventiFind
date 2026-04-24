@@ -2,6 +2,10 @@ using MySqlConnector;
 
 namespace InventiFind;
 
+/// <summary>
+/// A matched pair: one lost report + one found report,
+/// shown side-by-side with a similarity score and a Verify button.
+/// </summary>
 public class MatchPair
 {
     public int LostId { get; set; }
