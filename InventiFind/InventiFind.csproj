@@ -98,6 +98,9 @@
 	  <MauiXaml Update="Student\StudentDashboard.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Student\VerifyOwnership.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Teacher\ReportsModule.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>

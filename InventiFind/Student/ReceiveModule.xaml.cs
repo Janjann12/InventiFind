@@ -11,6 +11,7 @@ public partial class ReceiveModule : ContentPage
     {
         InitializeComponent();
         BindingContext = this;
+
         ContactCommand = new Command<MatchPair>(p =>
             DisplayAlert("Contact", $"Contacting about {p.ItemName}", "OK"));
     }
@@ -30,6 +31,9 @@ public partial class ReceiveModule : ContentPage
             await using var conn = new MySqlConnection(DatabaseConfig.ConnectionString);
             await conn.OpenAsync();
 
+            // CHANGE THIS to your actual logged in user id
+            int currentUserId = Preferences.Get("UserID", 0);
+
             const string sql = """
                 SELECT
                     m.match_id,
@@ -37,13 +41,19 @@ public partial class ReceiveModule : ContentPage
                     m.found_report_id,
                     m.similarity_score AS score,
                     m.match_status,
+
                     L.item_name,
                     L.category,
                     L.description AS ownership_proof,
                     L.date_reported,
+                    L.user_id AS lost_user_id,
+
+                    F.user_id AS found_user_id,
+
                     CONCAT(U.FirstName, ' ', U.Surname) AS reporter_name
                 FROM matches m
                 JOIN item_reports L ON L.report_id = m.lost_report_id
+                JOIN item_reports F ON F.report_id = m.found_report_id
                 LEFT JOIN users U ON U.UserID = L.user_id
                 ORDER BY m.created_at DESC
                 LIMIT 20
@@ -64,18 +74,35 @@ public partial class ReceiveModule : ContentPage
                 {
                     LostId = reader.GetInt32("lost_report_id"),
                     SurrenderedId = reader.GetInt32("found_report_id"),
+
+                    LostUserId = reader.GetInt32("lost_user_id"),
+                    FoundUserId = reader.GetInt32("found_user_id"),
+
+                    IsFinder = reader.GetInt32("found_user_id") == currentUserId,
+
                     ItemName = reader.GetString("item_name"),
                     Category = reader.GetString("category"),
+
                     ReporterName = reader.IsDBNull(reader.GetOrdinal("reporter_name"))
-                                        ? "Unknown"
-                                        : reader.GetString("reporter_name"),
-                    SubmittedDate = reader.GetDateTime("date_reported").ToString("yyyy-MM-dd"),
-                    OwnershipProof = reader.IsDBNull(reader.GetOrdinal("ownership_proof"))
-                                        ? ""
-                                        : reader.GetString("ownership_proof"),
+                        ? "Unknown"
+                        : reader.GetString("reporter_name"),
+
+                    SubmittedDate = reader.GetDateTime("date_reported")
+                        .ToString("yyyy-MM-dd"),
+
+                    OwnershipProof = reader.IsDBNull(
+                        reader.GetOrdinal("ownership_proof"))
+                        ? ""
+                        : reader.GetString("ownership_proof"),
+
                     SimilarityScore = reader.GetInt32("score"),
-                    LostReportNo = reader.GetInt32("lost_report_id").ToString("D10"),
-                    SurrenderedNo = reader.GetInt32("found_report_id").ToString("D10"),
+
+                    LostReportNo = reader.GetInt32("lost_report_id")
+                        .ToString("D10"),
+
+                    SurrenderedNo = reader.GetInt32("found_report_id")
+                        .ToString("D10"),
+
                     Status = CapFirst(reader.GetString("match_status"))
                 };
 
@@ -96,7 +123,8 @@ public partial class ReceiveModule : ContentPage
         }
         catch (Exception ex)
         {
-            await DisplayAlert("Error", $"Could not load matches:\n{ex.Message}", "OK");
+            await DisplayAlert("Error",
+                $"Could not load matches:\n{ex.Message}", "OK");
         }
     }
 
@@ -104,7 +132,6 @@ public partial class ReceiveModule : ContentPage
         string.IsNullOrEmpty(s) ? s : char.ToUpper(s[0]) + s[1..];
 
     // ── Card builder ──────────────────────────────────────────────────────
-    // Copied verbatim from LostItemDetailPage — no changes needed.
 
     private View BuildMatchCard(MatchPair pair)
     {
@@ -115,6 +142,7 @@ public partial class ReceiveModule : ContentPage
             Padding = new Thickness(12, 5),
             HasShadow = false
         };
+
         badge.Content = new Label
         {
             Text = pair.Status,
@@ -125,10 +153,13 @@ public partial class ReceiveModule : ContentPage
 
         var vidRow = new Grid
         {
-            ColumnDefinitions = new ColumnDefinitionCollection(
-                new ColumnDefinition { Width = GridLength.Star },
-                new ColumnDefinition { Width = GridLength.Auto })
+            ColumnDefinitions =
+        {
+            new ColumnDefinition { Width = GridLength.Star },
+            new ColumnDefinition { Width = GridLength.Auto }
+        }
         };
+
         vidRow.Add(new Label
         {
             Text = "V-ID",
@@ -136,6 +167,7 @@ public partial class ReceiveModule : ContentPage
             FontAttributes = FontAttributes.Bold,
             TextColor = Color.FromArgb("#1A1A1A")
         }, 0, 0);
+
         vidRow.Add(badge, 1, 0);
 
         var scoreBox = new Frame
@@ -147,6 +179,7 @@ public partial class ReceiveModule : ContentPage
             WidthRequest = 60,
             HeightRequest = 60
         };
+
         scoreBox.Content = new Label
         {
             Text = $"{pair.SimilarityScore}%",
@@ -162,51 +195,114 @@ public partial class ReceiveModule : ContentPage
             Spacing = 2,
             Margin = new Thickness(10, 0, 0, 0)
         };
-        nameBlock.Add(new Label { Text = pair.ItemName, FontSize = 18, FontAttributes = FontAttributes.Bold, TextColor = Color.FromArgb("#1A1A1A") });
-        nameBlock.Add(new Label { Text = pair.ReporterName, FontSize = 13, TextColor = Color.FromArgb("#555") });
-        nameBlock.Add(new Label { Text = $"Submitted: {pair.SubmittedDate}", FontSize = 12, TextColor = Color.FromArgb("#888") });
+
+        nameBlock.Add(new Label
+        {
+            Text = pair.ItemName,
+            FontSize = 18,
+            FontAttributes = FontAttributes.Bold
+        });
+
+        nameBlock.Add(new Label
+        {
+            Text = pair.ReporterName,
+            FontSize = 13
+        });
+
+        nameBlock.Add(new Label
+        {
+            Text = $"Submitted: {pair.SubmittedDate}",
+            FontSize = 12,
+            TextColor = Color.FromArgb("#888")
+        });
 
         var scoreRow = new Grid
         {
-            ColumnDefinitions = new ColumnDefinitionCollection(
-                new ColumnDefinition { Width = GridLength.Auto },
-                new ColumnDefinition { Width = GridLength.Star }),
+            ColumnDefinitions =
+        {
+            new ColumnDefinition { Width = GridLength.Auto },
+            new ColumnDefinition { Width = GridLength.Star }
+        },
             Margin = new Thickness(0, 10, 0, 0)
         };
+
         scoreRow.Add(scoreBox, 0, 0);
         scoreRow.Add(nameBlock, 1, 0);
 
-        Frame MakeReportBox(string header, string value)
+        var lostBox = new Frame
         {
-            var f = new Frame
+            BackgroundColor = Color.FromArgb("#EEEEEE"),
+            CornerRadius = 12,
+            Padding = new Thickness(12, 10),
+            HasShadow = false
+        };
+
+        lostBox.Content = new VerticalStackLayout
+        {
+            Children =
+        {
+            new Label
             {
-                BackgroundColor = Color.FromArgb("#EEEEEE"),
-                CornerRadius = 12,
-                Padding = new Thickness(12, 10),
-                HasShadow = false
-            };
-            f.Content = new VerticalStackLayout
+                Text = "Lost report",
+                FontSize = 12,
+                FontAttributes = FontAttributes.Bold
+            },
+            new Label
             {
-                Children =
-                {
-                    new Label { Text = header, FontSize = 12, FontAttributes = FontAttributes.Bold, TextColor = Color.FromArgb("#555") },
-                    new Label { Text = value,  FontSize = 13, TextColor = Color.FromArgb("#1A1A1A") }
-                }
-            };
-            return f;
+                Text = pair.LostReportNo,
+                FontSize = 13
+            }
         }
+        };
+
+        var foundBox = new Frame
+        {
+            BackgroundColor = Color.FromArgb("#EEEEEE"),
+            CornerRadius = 12,
+            Padding = new Thickness(12, 10),
+            HasShadow = false
+        };
+
+        foundBox.Content = new VerticalStackLayout
+        {
+            Children =
+        {
+            new Label
+            {
+                Text = "Found report",
+                FontSize = 12,
+                FontAttributes = FontAttributes.Bold
+            },
+            new Label
+            {
+                Text = pair.SurrenderedNo,
+                FontSize = 13
+            }
+        }
+        };
 
         var reportsRow = new Grid
         {
-            ColumnDefinitions = new ColumnDefinitionCollection(
-                new ColumnDefinition { Width = GridLength.Star },
-                new ColumnDefinition { Width = GridLength.Auto },
-                new ColumnDefinition { Width = GridLength.Star }),
+            ColumnDefinitions =
+        {
+            new ColumnDefinition { Width = GridLength.Star },
+            new ColumnDefinition { Width = GridLength.Auto },
+            new ColumnDefinition { Width = GridLength.Star }
+        },
             Margin = new Thickness(0, 10, 0, 0)
         };
-        reportsRow.Add(MakeReportBox("Lost report", pair.LostReportNo), 0, 0);
-        reportsRow.Add(new Label { Text = "⇌", FontSize = 20, TextColor = Color.FromArgb("#888"), HorizontalOptions = LayoutOptions.Center, VerticalOptions = LayoutOptions.Center }, 1, 0);
-        reportsRow.Add(MakeReportBox("Found report", pair.SurrenderedNo), 2, 0);
+
+        reportsRow.Add(lostBox, 0, 0);
+
+        reportsRow.Add(new Label
+        {
+            Text = "⇌",
+            FontSize = 20,
+            HorizontalOptions = LayoutOptions.Center,
+            VerticalOptions = LayoutOptions.Center
+        }, 1, 0);
+
+        reportsRow.Add(foundBox, 2, 0);
 
         var proofBox = new Frame
         {
@@ -216,14 +312,23 @@ public partial class ReceiveModule : ContentPage
             HasShadow = false,
             Margin = new Thickness(0, 10, 0, 0)
         };
+
         proofBox.Content = new VerticalStackLayout
         {
-            Spacing = 4,
             Children =
+        {
+            new Label
             {
-                new Label { Text = "Ownership proof", FontSize = 13, FontAttributes = FontAttributes.Bold, TextColor = Color.FromArgb("#555") },
-                new Label { Text = pair.OwnershipProof, FontSize = 13, TextColor = Color.FromArgb("#333") }
+                Text = "Ownership proof",
+                FontSize = 13,
+                FontAttributes = FontAttributes.Bold
+            },
+            new Label
+            {
+                Text = pair.OwnershipProof,
+                FontSize = 13
             }
+        }
         };
 
         var verifyBtn = new Frame
@@ -234,22 +339,34 @@ public partial class ReceiveModule : ContentPage
             HasShadow = false,
             Margin = new Thickness(0, 10, 0, 0)
         };
+
         verifyBtn.Content = new Label
         {
-            Text = "Verify Ownership",
+            Text = pair.IsFinder
+                ? "You found someone's item"
+                : "Verify Ownership",
             FontSize = 18,
             FontAttributes = FontAttributes.Bold,
-            TextColor = Color.FromArgb("#1A1A1A"),
             HorizontalOptions = LayoutOptions.Center
         };
-        var tapPair = pair;
+
         var tap = new TapGestureRecognizer();
+
         tap.Tapped += async (s, e) =>
         {
-            var detailPage = new VerifyDetailPage(tapPair);
-            await Navigation.PushModalAsync(detailPage, animated: true);
-            await LoadMatchesAsync();          // refresh after verify
+            if (pair.IsFinder)
+            {
+                await DisplayAlert(
+                    "Item Found",
+                    "You already reported finding this item.",
+                    "OK");
+                return;
+            }
+
+            await Navigation.PushModalAsync(
+                new VerifyOwnership(pair), true);
         };
+
         verifyBtn.GestureRecognizers.Add(tap);
 
         return new Frame
@@ -257,11 +374,18 @@ public partial class ReceiveModule : ContentPage
             BackgroundColor = Colors.White,
             CornerRadius = 16,
             Padding = new Thickness(16),
-            HasShadow = false,
             Margin = new Thickness(0, 0, 0, 12),
+            HasShadow = false,
             Content = new VerticalStackLayout
             {
-                Children = { vidRow, scoreRow, reportsRow, proofBox, verifyBtn }
+                Children =
+            {
+                vidRow,
+                scoreRow,
+                reportsRow,
+                proofBox,
+                verifyBtn
+            }
             }
         };
     }
@@ -281,8 +405,48 @@ public partial class ReceiveModule : ContentPage
 
     private async void OnLogoutTapped(object sender, TappedEventArgs e)
     {
-        bool confirm = await DisplayAlert("Logout", "Are you sure?", "Yes", "No");
+        bool confirm = await DisplayAlert("Logout",
+            "Are you sure?", "Yes", "No");
+
         if (confirm)
             await Shell.Current.GoToAsync("//MainPage");
+    }
+
+    // ── INNER CLASS ───────────────────────────────────────────────────────
+
+    public class MatchPair
+    {
+        public int LostId { get; set; }
+        public int SurrenderedId { get; set; }
+
+        public int LostUserId { get; set; }
+        public int FoundUserId { get; set; }
+
+        public bool IsFinder { get; set; }
+
+        public string ItemName { get; set; }
+        public string Category { get; set; }
+        public string ReporterName { get; set; }
+        public string SubmittedDate { get; set; }
+        public string OwnershipProof { get; set; }
+
+        public int SimilarityScore { get; set; }
+
+        public string LostReportNo { get; set; }
+        public string SurrenderedNo { get; set; }
+
+        public string Status { get; set; }
+
+        public Color StatusBadgeColor =>
+            Status.ToLower() == "verified"
+                ? Colors.Green
+                : Colors.Orange;
+
+        public Color ScoreColor =>
+            SimilarityScore >= 80
+                ? Colors.Green
+                : SimilarityScore >= 50
+                    ? Colors.Orange
+                    : Colors.Red;
     }
 }
