@@ -4,57 +4,116 @@
              x:Class="InventiFind.ReceiveModule"
              Shell.NavBarIsVisible="False"
              Title="ReceiveModule"
-             BackgroundColor="#F5F0F0">
+             BackgroundColor="#F2F4F7">
 
     <Grid RowDefinitions="Auto,*,Auto">
 
-        <!-- Header -->
-        <Border Grid.Row="0"
-                BackgroundColor="#B71C1C"
-                StrokeThickness="0"
-                Padding="0,25,0,20">
-            <Border.StrokeShape>
-                <RoundRectangle CornerRadius="0,0,25,25"/>
-            </Border.StrokeShape>
+        <!-- ── HEADER ─────────────────────────────────────────────────── -->
+        <Grid Grid.Row="0"
+              BackgroundColor="#C8102E"
+              Padding="20,44,20,24">
             <Label Text="Receive Items"
                    TextColor="White"
                    FontSize="28"
                    FontAttributes="Bold"
                    HorizontalOptions="Center"/>
-        </Border>
+        </Grid>
 
-        <!-- Main Content -->
-        <ScrollView Grid.Row="1" Padding="15,20">
-            <VerticalStackLayout Spacing="15">
+        <!-- ── MAIN CONTENT ───────────────────────────────────────────── -->
+        <ScrollView Grid.Row="1" Padding="16,16,16,8">
+            <VerticalStackLayout Spacing="14">
 
-                <!-- How to Claim Box -->
-                <Border BackgroundColor="#D6EAF8"
-                        Stroke="#5DADE2"
-                        StrokeThickness="1"
-                        Padding="15"
-                        Margin="0,0,0,10">
-                    <Border.StrokeShape>
-                        <RoundRectangle CornerRadius="10"/>
-                    </Border.StrokeShape>
-                    <VerticalStackLayout Spacing="5">
+                <!-- How to Claim -->
+                <Frame BackgroundColor="White"
+                       CornerRadius="16"
+                       Padding="16,14"
+                       HasShadow="False"
+                       BorderColor="#E5E7EB">
+                    <VerticalStackLayout Spacing="10">
+
                         <Label Text="How to Claim Your Item"
-                               TextColor="#2E86AB"
-                               FontSize="16"
+                               TextColor="#111827"
+                               FontSize="15"
                                FontAttributes="Bold"/>
-                        <Label Text="1. Visit the location shown below"
-                               TextColor="#2E86AB"
-                               FontSize="13"/>
-                        <Label Text="2. Bring a valid ID for verification"
-                               TextColor="#2E86AB"
-                               FontSize="13"/>
-                        <Label Text="3. Provide item verification code"
-                               TextColor="#2E86AB"
-                               FontSize="13"/>
-                        <Label Text="4. Sign the release form"
-                               TextColor="#2E86AB"
-                               FontSize="13"/>
+
+                        <BoxView HeightRequest="1"
+                                 BackgroundColor="#F3F4F6"
+                                 Margin="0,0,0,2"/>
+
+                        <Grid ColumnDefinitions="28,*" ColumnSpacing="10" RowSpacing="10"
+                              RowDefinitions="Auto,Auto,Auto,Auto">
+
+                            <!-- Step 1 -->
+                            <Frame Grid.Row="0" Grid.Column="0"
+                                   BackgroundColor="#FEE2E2"
+                                   CornerRadius="14"
+                                   Padding="0"
+                                   HasShadow="False"
+                                   WidthRequest="28" HeightRequest="28">
+                                <Label Text="1" FontSize="12" FontAttributes="Bold"
+                                       TextColor="#C8102E"
+                                       HorizontalOptions="Center"
+                                       VerticalOptions="Center"/>
+                            </Frame>
+                            <Label Grid.Row="0" Grid.Column="1"
+                                   Text="Visit the location shown on the card"
+                                   TextColor="#374151" FontSize="13"
+                                   VerticalOptions="Center"/>
+
+                            <!-- Step 2 -->
+                            <Frame Grid.Row="1" Grid.Column="0"
+                                   BackgroundColor="#FEE2E2"
+                                   CornerRadius="14"
+                                   Padding="0"
+                                   HasShadow="False"
+                                   WidthRequest="28" HeightRequest="28">
+                                <Label Text="2" FontSize="12" FontAttributes="Bold"
+                                       TextColor="#C8102E"
+                                       HorizontalOptions="Center"
+                                       VerticalOptions="Center"/>
+                            </Frame>
+                            <Label Grid.Row="1" Grid.Column="1"
+                                   Text="Bring a valid ID for verification"
+                                   TextColor="#374151" FontSize="13"
+                                   VerticalOptions="Center"/>
+
+                            <!-- Step 3 -->
+                            <Frame Grid.Row="2" Grid.Column="0"
+                                   BackgroundColor="#FEE2E2"
+                                   CornerRadius="14"
+                                   Padding="0"
+                                   HasShadow="False"
+                                   WidthRequest="28" HeightRequest="28">
+                                <Label Text="3" FontSize="12" FontAttributes="Bold"
+                                       TextColor="#C8102E"
+                                       HorizontalOptions="Center"
+                                       VerticalOptions="Center"/>
+                            </Frame>
+                            <Label Grid.Row="2" Grid.Column="1"
+                                   Text="Provide your item verification code"
+                                   TextColor="#374151" FontSize="13"
+                                   VerticalOptions="Center"/>
+
+                            <!-- Step 4 -->
+                            <Frame Grid.Row="3" Grid.Column="0"
+                                   BackgroundColor="#FEE2E2"
+                                   CornerRadius="14"
+                                   Padding="0"
+                                   HasShadow="False"
+                                   WidthRequest="28" HeightRequest="28">
+                                <Label Text="4" FontSize="12" FontAttributes="Bold"
+                                       TextColor="#C8102E"
+                                       HorizontalOptions="Center"
+                                       VerticalOptions="Center"/>
+                            </Frame>
+                            <Label Grid.Row="3" Grid.Column="1"
+                                   Text="Sign the release form"
+                                   TextColor="#374151" FontSize="13"
+                                   VerticalOptions="Center"/>
+
+                        </Grid>
                     </VerticalStackLayout>
-                </Border>
+                </Frame>
 
                 <!-- Match Cards (dynamically added in code-behind) -->
                 <VerticalStackLayout x:Name="MatchesStack" Spacing="12"/>
@@ -62,13 +121,12 @@
             </VerticalStackLayout>
         </ScrollView>
 
-        <!-- Bottom Navigation -->
+        <!-- ── BOTTOM NAV ─────────────────────────────────────────────── -->
         <Grid Grid.Row="2"
               BackgroundColor="White"
               HeightRequest="70"
               ColumnDefinitions="*,*,*,*,*"
-              Padding="0,10"
-              Shadow="{Shadow Brush=#20000000, Offset='0,-2', Radius=4}">
+              Padding="0,10">
 
             <!-- Home -->
             <VerticalStackLayout Grid.Column="0"
@@ -76,7 +134,7 @@
                                  HorizontalOptions="Center"
                                  VerticalOptions="Center">
                 <Image Source="home.png" WidthRequest="28" HeightRequest="28"/>
-                <Label Text="Home" FontSize="11" TextColor="#666"/>
+                <Label Text="Home" FontSize="11" TextColor="#9CA3AF"/>
                 <VerticalStackLayout.GestureRecognizers>
                     <TapGestureRecognizer Tapped="OnHomeTapped"/>
                 </VerticalStackLayout.GestureRecognizers>
@@ -88,7 +146,7 @@
                                  HorizontalOptions="Center"
                                  VerticalOptions="Center">
                 <Image Source="report.png" WidthRequest="28" HeightRequest="28"/>
-                <Label Text="Report" FontSize="11" TextColor="#666"/>
+                <Label Text="Report" FontSize="11" TextColor="#9CA3AF"/>
                 <VerticalStackLayout.GestureRecognizers>
                     <TapGestureRecognizer Tapped="OnReportTapped"/>
                 </VerticalStackLayout.GestureRecognizers>
@@ -100,8 +158,9 @@
                                  HorizontalOptions="Center"
                                  VerticalOptions="Center">
                 <Image Source="box.png" WidthRequest="28" HeightRequest="28"/>
-                <Label Text="Receive" FontSize="11" TextColor="#B71C1C" FontAttributes="Bold"/>
-                <BoxView HeightRequest="2" BackgroundColor="#B71C1C" CornerRadius="1" Margin="0,-2,0,0"/>
+                <Label Text="Receive" FontSize="11" TextColor="#C8102E" FontAttributes="Bold"/>
+                <BoxView HeightRequest="2" BackgroundColor="#C8102E"
+                         CornerRadius="1" Margin="0,-2,0,0"/>
                 <VerticalStackLayout.GestureRecognizers>
                     <TapGestureRecognizer Tapped="OnReceiveTapped"/>
                 </VerticalStackLayout.GestureRecognizers>
@@ -113,7 +172,7 @@
                                  HorizontalOptions="Center"
                                  VerticalOptions="Center">
                 <Image Source="notif.png" WidthRequest="28" HeightRequest="28"/>
-                <Label Text="News" FontSize="11" TextColor="#666"/>
+                <Label Text="News" FontSize="11" TextColor="#9CA3AF"/>
                 <VerticalStackLayout.GestureRecognizers>
                     <TapGestureRecognizer Tapped="OnNewsTapped"/>
                 </VerticalStackLayout.GestureRecognizers>
@@ -125,13 +184,14 @@
                                  HorizontalOptions="Center"
                                  VerticalOptions="Center">
                 <Image Source="logout.png" WidthRequest="28" HeightRequest="28"/>
-                <Label Text="Logout" FontSize="11" TextColor="#666"/>
+                <Label Text="Logout" FontSize="11" TextColor="#9CA3AF"/>
                 <VerticalStackLayout.GestureRecognizers>
                     <TapGestureRecognizer Tapped="OnLogoutTapped"/>
                 </VerticalStackLayout.GestureRecognizers>
             </VerticalStackLayout>
 
         </Grid>
+
     </Grid>
 
 </ContentPage>

@@ -31,7 +31,6 @@ public partial class ReceiveModule : ContentPage
             await using var conn = new MySqlConnection(DatabaseConfig.ConnectionString);
             await conn.OpenAsync();
 
-            // CHANGE THIS to your actual logged in user id
             int currentUserId = Preferences.Get("UserID", 0);
             const string sql = """
     SELECT
@@ -120,7 +119,7 @@ public partial class ReceiveModule : ContentPage
                 {
                     Text = "No matches found",
                     FontSize = 16,
-                    TextColor = Color.FromArgb("#999"),
+                    TextColor = Color.FromArgb("#546E7A"),
                     HorizontalOptions = LayoutOptions.Center,
                     Margin = new Thickness(0, 60, 0, 0)
                 });
@@ -143,7 +142,7 @@ public partial class ReceiveModule : ContentPage
         var badge = new Frame
         {
             BackgroundColor = pair.StatusBadgeColor,
-            CornerRadius = 20,
+            CornerRadius = 5,
             Padding = new Thickness(12, 5),
             HasShadow = false
         };
@@ -159,10 +158,10 @@ public partial class ReceiveModule : ContentPage
         var vidRow = new Grid
         {
             ColumnDefinitions =
-        {
-            new ColumnDefinition { Width = GridLength.Star },
-            new ColumnDefinition { Width = GridLength.Auto }
-        }
+            {
+                new ColumnDefinition { Width = GridLength.Star },
+                new ColumnDefinition { Width = GridLength.Auto }
+            }
         };
 
         vidRow.Add(new Label
@@ -205,29 +204,31 @@ public partial class ReceiveModule : ContentPage
         {
             Text = pair.ItemName,
             FontSize = 18,
-            FontAttributes = FontAttributes.Bold
+            FontAttributes = FontAttributes.Bold,
+            TextColor = Color.FromArgb("#1A1A1A")
         });
 
         nameBlock.Add(new Label
         {
             Text = pair.ReporterName,
-            FontSize = 13
+            FontSize = 13,
+            TextColor = Color.FromArgb("#37474F")
         });
 
         nameBlock.Add(new Label
         {
             Text = $"Submitted: {pair.SubmittedDate}",
             FontSize = 12,
-            TextColor = Color.FromArgb("#888")
+            TextColor = Color.FromArgb("#546E7A")
         });
 
         var scoreRow = new Grid
         {
             ColumnDefinitions =
-        {
-            new ColumnDefinition { Width = GridLength.Auto },
-            new ColumnDefinition { Width = GridLength.Star }
-        },
+            {
+                new ColumnDefinition { Width = GridLength.Auto },
+                new ColumnDefinition { Width = GridLength.Star }
+            },
             Margin = new Thickness(0, 10, 0, 0)
         };
 
@@ -236,7 +237,7 @@ public partial class ReceiveModule : ContentPage
 
         var lostBox = new Frame
         {
-            BackgroundColor = Color.FromArgb("#EEEEEE"),
+            BackgroundColor = Color.FromArgb("#F0F4F8"),
             CornerRadius = 12,
             Padding = new Thickness(12, 10),
             HasShadow = false
@@ -245,24 +246,26 @@ public partial class ReceiveModule : ContentPage
         lostBox.Content = new VerticalStackLayout
         {
             Children =
-        {
-            new Label
             {
-                Text = "Lost report",
-                FontSize = 12,
-                FontAttributes = FontAttributes.Bold
-            },
-            new Label
-            {
-                Text = pair.LostReportNo,
-                FontSize = 13
+                new Label
+                {
+                    Text = "Lost report",
+                    FontSize = 12,
+                    FontAttributes = FontAttributes.Bold,
+                    TextColor = Color.FromArgb("#37474F")
+                },
+                new Label
+                {
+                    Text = pair.LostReportNo,
+                    FontSize = 13,
+                    TextColor = Color.FromArgb("#1A1A1A")
+                }
             }
-        }
         };
 
         var foundBox = new Frame
         {
-            BackgroundColor = Color.FromArgb("#EEEEEE"),
+            BackgroundColor = Color.FromArgb("#F0F4F8"),
             CornerRadius = 12,
             Padding = new Thickness(12, 10),
             HasShadow = false
@@ -271,29 +274,31 @@ public partial class ReceiveModule : ContentPage
         foundBox.Content = new VerticalStackLayout
         {
             Children =
-        {
-            new Label
             {
-                Text = "Found report",
-                FontSize = 12,
-                FontAttributes = FontAttributes.Bold
-            },
-            new Label
-            {
-                Text = pair.SurrenderedNo,
-                FontSize = 13
+                new Label
+                {
+                    Text = "Found report",
+                    FontSize = 12,
+                    FontAttributes = FontAttributes.Bold,
+                    TextColor = Color.FromArgb("#37474F")
+                },
+                new Label
+                {
+                    Text = pair.SurrenderedNo,
+                    FontSize = 13,
+                    TextColor = Color.FromArgb("#1A1A1A")
+                }
             }
-        }
         };
 
         var reportsRow = new Grid
         {
             ColumnDefinitions =
-        {
-            new ColumnDefinition { Width = GridLength.Star },
-            new ColumnDefinition { Width = GridLength.Auto },
-            new ColumnDefinition { Width = GridLength.Star }
-        },
+            {
+                new ColumnDefinition { Width = GridLength.Star },
+                new ColumnDefinition { Width = GridLength.Auto },
+                new ColumnDefinition { Width = GridLength.Star }
+            },
             Margin = new Thickness(0, 10, 0, 0)
         };
 
@@ -304,14 +309,15 @@ public partial class ReceiveModule : ContentPage
             Text = "⇌",
             FontSize = 20,
             HorizontalOptions = LayoutOptions.Center,
-            VerticalOptions = LayoutOptions.Center
+            VerticalOptions = LayoutOptions.Center,
+            TextColor = Color.FromArgb("#546E7A")
         }, 1, 0);
 
         reportsRow.Add(foundBox, 2, 0);
 
         var proofBox = new Frame
         {
-            BackgroundColor = Color.FromArgb("#EEEEEE"),
+            BackgroundColor = Color.FromArgb("#F0F4F8"),
             CornerRadius = 12,
             Padding = new Thickness(14, 12),
             HasShadow = false,
@@ -321,24 +327,28 @@ public partial class ReceiveModule : ContentPage
         proofBox.Content = new VerticalStackLayout
         {
             Children =
-        {
-            new Label
             {
-                Text = "Ownership proof",
-                FontSize = 13,
-                FontAttributes = FontAttributes.Bold
-            },
-            new Label
-            {
-                Text = pair.OwnershipProof,
-                FontSize = 13
+                new Label
+                {
+                    Text = "Ownership proof",
+                    FontSize = 13,
+                    FontAttributes = FontAttributes.Bold,
+                    TextColor = Color.FromArgb("#37474F")
+                },
+                new Label
+                {
+                    Text = pair.OwnershipProof,
+                    FontSize = 13,
+                    TextColor = Color.FromArgb("#1A1A1A")
+                }
             }
-        }
         };
 
         var verifyBtn = new Frame
         {
-            BackgroundColor = Color.FromArgb("#EEEEEE"),
+            BackgroundColor = pair.IsFinder
+                ? Color.FromArgb("#546E7A")
+                : Color.FromArgb("#1565C0"),
             CornerRadius = 12,
             Padding = new Thickness(0, 18),
             HasShadow = false,
@@ -352,6 +362,7 @@ public partial class ReceiveModule : ContentPage
                 : "Verify Ownership",
             FontSize = 18,
             FontAttributes = FontAttributes.Bold,
+            TextColor = Colors.White,
             HorizontalOptions = LayoutOptions.Center
         };
 
@@ -376,7 +387,7 @@ public partial class ReceiveModule : ContentPage
 
         return new Frame
         {
-            BackgroundColor = Colors.White,
+            BackgroundColor = Color.FromArgb("#FAFAFA"),
             CornerRadius = 16,
             Padding = new Thickness(16),
             Margin = new Thickness(0, 0, 0, 12),
@@ -384,13 +395,13 @@ public partial class ReceiveModule : ContentPage
             Content = new VerticalStackLayout
             {
                 Children =
-            {
-                vidRow,
-                scoreRow,
-                reportsRow,
-                proofBox,
-                verifyBtn
-            }
+                {
+                    vidRow,
+                    scoreRow,
+                    reportsRow,
+                    proofBox,
+                    verifyBtn
+                }
             }
         };
     }
@@ -445,14 +456,14 @@ public partial class ReceiveModule : ContentPage
 
         public Color StatusBadgeColor =>
             Status.ToLower() == "verified"
-                ? Colors.Green
-                : Colors.Orange;
+                ? Color.FromArgb("#2E7D32")
+                : Color.FromArgb("#E65100");
 
         public Color ScoreColor =>
             SimilarityScore >= 80
-                ? Colors.Green
+                ? Color.FromArgb("#2E7D32")
                 : SimilarityScore >= 50
-                    ? Colors.Orange
-                    : Colors.Red;
+                    ? Color.FromArgb("#F57F17")
+                    : Color.FromArgb("#C62828");
     }
 }
