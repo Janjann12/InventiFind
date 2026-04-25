@@ -1,36 +1,26 @@
 using MySqlConnector;
+using System.IO;
 
 namespace InventiFind;
 
-/// <summary>
-/// A matched pair: one lost report + one found report,
-/// shown side-by-side with a similarity score and a Verify button.
-/// </summary>
-public class MatchPair
+public class ProofItem
 {
-    public int LostId { get; set; }
-    public int SurrenderedId { get; set; }
+    public int ProofId { get; set; }
+    public int MatchId { get; set; }
+    public int LostReportId { get; set; }
+    public int FoundReportId { get; set; }
+    public int ClaimantUserId { get; set; }
+
     public string ItemName { get; set; } = "";
     public string Category { get; set; } = "";
-    public string ReporterName { get; set; } = "";
-    public string SubmittedDate { get; set; } = "";
+    public string ItemDescription { get; set; } = "";
+    public string LostAt { get; set; } = "";
+    public string DateLost { get; set; } = "";
+    public string SubmittedAt { get; set; } = "";
+    public string ClaimantName { get; set; } = "";
     public int SimilarityScore { get; set; }
-    public string LostReportNo { get; set; } = "";
-    public string SurrenderedNo { get; set; } = "";
-    public string OwnershipProof { get; set; } = "";
-    public string Status { get; set; } = "Pending";
 
-    public Color ScoreColor => SimilarityScore >= 80
-        ? Color.FromArgb("#4CAF50")
-        : Color.FromArgb("#FF6B6B");
-
-    public Color StatusBadgeColor => Status?.ToLower() switch
-    {
-        "confirmed" => Color.FromArgb("#5A9E5A"),
-        "resolved" => Color.FromArgb("#2563EB"),
-        "rejected" => Color.FromArgb("#FF6B6B"),
-        _ => Color.FromArgb("#F59E0B")
-    };
+    public byte[]? Photo { get; set; }
 }
 
 public partial class LostItemDetailPage : ContentPage
@@ -43,338 +33,220 @@ public partial class LostItemDetailPage : ContentPage
     protected override async void OnAppearing()
     {
         base.OnAppearing();
-        await LoadMatchesAsync();
+        await LoadProofsAsync();
     }
 
-    // ── Data ───────────────────────────────────────────────────────────────
-
-    private async Task LoadMatchesAsync()
+    // 🔁 LOAD PROOFS
+    private async Task LoadProofsAsync()
     {
         try
         {
+            MatchesStack.Children.Clear();
+
             await using var conn = new MySqlConnection(DatabaseConfig.ConnectionString);
             await conn.OpenAsync();
 
             const string sql = """
                 SELECT
-                    m.match_id,
+                    p.id AS proof_id,   -- ✅ FIXED
+                    p.match_id,
+                    p.user_id,
+                    p.item_description,
+                    p.lost_at,
+                    p.date_lost,
+                    p.photo,
+                    p.submitted_at,
+
                     m.lost_report_id,
                     m.found_report_id,
-                    m.similarity_score AS score,
-                    m.match_status,
+                    m.similarity_score,
+
                     L.item_name,
                     L.category,
-                    L.description AS ownership_proof,
-                    L.date_reported,
-                    CONCAT(U.FirstName, ' ', U.Surname) AS reporter_name
-                FROM matches m
-                JOIN item_reports L ON L.report_id = m.lost_report_id
-                LEFT JOIN users U ON U.UserID = L.user_id
-                ORDER BY m.created_at DESC
-                LIMIT 20
-            """;
 
-            MatchesStack.Children.Clear();
+                    CONCAT(U.FirstName, ' ', U.Surname) AS claimant_name
+                FROM proofs p
+                JOIN matches m ON m.match_id = p.match_id
+                JOIN item_reports L ON L.report_id = m.lost_report_id
+                LEFT JOIN users U ON U.UserID = p.user_id
+                WHERE p.status = 'pending'
+                ORDER BY p.submitted_at DESC
+            """;
 
             await using var cmd = new MySqlCommand(sql, conn);
             await using var reader = await cmd.ExecuteReaderAsync();
 
-            bool hasRows = false;
-
             while (await reader.ReadAsync())
             {
-                hasRows = true;
-
-                var pair = new MatchPair
+                var proof = new ProofItem
                 {
-                    LostId = reader.GetInt32("lost_report_id"),
-                    SurrenderedId = reader.GetInt32("found_report_id"),
+                    ProofId = reader.GetInt32("proof_id"),
+                    MatchId = reader.GetInt32("match_id"),
+                    LostReportId = reader.GetInt32("lost_report_id"),
+                    FoundReportId = reader.GetInt32("found_report_id"),
+                    ClaimantUserId = reader.GetInt32("user_id"),
+
                     ItemName = reader.GetString("item_name"),
                     Category = reader.GetString("category"),
-                    ReporterName = reader.IsDBNull(reader.GetOrdinal("reporter_name"))
-                        ? "Unknown"
-                        : reader.GetString("reporter_name"),
-                    SubmittedDate = reader.GetDateTime("date_reported").ToString("yyyy-MM-dd"),
-                    OwnershipProof = reader.IsDBNull(reader.GetOrdinal("ownership_proof"))
+                    ItemDescription = reader.IsDBNull(reader.GetOrdinal("item_description")) ? "" : reader.GetString("item_description"),
+                    LostAt = reader.IsDBNull(reader.GetOrdinal("lost_at")) ? "" : reader.GetString("lost_at"),
+                    DateLost = reader.IsDBNull(reader.GetOrdinal("date_lost"))
                         ? ""
-                        : reader.GetString("ownership_proof"),
-                    SimilarityScore = reader.GetInt32("score"),
-                    LostReportNo = reader.GetInt32("lost_report_id").ToString("D10"),
-                    SurrenderedNo = reader.GetInt32("found_report_id").ToString("D10"),
-                    Status = CapFirst(reader.GetString("match_status"))
+                        : reader.GetDateTime("date_lost").ToString("yyyy-MM-dd"),
+                    SubmittedAt = reader.IsDBNull(reader.GetOrdinal("submitted_at"))
+                        ? ""
+                        : reader.GetDateTime("submitted_at").ToString("yyyy-MM-dd hh:mm tt"),
+                    ClaimantName = reader.IsDBNull(reader.GetOrdinal("claimant_name"))
+                        ? "Unknown"
+                        : reader.GetString("claimant_name"),
+                    SimilarityScore = reader.GetInt32("similarity_score"),
+                    Photo = reader.IsDBNull(reader.GetOrdinal("photo"))
+                        ? null
+                        : (byte[])reader["photo"]
                 };
 
-                MatchesStack.Children.Add(BuildMatchCard(pair));
-            }
-
-            if (!hasRows)
-            {
-                MatchesStack.Children.Add(new Label
-                {
-                    Text = "No matches found",
-                    FontSize = 16,
-                    TextColor = Color.FromArgb("#999"),
-                    HorizontalOptions = LayoutOptions.Center,
-                    Margin = new Thickness(0, 60, 0, 0)
-                });
+                MatchesStack.Children.Add(BuildProofCard(proof));
             }
         }
         catch (Exception ex)
         {
-            await DisplayAlert("Error", $"Could not load matches:\n{ex.Message}", "OK");
+            await DisplayAlert("Error", $"Error loading proofs:\n{ex.Message}", "OK");
         }
     }
 
-    private static string CapFirst(string s) =>
-        string.IsNullOrEmpty(s) ? s : char.ToUpper(s[0]) + s[1..];
-
-    // ── Card builder ───────────────────────────────────────────────────────
-
-    private View BuildMatchCard(MatchPair pair)
+    // 🎨 CARD
+    private View BuildProofCard(ProofItem proof)
     {
-        var badge = new Frame
+        var photo = new Image
         {
-            BackgroundColor = pair.StatusBadgeColor,
-            CornerRadius = 20,
-            Padding = new Thickness(12, 5),
-            HasShadow = false
+            HeightRequest = 160,
+            Aspect = Aspect.AspectFill,
+            BackgroundColor = Color.FromArgb("#DDD")
         };
 
-        badge.Content = new Label
+        if (proof.Photo != null && proof.Photo.Length > 0)
         {
-            Text = pair.Status,
-            FontSize = 11,
-            FontAttributes = FontAttributes.Bold,
+            photo.Source = ImageSource.FromStream(() => new MemoryStream(proof.Photo));
+        }
+
+        var approveBtn = new Button
+        {
+            Text = "Approve",
+            BackgroundColor = Color.FromArgb("#4CAF50"),
             TextColor = Colors.White
         };
 
-        var vidRow = new Grid
+        var rejectBtn = new Button
         {
-            ColumnDefinitions = new ColumnDefinitionCollection(
-                new ColumnDefinition { Width = GridLength.Star },
-                new ColumnDefinition { Width = GridLength.Auto })
+            Text = "Reject",
+            BackgroundColor = Color.FromArgb("#FF6B6B"),
+            TextColor = Colors.White
         };
 
-        vidRow.Add(new Label
+        approveBtn.Clicked += async (s, e) =>
         {
-            Text = "V-ID",
-            FontSize = 14,
-            FontAttributes = FontAttributes.Bold,
-            TextColor = Color.FromArgb("#1A1A1A")
-        }, 0, 0);
-
-        vidRow.Add(badge, 1, 0);
-
-        var scoreBox = new Frame
-        {
-            BackgroundColor = pair.ScoreColor,
-            CornerRadius = 10,
-            Padding = new Thickness(8),
-            HasShadow = false,
-            WidthRequest = 60,
-            HeightRequest = 60
+            await UpdateProofStatus(proof, "approved");
+            await LoadProofsAsync();
         };
 
-        scoreBox.Content = new Label
+        rejectBtn.Clicked += async (s, e) =>
         {
-            Text = $"{pair.SimilarityScore}%",
-            FontSize = 16,
-            FontAttributes = FontAttributes.Bold,
-            TextColor = Colors.White,
-            HorizontalOptions = LayoutOptions.Center,
-            VerticalOptions = LayoutOptions.Center
-        };
-
-        var nameBlock = new VerticalStackLayout
-        {
-            Spacing = 2,
-            Margin = new Thickness(10, 0, 0, 0)
-        };
-
-        nameBlock.Add(new Label
-        {
-            Text = pair.ItemName,
-            FontSize = 18,
-            FontAttributes = FontAttributes.Bold,
-            TextColor = Color.FromArgb("#1A1A1A")
-        });
-
-        nameBlock.Add(new Label
-        {
-            Text = pair.ReporterName,
-            FontSize = 13,
-            TextColor = Color.FromArgb("#555")
-        });
-
-        nameBlock.Add(new Label
-        {
-            Text = $"Submitted: {pair.SubmittedDate}",
-            FontSize = 12,
-            TextColor = Color.FromArgb("#888")
-        });
-
-        var scoreRow = new Grid
-        {
-            ColumnDefinitions = new ColumnDefinitionCollection(
-                new ColumnDefinition { Width = GridLength.Auto },
-                new ColumnDefinition { Width = GridLength.Star }),
-            Margin = new Thickness(0, 10, 0, 0)
-        };
-
-        scoreRow.Add(scoreBox, 0, 0);
-        scoreRow.Add(nameBlock, 1, 0);
-
-        var lostBox = new Frame
-        {
-            BackgroundColor = Color.FromArgb("#EEEEEE"),
-            CornerRadius = 12,
-            Padding = new Thickness(12, 10),
-            HasShadow = false
-        };
-
-        lostBox.Content = new VerticalStackLayout
-        {
-            Children =
-            {
-                new Label
-                {
-                    Text = "Lost report",
-                    FontSize = 12,
-                    FontAttributes = FontAttributes.Bold,
-                    TextColor = Color.FromArgb("#555")
-                },
-                new Label
-                {
-                    Text = pair.LostReportNo,
-                    FontSize = 13,
-                    TextColor = Color.FromArgb("#1A1A1A")
-                }
-            }
-        };
-
-        var surrenderBox = new Frame
-        {
-            BackgroundColor = Color.FromArgb("#EEEEEE"),
-            CornerRadius = 12,
-            Padding = new Thickness(12, 10),
-            HasShadow = false
-        };
-
-        surrenderBox.Content = new VerticalStackLayout
-        {
-            Children =
-            {
-                new Label
-                {
-                    Text = "Found report",
-                    FontSize = 12,
-                    FontAttributes = FontAttributes.Bold,
-                    TextColor = Color.FromArgb("#555")
-                },
-                new Label
-                {
-                    Text = pair.SurrenderedNo,
-                    FontSize = 13,
-                    TextColor = Color.FromArgb("#1A1A1A")
-                }
-            }
-        };
-
-        var reportsRow = new Grid
-        {
-            ColumnDefinitions = new ColumnDefinitionCollection(
-                new ColumnDefinition { Width = GridLength.Star },
-                new ColumnDefinition { Width = GridLength.Auto },
-                new ColumnDefinition { Width = GridLength.Star }),
-            Margin = new Thickness(0, 10, 0, 0)
-        };
-
-        reportsRow.Add(lostBox, 0, 0);
-        reportsRow.Add(new Label
-        {
-            Text = "⇌",
-            FontSize = 20,
-            TextColor = Color.FromArgb("#888"),
-            HorizontalOptions = LayoutOptions.Center,
-            VerticalOptions = LayoutOptions.Center
-        }, 1, 0);
-        reportsRow.Add(surrenderBox, 2, 0);
-
-        var proofBox = new Frame
-        {
-            BackgroundColor = Color.FromArgb("#EEEEEE"),
-            CornerRadius = 12,
-            Padding = new Thickness(14, 12),
-            HasShadow = false,
-            Margin = new Thickness(0, 10, 0, 0)
-        };
-
-        proofBox.Content = new VerticalStackLayout
-        {
-            Spacing = 4,
-            Children =
-            {
-                new Label
-                {
-                    Text = "Ownership proof",
-                    FontSize = 13,
-                    FontAttributes = FontAttributes.Bold,
-                    TextColor = Color.FromArgb("#555")
-                },
-                new Label
-                {
-                    Text = pair.OwnershipProof,
-                    FontSize = 13,
-                    TextColor = Color.FromArgb("#333")
-                }
-            }
-        };
-
-        var verifyBtn = new Frame
-        {
-            BackgroundColor = Color.FromArgb("#EEEEEE"),
-            CornerRadius = 12,
-            Padding = new Thickness(0, 18),
-            HasShadow = false,
-            Margin = new Thickness(0, 10, 0, 0)
-        };
-
-        verifyBtn.Content = new Label
-        {
-            Text = "Verify",
-            FontSize = 18,
-            FontAttributes = FontAttributes.Bold,
-            TextColor = Color.FromArgb("#1A1A1A"),
-            HorizontalOptions = LayoutOptions.Center
-        };
-
-        var tapPair = pair;
-        var tap = new TapGestureRecognizer();
-        tap.Tapped += async (s, e) => await OnVerifyTapped(tapPair);
-        verifyBtn.GestureRecognizers.Add(tap);
-
-        var cardContent = new VerticalStackLayout
-        {
-            Children = { vidRow, scoreRow, reportsRow, proofBox, verifyBtn }
+            await UpdateProofStatus(proof, "rejected");
+            await LoadProofsAsync();
         };
 
         return new Frame
         {
             BackgroundColor = Colors.White,
-            CornerRadius = 16,
-            Padding = new Thickness(16),
-            HasShadow = false,
-            Margin = new Thickness(0, 0, 0, 12),
-            Content = cardContent
+            Padding = 12,
+            Margin = new Thickness(0, 0, 0, 10),
+            Content = new VerticalStackLayout
+            {
+                Children =
+                {
+                    new Label { Text = proof.ItemName, FontSize = 18, FontAttributes = FontAttributes.Bold },
+                    new Label { Text = $"Claimant: {proof.ClaimantName}" },
+                    new Label { Text = $"Similarity: {proof.SimilarityScore}%" },
+                    new Label { Text = $"Description: {proof.ItemDescription}" },
+                    new Label { Text = $"Lost At: {proof.LostAt}" },
+                    new Label { Text = $"Date Lost: {proof.DateLost}" },
+                    photo,
+                    new HorizontalStackLayout { Children = { approveBtn, rejectBtn } }
+                }
+            }
         };
     }
 
-    // ── Verify action ─────────────────────────────────────────────────────
-
-    private async Task OnVerifyTapped(MatchPair pair)
+    // 🔥 VERIFY LOGIC
+    private async Task UpdateProofStatus(ProofItem proof, string status)
     {
-        var detailPage = new VerifyDetailPage(pair);
-        await Navigation.PushModalAsync(detailPage, animated: true);
-        await LoadMatchesAsync();
+        await using var conn = new MySqlConnection(DatabaseConfig.ConnectionString);
+        await conn.OpenAsync();
+
+        int adminId = Preferences.Get("UserID", 0);
+
+        // 1. Update proof
+        await new MySqlCommand(
+            "UPDATE proofs SET status=@s WHERE id=@id", conn) // ✅ FIXED
+        {
+            Parameters =
+            {
+                new("@s", status),
+                new("@id", proof.ProofId)
+            }
+        }.ExecuteNonQueryAsync();
+
+        if (status != "approved") return;
+
+        // 2. Confirm match
+        await new MySqlCommand(
+            "UPDATE matches SET match_status='confirmed', verified_by=@a WHERE match_id=@id", conn)
+        {
+            Parameters =
+            {
+                new("@a", adminId),
+                new("@id", proof.MatchId)
+            }
+        }.ExecuteNonQueryAsync();
+
+        // 3. Mark reports claimed
+        await new MySqlCommand(
+            "UPDATE item_reports SET status='claimed' WHERE report_id IN (@l,@f)", conn)
+        {
+            Parameters =
+            {
+                new("@l", proof.LostReportId),
+                new("@f", proof.FoundReportId)
+            }
+        }.ExecuteNonQueryAsync();
+
+        // 4. Insert return
+        await new MySqlCommand("""
+            INSERT INTO returns (match_id, returned_to, released_by, return_date, notes)
+            VALUES (@m,@to,@by,NOW(),@n)
+        """, conn)
+        {
+            Parameters =
+            {
+                new("@m", proof.MatchId),
+                new("@to", proof.ClaimantUserId), // ✅ FIXED
+                new("@by", adminId),
+                new("@n", "Approved ownership proof")
+            }
+        }.ExecuteNonQueryAsync();
+
+        // 5. Reject other proofs
+        await new MySqlCommand("""
+            UPDATE proofs
+            SET status='rejected'
+            WHERE match_id=@m AND id<>@id AND status='pending'
+        """, conn) // ✅ FIXED
+        {
+            Parameters =
+            {
+                new("@m", proof.MatchId),
+                new("@id", proof.ProofId)
+            }
+        }.ExecuteNonQueryAsync();
     }
 }
