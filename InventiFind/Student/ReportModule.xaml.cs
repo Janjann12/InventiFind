@@ -57,11 +57,7 @@ namespace InventiFind
 
         private async void OnLogoutTapped(object sender, TappedEventArgs e)
         {
-            bool confirm = await DisplayAlert("Logout", "Are you sure?", "Yes", "No");
-            if (confirm)
-            {
-                await Shell.Current.GoToAsync("//MainPage");
-            }
+            await Navigation.PushModalAsync(new Settings());
         }
 
         private void UpdateReportTypeUI()

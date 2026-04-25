@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="InventiFind.ConfirmReturn"
+    BackgroundColor="#80000000"
+    Shell.NavBarIsVisible="False">
+
+    <Grid Padding="20">
+
+        <!-- Modal Card -->
+        <Frame BackgroundColor="White"
+               CornerRadius="20"
+               Padding="25"
+               WidthRequest="380"
+               MaximumWidthRequest="420"
+               VerticalOptions="Center"
+               HorizontalOptions="Center"
+               HasShadow="True">
+
+            <VerticalStackLayout Spacing="18">
+
+                <!-- Header -->
+                <Grid ColumnDefinitions="*,Auto">
+
+                    <Label Grid.Column="0"
+                           Text="Release Item"
+                           FontSize="24"
+                           FontAttributes="Bold"
+                           TextColor="#B71C1C"/>
+
+                    <Button Grid.Column="1"
+                            Text="✕"
+                            BackgroundColor="Transparent"
+                            TextColor="#888"
+                            FontSize="22"
+                            FontAttributes="Bold"
+                            Clicked="OnBackTapped"/>
+                </Grid>
+
+                <BoxView HeightRequest="1"
+                         BackgroundColor="#EEEEEE"/>
+
+                <!-- Item Details -->
+                <Frame BackgroundColor="#FAFAFA"
+                       CornerRadius="15"
+                       Padding="18"
+                       HasShadow="False"
+                       BorderColor="#EEEEEE">
+
+                    <VerticalStackLayout Spacing="12">
+
+                        <Label x:Name="ItemNameLabel"
+                               FontSize="22"
+                               FontAttributes="Bold"
+                               TextColor="#222"/>
+
+                        <Label x:Name="OwnerNameLabel"
+                               TextColor="#555"/>
+
+                        <Label x:Name="ClaimCodeLabel"
+                               TextColor="#555"/>
+
+                        <Label x:Name="CategoryLabel"
+                               TextColor="#555"/>
+
+                        <Label x:Name="DateLabel"
+                               TextColor="#555"/>
+                    </VerticalStackLayout>
+                </Frame>
+
+                <Label Text="Please confirm that the item is being released to the verified owner."
+                       FontSize="13"
+                       TextColor="#777"/>
+
+                <!-- Buttons -->
+                <Grid ColumnDefinitions="*,*"
+                      ColumnSpacing="12">
+
+                    <Button Grid.Column="0"
+                            Text="Cancel"
+                            BackgroundColor="#EEEEEE"
+                            TextColor="#555"
+                            CornerRadius="18"
+                            HeightRequest="50"
+                            Clicked="OnBackTapped"/>
+
+                    <Button Grid.Column="1"
+                            Text="Confirm Release"
+                            BackgroundColor="#C62828"
+                            TextColor="White"
+                            CornerRadius="18"
+                            HeightRequest="50"
+                            FontAttributes="Bold"
+                            Clicked="OnReleaseTapped"/>
+                </Grid>
+
+            </VerticalStackLayout>
+        </Frame>
+    </Grid>
+</ContentPage>

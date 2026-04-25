@@ -419,11 +419,8 @@ public partial class ReceiveModule : ContentPage
 
     private async void OnLogoutTapped(object sender, TappedEventArgs e)
     {
-        bool confirm = await DisplayAlert("Logout",
-            "Are you sure?", "Yes", "No");
+        await Navigation.PushModalAsync(new Settings());
 
-        if (confirm)
-            await Shell.Current.GoToAsync("//MainPage");
     }
 
     // ── INNER CLASS ───────────────────────────────────────────────────────

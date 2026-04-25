@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="InventiFind.FileReport"
+    BackgroundColor="#66000000"
+    Shell.NavBarIsVisible="False">
+
+    <Grid>
+
+        <!-- Semi transparent dark overlay -->
+        <BoxView BackgroundColor="#66000000"/>
+
+        <!-- Modal container -->
+        <Frame WidthRequest="560"
+               MaximumWidthRequest="560"
+               Padding="30"
+               CornerRadius="24"
+               BackgroundColor="White"
+               HasShadow="True"
+               VerticalOptions="Center"
+               HorizontalOptions="Center"
+               Margin="20">
+
+            <ScrollView>
+                <VerticalStackLayout Spacing="18">
+
+                    <!-- Title -->
+                    <Label Text="File Report"
+                           FontSize="30"
+                           FontAttributes="Bold"
+                           TextColor="#111827"/>
+
+                    <Label Text="Report a lost or found item"
+                           FontSize="14"
+                           TextColor="#6B7280"/>
+
+                    <!-- Report Type -->
+                    <Grid ColumnDefinitions="*,*"
+                          ColumnSpacing="12">
+
+                        <Button x:Name="LostButton"
+                                Grid.Column="0"
+                                Text="Lost"
+                                Clicked="OnLostTapped"
+                                BackgroundColor="#C8102E"
+                                TextColor="White"
+                                CornerRadius="12"
+                                HeightRequest="48"
+                                FontAttributes="Bold"/>
+
+                        <Button x:Name="FoundButton"
+                                Grid.Column="1"
+                                Text="Found"
+                                Clicked="OnFoundTapped"
+                                BackgroundColor="#F3F4F6"
+                                TextColor="#374151"
+                                CornerRadius="12"
+                                HeightRequest="48"
+                                FontAttributes="Bold"/>
+                    </Grid>
+
+                    <!-- Item Name -->
+                    <Frame BackgroundColor="#F9FAFB"
+                           BorderColor="#E5E7EB"
+                           CornerRadius="12"
+                           Padding="12,6"
+                           HasShadow="False">
+                        <Entry x:Name="ItemNameEntry"
+                               Placeholder="Item name"
+                               PlaceholderColor="#9CA3AF"
+                               BackgroundColor="Transparent"
+                               TextColor="#374151"/>
+                    </Frame>
+
+                    <!-- Category -->
+                    <Frame BackgroundColor="#F9FAFB"
+                           BorderColor="#E5E7EB"
+                           CornerRadius="12"
+                           Padding="12,4"
+                           HasShadow="False">
+                        <Picker x:Name="CategoryPicker"
+                                BackgroundColor="Transparent"
+                                TextColor="#374151"
+                                Title="Select category">
+                            <Picker.Items>
+                                <x:String>Electronics</x:String>
+                                <x:String>Wallet</x:String>
+                                <x:String>ID</x:String>
+                                <x:String>Bag</x:String>
+                                <x:String>Others</x:String>
+                            </Picker.Items>
+                        </Picker>
+                    </Frame>
+
+                    <!-- Description -->
+                    <Frame BackgroundColor="#F9FAFB"
+                           BorderColor="#E5E7EB"
+                           CornerRadius="12"
+                           Padding="12,8"
+                           HasShadow="False">
+                        <Editor x:Name="DescriptionEditor"
+                                Placeholder="Describe the item..."
+                                HeightRequest="100"
+                                BackgroundColor="Transparent"
+                                TextColor="#374151"/>
+                    </Frame>
+
+                    <!-- Location -->
+                    <Frame BackgroundColor="#F9FAFB"
+                           BorderColor="#E5E7EB"
+                           CornerRadius="12"
+                           Padding="12,6"
+                           HasShadow="False">
+                        <Entry x:Name="LocationEntry"
+                               Placeholder="Location where the item was found/lost"
+                               PlaceholderColor="#9CA3AF"
+                               BackgroundColor="Transparent"
+                               TextColor="#374151"/>
+                    </Frame>
+
+                    <!-- Date -->
+                    <Frame BackgroundColor="#F9FAFB"
+                           BorderColor="#E5E7EB"
+                           CornerRadius="12"
+                           Padding="12,4"
+                           HasShadow="False">
+                        <DatePicker x:Name="DatePicker"
+                                    BackgroundColor="Transparent"
+                                    TextColor="#374151"/>
+                    </Frame>
+
+                    <!-- Upload -->
+                    <Frame BackgroundColor="#F9FAFB"
+       BorderColor="#D1D5DB"
+       CornerRadius="14"
+       Padding="18"
+       HasShadow="False">
+
+                        <VerticalStackLayout Spacing="8">
+
+                            <Label Text="📎 Upload image"
+               FontSize="16"
+               FontAttributes="Bold"
+               TextColor="#374151"/>
+
+                            <Label Text="PNG / JPG supported"
+               FontSize="12"
+               TextColor="#9CA3AF"/>
+
+                            <Button Text="Choose File"
+                Clicked="OnUploadTapped"
+                BackgroundColor="#E5E7EB"
+                TextColor="#374151"
+                CornerRadius="10"
+                HeightRequest="42"/>
+
+                            <!-- FILE NAME DISPLAY -->
+                            <Label x:Name="UploadedFileNameLabel"
+               Text="No file selected"
+               FontSize="13"
+               TextColor="#6B7280"
+               FontAttributes="Italic"/>
+
+                        </VerticalStackLayout>
+                    </Frame>
+
+                    <!-- Action buttons -->
+                    <Grid ColumnDefinitions="*,*"
+                          ColumnSpacing="12">
+
+                        <Button Grid.Column="0"
+                                Text="Cancel"
+                                Clicked="OnCancelTapped"
+                                BackgroundColor="#F3F4F6"
+                                TextColor="#374151"
+                                CornerRadius="12"
+                                HeightRequest="48"/>
+
+                        <Button Grid.Column="1"
+                                Text="Submit"
+                                Clicked="OnSubmitTapped"
+                                BackgroundColor="#C8102E"
+                                TextColor="White"
+                                CornerRadius="12"
+                                HeightRequest="48"
+                                FontAttributes="Bold"/>
+                    </Grid>
+
+                </VerticalStackLayout>
+            </ScrollView>
+        </Frame>
+
+    </Grid>
+</ContentPage>

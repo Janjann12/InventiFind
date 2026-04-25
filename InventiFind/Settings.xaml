@@ -1,0 +1,321 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="InventiFind.Settings"
+    BackgroundColor="#F2F4F7"
+    Shell.NavBarIsVisible="False">
+
+    <Grid RowDefinitions="Auto,*">
+
+        <!-- TOP NAVIGATION -->
+        <Grid Grid.Row="0"
+              BackgroundColor="#C8102E"
+              Padding="25,18"
+              ColumnDefinitions="Auto,Auto,*,Auto,Auto,Auto">
+
+            <!-- CLOSE BUTTON -->
+            <Button Grid.Column="0"
+                    Text="✕"
+                    WidthRequest="45"
+                    HeightRequest="40"
+                    BackgroundColor="White"
+                    TextColor="#C8102E"
+                    CornerRadius="10"
+                    FontSize="18"
+                    FontAttributes="Bold"
+                    Clicked="OnBackClicked"/>
+
+            <!-- TITLE -->
+            <Label Grid.Column="1"
+                   Text="Settings"
+                   FontSize="28"
+                   FontAttributes="Bold"
+                   TextColor="White"
+                   VerticalOptions="Center"
+                   Margin="15,0,0,0"/>
+
+            <!-- PROFILE -->
+            <Grid Grid.Column="3" Padding="15,8">
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnProfileTapped"/>
+                </Grid.GestureRecognizers>
+
+                <HorizontalStackLayout Spacing="8">
+                    <Label Text="👤" FontSize="18" TextColor="White"/>
+                    <Label Text="Profile" FontSize="16" TextColor="White"/>
+                </HorizontalStackLayout>
+            </Grid>
+
+            <!-- REPORTS -->
+            <Grid Grid.Column="4" Padding="15,8">
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnReportsTapped"/>
+                </Grid.GestureRecognizers>
+
+                <HorizontalStackLayout Spacing="8">
+                    <Label Text="📋" FontSize="18" TextColor="White"/>
+                    <Label Text="Reports" FontSize="16" TextColor="White"/>
+                </HorizontalStackLayout>
+            </Grid>
+
+            <!-- LOGOUT -->
+            <Button Grid.Column="5"
+                    Text="Logout"
+                    WidthRequest="100"
+                    HeightRequest="40"
+                    BackgroundColor="White"
+                    TextColor="#C8102E"
+                    CornerRadius="10"
+                    Clicked="OnLogoutClicked"/>
+        </Grid>
+
+        <!-- MAIN CONTENT -->
+        <ScrollView Grid.Row="1">
+            <Grid Padding="35">
+
+                <!-- PROFILE TAB -->
+                <VerticalStackLayout x:Name="ProfileTabContent"
+                                     Spacing="25"
+                                     IsVisible="True">
+
+                    <Label Text="Profile settings"
+                           FontSize="32"
+                           FontAttributes="Bold"
+                           TextColor="#111827"/>
+
+                    <Label Text="Manage your account information and credentials"
+                           FontSize="14"
+                           TextColor="#6B7280"/>
+
+                    <!-- PROFILE CARD -->
+                    <Frame BackgroundColor="White"
+                           CornerRadius="18"
+                           Padding="25"
+                           BorderColor="#E5E7EB"
+                           HasShadow="False">
+
+                        <VerticalStackLayout Spacing="20">
+
+                            <HorizontalStackLayout Spacing="15">
+                                <Frame WidthRequest="70"
+                                       HeightRequest="70"
+                                       CornerRadius="35"
+                                       BackgroundColor="#FEE2E2"
+                                       Padding="0"
+                                       HasShadow="False">
+
+                                    <Label x:Name="InitialsLabel"
+                                           Text="JD"
+                                           FontSize="28"
+                                           TextColor="#C8102E"
+                                           HorizontalOptions="Center"
+                                           VerticalOptions="Center"/>
+                                </Frame>
+
+                                <VerticalStackLayout VerticalOptions="Center">
+                                    <Label x:Name="FullNameLabel"
+                                           FontSize="22"
+                                           FontAttributes="Bold"
+                                           TextColor="#111827"/>
+
+                                    <Label x:Name="RoleLabel"
+                                           FontSize="13"
+                                           TextColor="#4B5563"/>
+                                </VerticalStackLayout>
+                            </HorizontalStackLayout>
+
+                            <Label Text="PERSONAL INFO"
+                                   TextColor="#C8102E"
+                                   FontSize="14"/>
+
+                            <Grid ColumnDefinitions="*,*" ColumnSpacing="15">
+
+                                <Frame Grid.Column="0"
+                                       Padding="10,4"
+                                       BackgroundColor="#F3F4F6"
+                                       BorderColor="#D1D5DB"
+                                       CornerRadius="10"
+                                       HasShadow="False">
+                                    <Entry x:Name="FirstNameEntry"
+                                           Placeholder="First name"
+                                           BackgroundColor="Transparent"
+                                           TextColor="#374151"
+                                           PlaceholderColor="#9CA3AF"/>
+                                </Frame>
+
+                                <Frame Grid.Column="1"
+                                       Padding="10,4"
+                                       BackgroundColor="#F3F4F6"
+                                       BorderColor="#D1D5DB"
+                                       CornerRadius="10"
+                                       HasShadow="False">
+                                    <Entry x:Name="LastNameEntry"
+                                           Placeholder="Last name"
+                                           BackgroundColor="Transparent"
+                                           TextColor="#374151"
+                                           PlaceholderColor="#9CA3AF"/>
+                                </Frame>
+
+                            </Grid>
+
+                            <Frame Padding="10,4"
+                                   BackgroundColor="#F3F4F6"
+                                   BorderColor="#D1D5DB"
+                                   CornerRadius="10"
+                                   HasShadow="False">
+                                <Entry x:Name="EmailEntry"
+                                       Placeholder="Email"
+                                       BackgroundColor="Transparent"
+                                       TextColor="#374151"
+                                       PlaceholderColor="#9CA3AF"/>
+                            </Frame>
+
+                            <Button Text="Save Changes"
+                                    BackgroundColor="#C8102E"
+                                    TextColor="White"
+                                    CornerRadius="12"
+                                    HeightRequest="45"
+                                    Clicked="OnSaveProfileClicked"/>
+                        </VerticalStackLayout>
+                    </Frame>
+
+                    <!-- PASSWORD CARD -->
+                    <Frame BackgroundColor="White"
+                           CornerRadius="18"
+                           Padding="25"
+                           BorderColor="#E5E7EB"
+                           HasShadow="False">
+
+                        <VerticalStackLayout Spacing="18">
+
+                            <Label Text="CHANGE PASSWORD"
+                                   TextColor="#C8102E"/>
+
+                            <Frame Padding="10,4"
+                                   BackgroundColor="#F3F4F6"
+                                   BorderColor="#D1D5DB"
+                                   CornerRadius="10"
+                                   HasShadow="False">
+                                <Entry x:Name="CurrentPasswordEntry"
+                                       Placeholder="Current password"
+                                       IsPassword="True"
+                                       BackgroundColor="Transparent"
+                                       TextColor="#374151"
+                                       PlaceholderColor="#9CA3AF"/>
+                            </Frame>
+
+                            <Grid ColumnDefinitions="*,*" ColumnSpacing="15">
+
+                                <Frame Grid.Column="0"
+                                       Padding="10,4"
+                                       BackgroundColor="#F3F4F6"
+                                       BorderColor="#D1D5DB"
+                                       CornerRadius="10"
+                                       HasShadow="False">
+                                    <Entry x:Name="NewPasswordEntry"
+                                           Placeholder="New password"
+                                           IsPassword="True"
+                                           BackgroundColor="Transparent"
+                                           TextColor="#374151"
+                                           PlaceholderColor="#9CA3AF"/>
+                                </Frame>
+
+                                <Frame Grid.Column="1"
+                                       Padding="10,4"
+                                       BackgroundColor="#F3F4F6"
+                                       BorderColor="#D1D5DB"
+                                       CornerRadius="10"
+                                       HasShadow="False">
+                                    <Entry x:Name="ConfirmPasswordEntry"
+                                           Placeholder="Confirm password"
+                                           IsPassword="True"
+                                           BackgroundColor="Transparent"
+                                           TextColor="#374151"
+                                           PlaceholderColor="#9CA3AF"/>
+                                </Frame>
+
+                            </Grid>
+
+                            <Button Text="Update Password"
+                                    BackgroundColor="#C8102E"
+                                    TextColor="White"
+                                    CornerRadius="12"
+                                    HeightRequest="45"
+                                    Clicked="OnUpdatePasswordClicked"/>
+                        </VerticalStackLayout>
+                    </Frame>
+                </VerticalStackLayout>
+
+                <!-- REPORTS TAB -->
+                <VerticalStackLayout x:Name="ReportsTabContent"
+                                     Spacing="20"
+                                     IsVisible="False">
+
+                    <Label Text="Reports"
+                           FontSize="32"
+                           FontAttributes="Bold"
+                           TextColor="#111827"/>
+
+                    <Label Text="All reports submitted by this user"
+                           FontSize="14"
+                           TextColor="#6B7280"/>
+
+                    <CollectionView x:Name="ReportsCollection"
+                SelectionMode="None">
+
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <Frame BackgroundColor="White"
+                   CornerRadius="16"
+                   Padding="18"
+                   Margin="0,0,0,14"
+                   BorderColor="#E5E7EB"
+                   HasShadow="False">
+
+                                    <VerticalStackLayout Spacing="12">
+
+                                        <!-- TOP ROW -->
+                                        <Grid ColumnDefinitions="*,Auto"
+                          VerticalOptions="Center">
+
+                                            <!-- ITEM NAME -->
+                                            <Label Text="{Binding ItemName}"
+                               FontSize="20"
+                               FontAttributes="Bold"
+                               TextColor="#111827"
+                               VerticalOptions="Center"/>
+
+                                            <!-- DATE -->
+                                            <Label Grid.Column="1"
+                               Text="{Binding DateReported}"
+                               FontSize="12"
+                               TextColor="#9CA3AF"
+                               VerticalOptions="Center"/>
+                                        </Grid>
+
+                                        <!-- TYPE BADGE -->
+                                        <Frame BackgroundColor="#FEE2E2"
+                           Padding="10,4"
+                           CornerRadius="10"
+                           HasShadow="False"
+                           HorizontalOptions="Start">
+
+                                            <Label Text="{Binding ReportType}"
+                               FontSize="13"
+                               FontAttributes="Bold"
+                               TextColor="#C8102E"/>
+                                        </Frame>
+
+                                    </VerticalStackLayout>
+                                </Frame>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+
+                    </CollectionView>
+                </VerticalStackLayout>
+
+            </Grid>
+        </ScrollView>
+    </Grid>
+</ContentPage>

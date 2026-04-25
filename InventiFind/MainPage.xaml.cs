@@ -133,13 +133,13 @@ public partial class MainPage : ContentPage
         switch (normalizedRole)
         {
             case "admin":
-                await Navigation.PushAsync(new AdminDashboard());
+                await Navigation.PushModalAsync(new AdminDashboard());
                 break;
             case "staff":      // lowercase to match detectedRole
-                await Navigation.PushAsync(new TeacherDashboard());
+                await Navigation.PushModalAsync(new TeacherDashboard());
                 break;
             default:  // student or user
-                await Navigation.PushAsync(new StudentDashboard());
+                await Navigation.PushModalAsync(new StudentDashboard());
                 break;
         }
     }

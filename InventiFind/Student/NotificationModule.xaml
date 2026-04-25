@@ -182,8 +182,8 @@
             </VerticalStackLayout>
 
             <VerticalStackLayout Grid.Column="4" Spacing="2" HorizontalOptions="Center" VerticalOptions="Center">
-                <Image Source="logout.png" WidthRequest="28" HeightRequest="28" HorizontalOptions="Center"/>
-                <Label Text="Logout" FontSize="11" TextColor="#9CA3AF" HorizontalOptions="Center"/>
+                <Image Source="gear.png" WidthRequest="28" HeightRequest="28" HorizontalOptions="Center"/>
+                <Label Text="Settings" FontSize="11" TextColor="#9CA3AF" HorizontalOptions="Center"/>
                 <VerticalStackLayout.GestureRecognizers>
                     <TapGestureRecognizer Tapped="OnLogoutTapped"/>
                 </VerticalStackLayout.GestureRecognizers>

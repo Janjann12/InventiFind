@@ -4,7 +4,7 @@
              x:Class="InventiFind.ReportsModule"
              Title="Report Module"
              Shell.NavBarIsVisible="False"
-             BackgroundColor="#F5E6E8">
+             BackgroundColor="#FDF1F2">
 
     <Grid RowDefinitions="*,Auto">
 
@@ -13,183 +13,188 @@
             <VerticalStackLayout Spacing="0">
 
                 <!-- Header -->
-                <Grid BackgroundColor="#B71C1C" HeightRequest="120" VerticalOptions="Start">
-                    <Label Text="Report Module" FontSize="32" FontAttributes="Bold" TextColor="White"
-                           HorizontalOptions="Center" VerticalOptions="Center"/>
+                <Grid BackgroundColor="#B71C1C" HeightRequest="110">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <!-- Subtle decorative accent -->
+                    <BoxView BackgroundColor="#9B1414" HeightRequest="3" VerticalOptions="End"/>
+                    <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="2">
+                        <Label Text="📋 Reports" FontSize="28" FontAttributes="Bold" TextColor="White"
+                               HorizontalOptions="Center"/>
+                        <Label x:Name="LblRecordCount" Text="Loading..." FontSize="12" TextColor="#FFCDD2"
+                               HorizontalOptions="Center"/>
+                    </VerticalStackLayout>
                 </Grid>
 
-                <VerticalStackLayout Padding="15" Spacing="15">
+                <VerticalStackLayout Padding="14,16,14,0" Spacing="12">
 
                     <!-- Search Bar -->
-                    <Frame BackgroundColor="White" CornerRadius="25" Padding="15,10" HasShadow="True">
+                    <Frame BackgroundColor="White" CornerRadius="22" Padding="14,10" HasShadow="True">
                         <HorizontalStackLayout Spacing="10">
-                            <Label Text="🔍" FontSize="18" TextColor="#666" VerticalOptions="Center"/>
-                            <Entry Placeholder="Search Reports, Items..." FontSize="14" TextColor="#333"
-                                   PlaceholderColor="#999" VerticalOptions="Center" HorizontalOptions="FillAndExpand"/>
+                            <Label Text="🔍" FontSize="17" TextColor="#999" VerticalOptions="Center"/>
+                            <Entry x:Name="SearchEntry"
+                                   Placeholder="Search reports, items..."
+                                   FontSize="14" TextColor="#333"
+                                   PlaceholderColor="#BBBBBB"
+                                   VerticalOptions="Center"
+                                   HorizontalOptions="FillAndExpand"
+                                   ReturnType="Search"
+                                   TextChanged="OnSearchTextChanged"/>
+                            <!-- Clear button -->
+                            <Label x:Name="LblClear" Text="✕" FontSize="15" TextColor="#AAAAAA"
+                                   VerticalOptions="Center" IsVisible="False">
+                                <Label.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnClearSearch"/>
+                                </Label.GestureRecognizers>
+                            </Label>
                         </HorizontalStackLayout>
                     </Frame>
 
-                    <!-- Filter Buttons -->
+                    <!-- Filter Chips Row -->
                     <ScrollView Orientation="Horizontal" HorizontalScrollBarVisibility="Never">
-                        <HorizontalStackLayout Spacing="10">
-                            <Frame BackgroundColor="White" CornerRadius="20" Padding="15,8" HasShadow="True">
-                                <Label Text="All Items" FontSize="13" FontAttributes="Bold" TextColor="#333"/>
+                        <HorizontalStackLayout Spacing="8" Padding="2,2">
+
+                            <!-- All Items chip -->
+                            <Frame x:Name="ChipAll" BackgroundColor="#B71C1C" CornerRadius="18"
+                                   Padding="14,7" HasShadow="False">
+                                <Frame.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnFilterAll"/>
+                                </Frame.GestureRecognizers>
+                                <Label Text="All Items" FontSize="13" FontAttributes="Bold" TextColor="White"/>
                             </Frame>
-                            <Frame BackgroundColor="White" CornerRadius="20" Padding="15,8" HasShadow="True">
-                                <Label Text="Lost Items" FontSize="13" TextColor="#666"/>
+
+                            <!-- Lost Items chip -->
+                            <Frame x:Name="ChipLost" BackgroundColor="White" CornerRadius="18"
+                                   Padding="14,7" HasShadow="False">
+                                <Frame.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnFilterLost"/>
+                                </Frame.GestureRecognizers>
+                                <Label Text="Lost Items" FontSize="13" TextColor="#888"/>
                             </Frame>
-                            <Frame BackgroundColor="White" CornerRadius="20" Padding="15,8" HasShadow="True">
-                                <Label Text="Found Items" FontSize="13" TextColor="#666"/>
+
+                            <!-- Found Items chip -->
+                            <Frame x:Name="ChipFound" BackgroundColor="White" CornerRadius="18"
+                                   Padding="14,7" HasShadow="False">
+                                <Frame.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnFilterFound"/>
+                                </Frame.GestureRecognizers>
+                                <Label Text="Found Items" FontSize="13" TextColor="#888"/>
                             </Frame>
-                            <Frame BackgroundColor="White" CornerRadius="20" Padding="15,8" HasShadow="True">
-                                <HorizontalStackLayout Spacing="5">
-                                    <Label Text="All Status" FontSize="13" TextColor="#666"/>
-                                    <Label Text="▼" FontSize="10" TextColor="#666" VerticalOptions="Center"/>
-                                </HorizontalStackLayout>
+
+                            <!-- Status separator / divider label -->
+                            <BoxView BackgroundColor="#E0E0E0" WidthRequest="1" HeightRequest="28" VerticalOptions="Center"/>
+
+                            <!-- Pending chip -->
+                            <Frame x:Name="ChipPending" BackgroundColor="White" CornerRadius="18"
+                                   Padding="14,7" HasShadow="False">
+                                <Frame.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnFilterPending"/>
+                                </Frame.GestureRecognizers>
+                                <Label Text="🕐 Pending" FontSize="13" TextColor="#888"/>
                             </Frame>
+
+                            <!-- Matched chip -->
+                            <Frame x:Name="ChipMatched" BackgroundColor="White" CornerRadius="18"
+                                   Padding="14,7" HasShadow="False">
+                                <Frame.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnFilterMatched"/>
+                                </Frame.GestureRecognizers>
+                                <Label Text="✅ Matched" FontSize="13" TextColor="#888"/>
+                            </Frame>
+
+                            <!-- Open chip -->
+                            <Frame x:Name="ChipOpen" BackgroundColor="White" CornerRadius="18"
+                                   Padding="14,7" HasShadow="False">
+                                <Frame.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnFilterOpen"/>
+                                </Frame.GestureRecognizers>
+                                <Label Text="🔓 Open" FontSize="13" TextColor="#888"/>
+                            </Frame>
+
                         </HorizontalStackLayout>
                     </ScrollView>
 
-                    <!-- Report Cards -->
-                    <VerticalStackLayout Spacing="15">
+                    <!-- Loading indicator -->
+                    <ActivityIndicator x:Name="LoadingIndicator" IsRunning="True" IsVisible="True"
+                                       Color="#B71C1C" HorizontalOptions="Center"/>
 
-                        <!-- Report Card 1 - Lost -->
-                        <Frame BackgroundColor="White" CornerRadius="15" Padding="20" HasShadow="True">
-                            <VerticalStackLayout Spacing="10">
-                                <Grid ColumnDefinitions="*,Auto">
-                                    <Label Grid.Column="0" Text="iPhone 14 Pro Max" FontSize="18" FontAttributes="Bold" TextColor="#333"/>
-                                    <Frame Grid.Column="1" BackgroundColor="#FFEBEE" CornerRadius="10" Padding="8,3" HasShadow="False">
-                                        <Label Text="LOST" FontSize="11" TextColor="#C62828" FontAttributes="Bold"/>
-                                    </Frame>
-                                </Grid>
-                                <Label Text="Black iPhone 14 Pro Max with a blue case. Last seen at Central Park near the fountain." 
-                                       FontSize="13" TextColor="#666" LineBreakMode="WordWrap"/>
-                                <VerticalStackLayout Spacing="8">
-                                    <HorizontalStackLayout Spacing="8">
-                                        <Label Text="📍" FontSize="14"/>
-                                        <Label Text="Central Park, NYC" FontSize="13" TextColor="#666"/>
-                                    </HorizontalStackLayout>
-                                    <HorizontalStackLayout Spacing="8">
-                                        <Label Text="📅" FontSize="14"/>
-                                        <Label Text="2026-04-12 at 14:30" FontSize="13" TextColor="#666"/>
-                                    </HorizontalStackLayout>
-                                    <HorizontalStackLayout Spacing="8">
-                                        <Label Text="👤" FontSize="14"/>
-                                        <Label Text="John Doe" FontSize="13" TextColor="#666"/>
-                                    </HorizontalStackLayout>
-                                    <HorizontalStackLayout Spacing="8">
-                                        <Label Text="🖼" FontSize="14"/>
-                                        <Label Text="2 images attached" FontSize="13" TextColor="#666"/>
-                                    </HorizontalStackLayout>
-                                </VerticalStackLayout>
-                                <Grid ColumnDefinitions="*,Auto">
-                                    <Frame Grid.Column="0" BackgroundColor="#FFF8E1" CornerRadius="15" Padding="12,6" 
-                                           HorizontalOptions="Start" HasShadow="False">
-                                        <Label Text="PENDING" FontSize="12" TextColor="#F9A825" FontAttributes="Bold"/>
-                                    </Frame>
-                                    <Frame Grid.Column="1" BackgroundColor="#F5F5F5" CornerRadius="15" Padding="12,6" HasShadow="False">
-                                        <HorizontalStackLayout Spacing="5">
-                                            <Label Text="👁" FontSize="12"/>
-                                            <Label Text="View" FontSize="12" TextColor="#666"/>
-                                        </HorizontalStackLayout>
-                                    </Frame>
-                                </Grid>
-                            </VerticalStackLayout>
-                        </Frame>
-
-                        <!-- Report Card 2 - Found -->
-                        <Frame BackgroundColor="White" CornerRadius="15" Padding="20" HasShadow="True">
-                            <VerticalStackLayout Spacing="10">
-                                <Grid ColumnDefinitions="*,Auto">
-                                    <Label Grid.Column="0" Text="Black Leather Wallet" FontSize="18" FontAttributes="Bold" TextColor="#333"/>
-                                    <Frame Grid.Column="1" BackgroundColor="#E8F5E9" CornerRadius="10" Padding="8,3" HasShadow="False">
-                                        <Label Text="FOUND" FontSize="11" TextColor="#2E7D32" FontAttributes="Bold"/>
-                                    </Frame>
-                                </Grid>
-                                <Label Text="Black leather wallet found at Starbucks. Contains ID cards and some cash." 
-                                       FontSize="13" TextColor="#666" LineBreakMode="WordWrap"/>
-                                <VerticalStackLayout Spacing="8">
-                                    <HorizontalStackLayout Spacing="8">
-                                        <Label Text="📍" FontSize="14"/>
-                                        <Label Text="Starbucks, 5th Ave" FontSize="13" TextColor="#666"/>
-                                    </HorizontalStackLayout>
-                                    <HorizontalStackLayout Spacing="8">
-                                        <Label Text="📅" FontSize="14"/>
-                                        <Label Text="2026-04-12 at 10:15" FontSize="13" TextColor="#666"/>
-                                    </HorizontalStackLayout>
-                                    <HorizontalStackLayout Spacing="8">
-                                        <Label Text="👤" FontSize="14"/>
-                                        <Label Text="Jane Smith" FontSize="13" TextColor="#666"/>
-                                    </HorizontalStackLayout>
-                                    <HorizontalStackLayout Spacing="8">
-                                        <Label Text="🖼" FontSize="14"/>
-                                        <Label Text="3 images attached" FontSize="13" TextColor="#666"/>
-                                    </HorizontalStackLayout>
-                                </VerticalStackLayout>
-                                <Grid ColumnDefinitions="*,Auto">
-                                    <Frame Grid.Column="0" BackgroundColor="#E3F2FD" CornerRadius="15" Padding="12,6" 
-                                           HorizontalOptions="Start" HasShadow="False">
-                                        <Label Text="MATCHED" FontSize="12" TextColor="#1976D2" FontAttributes="Bold"/>
-                                    </Frame>
-                                    <Frame Grid.Column="1" BackgroundColor="#F5F5F5" CornerRadius="15" Padding="12,6" HasShadow="False">
-                                        <HorizontalStackLayout Spacing="5">
-                                            <Label Text="👁" FontSize="12"/>
-                                            <Label Text="View" FontSize="12" TextColor="#666"/>
-                                        </HorizontalStackLayout>
-                                    </Frame>
-                                </Grid>
-                            </VerticalStackLayout>
-                        </Frame>
-
+                    <!-- Empty state -->
+                    <VerticalStackLayout x:Name="EmptyState" IsVisible="False"
+                                         HorizontalOptions="Center" Padding="20,40" Spacing="10">
+                        <Label Text="📭" FontSize="48" HorizontalOptions="Center"/>
+                        <Label Text="No reports found" FontSize="16" FontAttributes="Bold"
+                               TextColor="#666" HorizontalOptions="Center"/>
+                        <Label Text="Try adjusting your search or filters."
+                               FontSize="13" TextColor="#999" HorizontalOptions="Center"/>
                     </VerticalStackLayout>
 
-                    <BoxView HeightRequest="20" BackgroundColor="Transparent"/>
+                    <!-- Report Cards Container -->
+                    <VerticalStackLayout x:Name="ReportsContainer" Spacing="12"/>
+
+                    <BoxView HeightRequest="16" BackgroundColor="Transparent"/>
                 </VerticalStackLayout>
             </VerticalStackLayout>
         </ScrollView>
 
         <!-- Fixed Bottom Navigation -->
-        <Frame Grid.Row="1" BackgroundColor="White" CornerRadius="0" Padding="10,15" HasShadow="True">
-            <Grid ColumnDefinitions="*,*,*,*">
+        <Frame Grid.Row="2"
+       BackgroundColor="White"
+       Padding="10,15"
+       HasShadow="True">
 
-                <!-- Dashboard -->
-                <VerticalStackLayout Grid.Column="0" Spacing="5" HorizontalOptions="Center">
+            <Grid ColumnDefinitions="*,*,*,*,*">
+
+                <!-- HOME -->
+                <VerticalStackLayout Grid.Column="0" HorizontalOptions="Center">
                     <VerticalStackLayout.GestureRecognizers>
-                        <TapGestureRecognizer Tapped="OnDashboardTapped"/>
+                        <TapGestureRecognizer Tapped="OnHomeTapped"/>
                     </VerticalStackLayout.GestureRecognizers>
-                    <Label Text="⊞" FontSize="24" TextColor="#888" HorizontalOptions="Center"/>
-                    <Label Text="Dashboard" FontSize="11" TextColor="#888" FontAttributes="Bold" HorizontalOptions="Center"/>
+                    <Image Source="home.png" WidthRequest="28" HeightRequest="28"/>
+                    <Label Text="Home" FontSize="11" TextColor="#888"/>
                 </VerticalStackLayout>
 
-                <!-- Reports -->
-                <VerticalStackLayout Grid.Column="1" Spacing="5" HorizontalOptions="Center">
-                    <VerticalStackLayout.GestureRecognizers>
-                        <TapGestureRecognizer Tapped="OnReportsTapped"/>
-                    </VerticalStackLayout.GestureRecognizers>
-                    <Label Text="📋" FontSize="22" TextColor="#B71C1C" HorizontalOptions="Center"/>
-                    <Label Text="Reports" FontSize="11" TextColor="#B71C1C" HorizontalOptions="Center"/>
+                <!-- REPORTS ACTIVE -->
+                <VerticalStackLayout Grid.Column="1"
+                             Spacing="2"
+                             HorizontalOptions="Center">
+                    <Image Source="report.png" WidthRequest="28" HeightRequest="28"/>
+                    <Label Text="Reports"
+                   FontSize="11"
+                   TextColor="#C8102E"
+                   FontAttributes="Bold"/>
+                    <BoxView HeightRequest="2"
+                     BackgroundColor="#C8102E"/>
                 </VerticalStackLayout>
 
-                <!-- Return/Back -->
-                <VerticalStackLayout Grid.Column="2" Spacing="5" HorizontalOptions="Center">
+                <!-- REPORT ITEM -->
+                <VerticalStackLayout Grid.Column="2" HorizontalOptions="Center">
+                    <VerticalStackLayout.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnReportItemTapped"/>
+                    </VerticalStackLayout.GestureRecognizers>
+                    <Image Source="addreport.png" WidthRequest="28" HeightRequest="28"/>
+                    <Label Text="Add Report" FontSize="11" TextColor="#888"/>
+                </VerticalStackLayout>
+
+                <!-- RETURN -->
+                <VerticalStackLayout Grid.Column="3" HorizontalOptions="Center">
                     <VerticalStackLayout.GestureRecognizers>
                         <TapGestureRecognizer Tapped="OnReturnTapped"/>
                     </VerticalStackLayout.GestureRecognizers>
-                    <Label Text="↩" FontSize="24" TextColor="#888" HorizontalOptions="Center"/>
-                    <Label Text="Return" FontSize="11" TextColor="#888" HorizontalOptions="Center"/>
+                    <Image Source="return.png" WidthRequest="28" HeightRequest="28"/>
+                    <Label Text="Return" FontSize="11" TextColor="#888"/>
                 </VerticalStackLayout>
 
-                <!-- Log Out -->
-                <VerticalStackLayout Grid.Column="3" Spacing="5" HorizontalOptions="Center">
+                <!-- SETTINGS -->
+                <VerticalStackLayout Grid.Column="4" HorizontalOptions="Center">
                     <VerticalStackLayout.GestureRecognizers>
-                        <TapGestureRecognizer Tapped="OnLogoutTapped"/>
+                        <TapGestureRecognizer Tapped="OnSettingsTapped"/>
                     </VerticalStackLayout.GestureRecognizers>
-                    <Label Text="⎋" FontSize="24" TextColor="#888" HorizontalOptions="Center"/>
-                    <Label Text="Log Out" FontSize="11" TextColor="#888" HorizontalOptions="Center"/>
+                    <Image Source="gear.png" WidthRequest="28" HeightRequest="28"/>
+                    <Label Text="Settings" FontSize="11" TextColor="#888"/>
                 </VerticalStackLayout>
 
             </Grid>
         </Frame>
-
     </Grid>
 </ContentPage>
