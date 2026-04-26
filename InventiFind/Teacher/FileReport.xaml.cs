@@ -75,7 +75,7 @@ public partial class FileReport : ContentPage
         try
         {
             using var conn = new MySqlConnection(
-                "server=localhost;database=inventifind;uid=root;pwd=;");
+                "server=localhost;database=inventifind2;uid=root;pwd=;");
 
             await conn.OpenAsync();
 

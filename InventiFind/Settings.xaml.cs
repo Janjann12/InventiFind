@@ -5,7 +5,7 @@ namespace InventiFind;
 public partial class Settings : ContentPage
 {
     private readonly string connString =
-        "server=localhost;database=inventifind;uid=root;pwd=;";
+        "server=localhost;database=inventifind2;uid=root;pwd=;";
 
     private int currentUserId;
 
