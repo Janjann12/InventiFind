@@ -131,4 +131,19 @@ public partial class AdminDashboard : ContentPage
 
     private static string CapitalizeFirst(string s) =>
         string.IsNullOrEmpty(s) ? s : char.ToUpper(s[0]) + s[1..];
+
+    private async void OnReportsTapped(object sender, TappedEventArgs e)
+    {
+        await Navigation.PushModalAsync(new SurrenderedItemPage());
+    }
+
+    private async void OnVerifyTapped(object sender, TappedEventArgs e)
+    {
+        await Navigation.PushModalAsync(new LostItemDetailPage());
+    }
+
+    private async void OnReturnedTapped(object sender, TappedEventArgs e)
+    {
+        await Navigation.PushModalAsync(new ReturnedItemsPage());
+    }
 }

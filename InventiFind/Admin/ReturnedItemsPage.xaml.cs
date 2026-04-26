@@ -26,7 +26,7 @@ public class ReturnedItem
     public Color BadgeBg => Color.FromArgb("#E6F7F0");
 
     public bool IsFirst { get; set; }
-    public Color DotColor => IsFirst ? Color.FromArgb("#1A9E6E") : Colors.White;
+    public Color DotColor => Colors.White;
 
     public string Notes => string.IsNullOrWhiteSpace(Description)
         ? $"Returned • {Similarity}% match confirmed."
@@ -208,6 +208,21 @@ public partial class ReturnedItemsPage : ContentPage
             LoadingIndicator.IsVisible = false;
             LoadingIndicator.IsRunning = false;
         }
+    }
+
+    private async void OnDashboardTapped(object sender, TappedEventArgs e)
+    {
+        await Navigation.PushModalAsync(new AdminDashboard());
+    }
+
+    private async void OnReportsTapped(object sender, TappedEventArgs e)
+    {
+        await Navigation.PushModalAsync(new SurrenderedItemPage());
+    }
+
+    private async void OnVerifyTapped(object sender, TappedEventArgs e)
+    {
+        await Navigation.PushModalAsync(new LostItemDetailPage());
     }
 
     // ── HELPERS ───────────────────────────────────────────────────────────

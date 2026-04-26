@@ -36,7 +36,6 @@ public partial class LostItemDetailPage : ContentPage
         await LoadProofsAsync();
     }
 
-    // 🔁 LOAD PROOFS
     private async Task LoadProofsAsync()
     {
         try
@@ -48,7 +47,7 @@ public partial class LostItemDetailPage : ContentPage
 
             const string sql = """
                 SELECT
-                    p.id AS proof_id,   -- ✅ FIXED
+                    p.id AS proof_id,
                     p.match_id,
                     p.user_id,
                     p.item_description,
@@ -76,8 +75,12 @@ public partial class LostItemDetailPage : ContentPage
             await using var cmd = new MySqlCommand(sql, conn);
             await using var reader = await cmd.ExecuteReaderAsync();
 
+            bool hasData = false;
+
             while (await reader.ReadAsync())
             {
+                hasData = true;
+
                 var proof = new ProofItem
                 {
                     ProofId = reader.GetInt32("proof_id"),
@@ -88,8 +91,12 @@ public partial class LostItemDetailPage : ContentPage
 
                     ItemName = reader.GetString("item_name"),
                     Category = reader.GetString("category"),
-                    ItemDescription = reader.IsDBNull(reader.GetOrdinal("item_description")) ? "" : reader.GetString("item_description"),
-                    LostAt = reader.IsDBNull(reader.GetOrdinal("lost_at")) ? "" : reader.GetString("lost_at"),
+                    ItemDescription = reader.IsDBNull(reader.GetOrdinal("item_description"))
+                        ? ""
+                        : reader.GetString("item_description"),
+                    LostAt = reader.IsDBNull(reader.GetOrdinal("lost_at"))
+                        ? ""
+                        : reader.GetString("lost_at"),
                     DateLost = reader.IsDBNull(reader.GetOrdinal("date_lost"))
                         ? ""
                         : reader.GetDateTime("date_lost").ToString("yyyy-MM-dd"),
@@ -107,6 +114,11 @@ public partial class LostItemDetailPage : ContentPage
 
                 MatchesStack.Children.Add(BuildProofCard(proof));
             }
+
+            if (!hasData)
+            {
+                MatchesStack.Children.Add(BuildEmptyState());
+            }
         }
         catch (Exception ex)
         {
@@ -114,14 +126,155 @@ public partial class LostItemDetailPage : ContentPage
         }
     }
 
-    // 🎨 CARD
+    private View BuildEmptyState()
+    {
+        return new Frame
+        {
+            BackgroundColor = Colors.White,
+            CornerRadius = 18,
+            Padding = 24,
+            HasShadow = false,
+            BorderColor = Color.FromArgb("#E5E7EB"),
+            Content = new VerticalStackLayout
+            {
+                Spacing = 8,
+                HorizontalOptions = LayoutOptions.Center,
+                Children =
+                {
+                    new Image
+                    {
+                        Source = "notif.png",
+                        WidthRequest = 52,
+                        HeightRequest = 52,
+                        HorizontalOptions = LayoutOptions.Center
+                    },
+                    new Label
+                    {
+                        Text = "No pending verification",
+                        FontSize = 16,
+                        FontAttributes = FontAttributes.Bold,
+                        TextColor = Color.FromArgb("#111827"),
+                        HorizontalOptions = LayoutOptions.Center
+                    },
+                    new Label
+                    {
+                        Text = "Proof submissions will appear here.",
+                        FontSize = 13,
+                        TextColor = Color.FromArgb("#6B7280"),
+                        HorizontalOptions = LayoutOptions.Center
+                    }
+                }
+            }
+        };
+    }
+
     private View BuildProofCard(ProofItem proof)
+    {
+        var itemNameLabel = new Label
+        {
+            Text = string.IsNullOrWhiteSpace(proof.ItemName) ? "Unnamed Item" : proof.ItemName,
+            FontSize = 17,
+            FontAttributes = FontAttributes.Bold,
+            TextColor = Color.FromArgb("#111827"),
+            LineBreakMode = LineBreakMode.TailTruncation,
+            VerticalOptions = LayoutOptions.Center
+        };
+
+        var categoryFrame = new Frame
+        {
+            BackgroundColor = Color.FromArgb("#FDECEC"),
+            CornerRadius = 10,
+            Padding = new Thickness(8, 3),
+            HasShadow = false,
+            VerticalOptions = LayoutOptions.Center,
+            Content = new Label
+            {
+                Text = proof.Category,
+                FontSize = 11,
+                FontAttributes = FontAttributes.Bold,
+                TextColor = Color.FromArgb("#C8102E")
+            }
+        };
+
+        Grid.SetColumn(categoryFrame, 1);
+
+        var headerGrid = new Grid
+        {
+            ColumnDefinitions =
+            {
+                new ColumnDefinition { Width = GridLength.Star },
+                new ColumnDefinition { Width = GridLength.Auto }
+            },
+            ColumnSpacing = 8,
+            Children =
+            {
+                itemNameLabel,
+                categoryFrame
+            }
+        };
+
+        var viewBtn = new Button
+        {
+            Text = "View Proof",
+            BackgroundColor = Color.FromArgb("#C8102E"),
+            TextColor = Colors.White,
+            CornerRadius = 12,
+            HeightRequest = 44,
+            FontAttributes = FontAttributes.Bold
+        };
+
+        viewBtn.Clicked += async (s, e) =>
+        {
+            await OpenProofModal(proof);
+        };
+
+        return new Frame
+        {
+            BackgroundColor = Colors.White,
+            CornerRadius = 18,
+            Padding = 14,
+            Margin = new Thickness(0, 0, 0, 10),
+            HasShadow = false,
+            BorderColor = Color.FromArgb("#E5E7EB"),
+            Content = new VerticalStackLayout
+            {
+                Spacing = 8,
+                Children =
+                {
+                    headerGrid,
+                    new Label
+                    {
+                        Text = $"Claimant: {proof.ClaimantName}",
+                        FontSize = 13,
+                        TextColor = Color.FromArgb("#4B5563")
+                    },
+                    new Label
+                    {
+                        Text = $"Similarity: {proof.SimilarityScore}%",
+                        FontSize = 13,
+                        TextColor = Color.FromArgb("#6B7280")
+                    },
+                    new Label
+                    {
+                        Text = $"Submitted: {proof.SubmittedAt}",
+                        FontSize = 12,
+                        TextColor = Color.FromArgb("#9CA3AF")
+                    },
+                    viewBtn
+                }
+            }
+        };
+    }
+
+    private async Task OpenProofModal(ProofItem proof)
     {
         var photo = new Image
         {
-            HeightRequest = 160,
+            HeightRequest = 180,
+            WidthRequest = 280,
             Aspect = Aspect.AspectFill,
-            BackgroundColor = Color.FromArgb("#DDD")
+            HorizontalOptions = LayoutOptions.Center,
+            BackgroundColor = Color.FromArgb("#E5E7EB")
         };
 
         if (proof.Photo != null && proof.Photo.Length > 0)
@@ -132,52 +285,178 @@ public partial class LostItemDetailPage : ContentPage
         var approveBtn = new Button
         {
             Text = "Approve",
-            BackgroundColor = Color.FromArgb("#4CAF50"),
-            TextColor = Colors.White
+            BackgroundColor = Color.FromArgb("#16A34A"),
+            TextColor = Colors.White,
+            CornerRadius = 12,
+            HeightRequest = 44,
+            FontAttributes = FontAttributes.Bold
         };
 
         var rejectBtn = new Button
         {
             Text = "Reject",
-            BackgroundColor = Color.FromArgb("#FF6B6B"),
-            TextColor = Colors.White
+            BackgroundColor = Color.FromArgb("#DC2626"),
+            TextColor = Colors.White,
+            CornerRadius = 12,
+            HeightRequest = 44,
+            FontAttributes = FontAttributes.Bold
+        };
+
+        var closeBtn = new Button
+        {
+            Text = "Cancel",
+            BackgroundColor = Color.FromArgb("#E5E7EB"),
+            TextColor = Color.FromArgb("#111827"),
+            CornerRadius = 12,
+            HeightRequest = 44
+        };
+
+        var actionGrid = new Grid
+        {
+            ColumnDefinitions =
+            {
+                new ColumnDefinition { Width = GridLength.Star },
+                new ColumnDefinition { Width = GridLength.Star }
+            },
+            ColumnSpacing = 10,
+            Children =
+            {
+                rejectBtn,
+                approveBtn
+            }
+        };
+
+        Grid.SetColumn(approveBtn, 1);
+
+        var modal = new ContentPage
+        {
+            BackgroundColor = Color.FromArgb("#80000000"),
+            Content = new Grid
+            {
+                Padding = 20,
+                VerticalOptions = LayoutOptions.Center,
+                Children =
+                {
+                    new Frame
+                    {
+                        BackgroundColor = Colors.White,
+                        CornerRadius = 22,
+                        Padding = 18,
+                        HasShadow = true,
+                        Content = new ScrollView
+                        {
+                            Content = new VerticalStackLayout
+                            {
+                                Spacing = 12,
+                                Children =
+                                {
+                                    new Label
+                                    {
+                                        Text = "Proof Verification",
+                                        FontSize = 22,
+                                        FontAttributes = FontAttributes.Bold,
+                                        TextColor = Color.FromArgb("#111827")
+                                    },
+                                    new Label
+                                    {
+                                        Text = proof.ItemName,
+                                        FontSize = 16,
+                                        FontAttributes = FontAttributes.Bold,
+                                        TextColor = Color.FromArgb("#C8102E")
+                                    },
+                                    new Label { Text = $"Claimant: {proof.ClaimantName}", FontSize = 13, TextColor = Color.FromArgb("#4B5563") },
+                                    new Label { Text = $"Category: {proof.Category}", FontSize = 13, TextColor = Color.FromArgb("#4B5563") },
+                                    new Label { Text = $"Similarity: {proof.SimilarityScore}%", FontSize = 13, TextColor = Color.FromArgb("#4B5563") },
+                                    new Label { Text = $"Lost At: {proof.LostAt}", FontSize = 13, TextColor = Color.FromArgb("#4B5563") },
+                                    new Label { Text = $"Date Lost: {proof.DateLost}", FontSize = 13, TextColor = Color.FromArgb("#4B5563") },
+                                    new Label { Text = $"Submitted: {proof.SubmittedAt}", FontSize = 13, TextColor = Color.FromArgb("#4B5563") },
+
+                                    new Label
+                                    {
+                                        Text = "Description",
+                                        FontSize = 14,
+                                        FontAttributes = FontAttributes.Bold,
+                                        TextColor = Color.FromArgb("#111827"),
+                                        Margin = new Thickness(0, 8, 0, 0)
+                                    },
+                                    new Frame
+                                    {
+                                        BackgroundColor = Color.FromArgb("#F9FAFB"),
+                                        BorderColor = Color.FromArgb("#E5E7EB"),
+                                        CornerRadius = 14,
+                                        Padding = 12,
+                                        HasShadow = false,
+                                        Content = new Label
+                                        {
+                                            Text = string.IsNullOrWhiteSpace(proof.ItemDescription)
+                                                ? "No description provided."
+                                                : proof.ItemDescription,
+                                            FontSize = 13,
+                                            TextColor = Color.FromArgb("#4B5563")
+                                        }
+                                    },
+
+                                    new Label
+                                    {
+                                        Text = "Proof Image",
+                                        FontSize = 14,
+                                        FontAttributes = FontAttributes.Bold,
+                                        TextColor = Color.FromArgb("#111827"),
+                                        Margin = new Thickness(0, 8, 0, 0)
+                                    },
+                                    new Frame
+                                    {
+                                        BackgroundColor = Color.FromArgb("#F3F4F6"),
+                                        CornerRadius = 16,
+                                        Padding = 0,
+                                        HasShadow = false,
+                                        IsClippedToBounds = true,
+                                        HorizontalOptions = LayoutOptions.Center,
+                                        Content = photo
+                                    },
+
+                                    actionGrid,
+                                    closeBtn
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         };
 
         approveBtn.Clicked += async (s, e) =>
         {
+            bool confirm = await DisplayAlert("Approve Proof",
+                "Are you sure you want to approve this claim?", "Yes", "No");
+
+            if (!confirm) return;
+
             await UpdateProofStatus(proof, "approved");
+            await Navigation.PopModalAsync();
             await LoadProofsAsync();
         };
 
         rejectBtn.Clicked += async (s, e) =>
         {
+            bool confirm = await DisplayAlert("Reject Proof",
+                "Are you sure you want to reject this claim?", "Yes", "No");
+
+            if (!confirm) return;
+
             await UpdateProofStatus(proof, "rejected");
+            await Navigation.PopModalAsync();
             await LoadProofsAsync();
         };
 
-        return new Frame
+        closeBtn.Clicked += async (s, e) =>
         {
-            BackgroundColor = Colors.White,
-            Padding = 12,
-            Margin = new Thickness(0, 0, 0, 10),
-            Content = new VerticalStackLayout
-            {
-                Children =
-                {
-                    new Label { Text = proof.ItemName, FontSize = 18, FontAttributes = FontAttributes.Bold },
-                    new Label { Text = $"Claimant: {proof.ClaimantName}" },
-                    new Label { Text = $"Similarity: {proof.SimilarityScore}%" },
-                    new Label { Text = $"Description: {proof.ItemDescription}" },
-                    new Label { Text = $"Lost At: {proof.LostAt}" },
-                    new Label { Text = $"Date Lost: {proof.DateLost}" },
-                    photo,
-                    new HorizontalStackLayout { Children = { approveBtn, rejectBtn } }
-                }
-            }
+            await Navigation.PopModalAsync();
         };
+
+        await Navigation.PushModalAsync(modal);
     }
 
-    // 🔥 VERIFY LOGIC
     private async Task UpdateProofStatus(ProofItem proof, string status)
     {
         await using var conn = new MySqlConnection(DatabaseConfig.ConnectionString);
@@ -185,9 +464,8 @@ public partial class LostItemDetailPage : ContentPage
 
         int adminId = Preferences.Get("UserID", 0);
 
-        // 1. Update proof
         await new MySqlCommand(
-            "UPDATE proofs SET status=@s WHERE id=@id", conn) // ✅ FIXED
+            "UPDATE proofs SET status=@s WHERE id=@id", conn)
         {
             Parameters =
             {
@@ -198,7 +476,6 @@ public partial class LostItemDetailPage : ContentPage
 
         if (status != "approved") return;
 
-        // 2. Confirm match
         await new MySqlCommand(
             "UPDATE matches SET match_status='confirmed', verified_by=@a WHERE match_id=@id", conn)
         {
@@ -209,7 +486,6 @@ public partial class LostItemDetailPage : ContentPage
             }
         }.ExecuteNonQueryAsync();
 
-        // 3. Mark reports claimed
         await new MySqlCommand(
             "UPDATE item_reports SET status='claimed' WHERE report_id IN (@l,@f)", conn)
         {
@@ -220,7 +496,6 @@ public partial class LostItemDetailPage : ContentPage
             }
         }.ExecuteNonQueryAsync();
 
-        // 4. Insert return
         await new MySqlCommand("""
             INSERT INTO returns (match_id, returned_to, released_by, return_date, notes)
             VALUES (@m,@to,@by,NOW(),@n)
@@ -229,18 +504,17 @@ public partial class LostItemDetailPage : ContentPage
             Parameters =
             {
                 new("@m", proof.MatchId),
-                new("@to", proof.ClaimantUserId), // ✅ FIXED
+                new("@to", proof.ClaimantUserId),
                 new("@by", adminId),
                 new("@n", "Approved ownership proof")
             }
         }.ExecuteNonQueryAsync();
 
-        // 5. Reject other proofs
         await new MySqlCommand("""
             UPDATE proofs
             SET status='rejected'
             WHERE match_id=@m AND id<>@id AND status='pending'
-        """, conn) // ✅ FIXED
+        """, conn)
         {
             Parameters =
             {
@@ -248,5 +522,20 @@ public partial class LostItemDetailPage : ContentPage
                 new("@id", proof.ProofId)
             }
         }.ExecuteNonQueryAsync();
+    }
+
+    private async void OnDashboardTapped(object sender, TappedEventArgs e)
+    {
+        await Navigation.PushModalAsync(new AdminDashboard());
+    }
+
+    private async void OnReportsTapped(object sender, TappedEventArgs e)
+    {
+        await Navigation.PushModalAsync(new SurrenderedItemPage());
+    }
+
+    private async void OnReturnedTapped(object sender, TappedEventArgs e)
+    {
+        await Navigation.PushModalAsync(new ReturnedItemsPage());
     }
 }
