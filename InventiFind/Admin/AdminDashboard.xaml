@@ -2,7 +2,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="InventiFind.AdminDashboard"
-             BackgroundColor="#F0EBEB"
+             BackgroundColor="#F2F4F7"
              Shell.NavBarIsVisible="False">
 
     <Shell.BackButtonBehavior>
@@ -11,410 +11,423 @@
 
     <Grid RowDefinitions="Auto,*,Auto">
 
-        <!-- Header -->
+        <!-- HEADER -->
         <Grid Grid.Row="0"
-              BackgroundColor="#8B0000"
-              Padding="20,50,20,20">
-            <Label Text="Dashboard"
-                   FontSize="32"
-                   FontAttributes="Bold"
-                   TextColor="White"
-                   VerticalOptions="Center"/>
+              BackgroundColor="#C8102E"
+              Padding="20,40,20,24"
+              HeightRequest="140">
+
+            <VerticalStackLayout Spacing="2">
+                <Label Text="Dashboard"
+                       FontSize="28"
+                       FontAttributes="Bold"
+                       TextColor="White"/>
+
+                <Label Text="Overview of lost and found reports"
+                       FontSize="13"
+                       TextColor="#FDECEC"/>
+            </VerticalStackLayout>
         </Grid>
 
-        <!-- Scrollable Content -->
+        <!-- CONTENT -->
         <ScrollView Grid.Row="1">
-            <VerticalStackLayout Padding="16" Spacing="16">
+            <VerticalStackLayout Padding="16,16,16,20"
+                                 Spacing="14">
 
-                <!-- Stats Grid (2x2) -->
+                <!-- FIXED STATS -->
                 <Grid ColumnDefinitions="*,*"
-                      RowDefinitions="Auto,Auto"
-                      ColumnSpacing="12"
-                      RowSpacing="12">
+      RowDefinitions="Auto,Auto"
+      ColumnSpacing="10"
+      RowSpacing="10">
 
-                    <!-- Stat Card 1: Total Reports -->
+                    <!-- Total Reports -->
                     <Frame Grid.Row="0" Grid.Column="0"
-                           BackgroundColor="White"
-                           CornerRadius="16"
-                           Padding="16"
-                           HasShadow="False">
-                        <Grid RowDefinitions="Auto,Auto,Auto">
+           BackgroundColor="White"
+           CornerRadius="18"
+           Padding="14"
+           HeightRequest="120"
+           HasShadow="False"
+           BorderColor="#E5E7EB">
+                        <Grid RowDefinitions="Auto,*,Auto">
                             <Grid Grid.Row="0" ColumnDefinitions="Auto,*">
-                                <Frame Grid.Column="0"
-                                       BackgroundColor="#8B0000"
-                                       CornerRadius="10"
-                                       Padding="8"
-                                       HasShadow="False"
-                                       WidthRequest="40"
-                                       HeightRequest="40">
-                                    <Label Text="📋"
-                                           FontSize="18"
-                                           HorizontalOptions="Center"
-                                           VerticalOptions="Center"/>
+                                <Frame BackgroundColor="#FDECEC"
+                       WidthRequest="36"
+                       HeightRequest="36"
+                       CornerRadius="12"
+                       Padding="7"
+                       HasShadow="False">
+                                    <Image Source="report.png" Aspect="AspectFit"/>
                                 </Frame>
+
                                 <Label Grid.Column="1"
-                                       x:Name="TotalReportsTodayLabel"
-                                       Text="+0 today"
-                                       FontSize="12"
-                                       TextColor="#888"
-                                       HorizontalOptions="End"
-                                       VerticalOptions="Center"
-                                       Margin="0,0,0,0"/>
+                       x:Name="TotalReportsTodayLabel"
+                       Text="+0 today"
+                       FontSize="11"
+                       TextColor="#C8102E"
+                       HorizontalOptions="End"
+                       VerticalOptions="Center"/>
                             </Grid>
+
                             <Label Grid.Row="1"
-                                   x:Name="TotalReportsLabel"
-                                   Text="0"
-                                   FontSize="28"
-                                   FontAttributes="Bold"
-                                   TextColor="#1A1A1A"
-                                   Margin="0,8,0,0"/>
+                   x:Name="TotalReportsLabel"
+                   Text="0"
+                   FontSize="28"
+                   FontAttributes="Bold"
+                   TextColor="#111827"
+                   VerticalOptions="Center"/>
+
                             <Label Grid.Row="2"
-                                   Text="Total Reports"
-                                   FontSize="13"
-                                   TextColor="#666"/>
+                   Text="Total Reports"
+                   FontSize="12"
+                   TextColor="#6B7280"/>
                         </Grid>
                     </Frame>
 
-                    <!-- Stat Card 2: Lost Items -->
+                    <!-- Lost Reports -->
                     <Frame Grid.Row="0" Grid.Column="1"
-                           BackgroundColor="White"
-                           CornerRadius="16"
-                           Padding="16"
-                           HasShadow="False">
-                        <Grid RowDefinitions="Auto,Auto,Auto">
+           BackgroundColor="White"
+           CornerRadius="18"
+           Padding="14"
+           HeightRequest="120"
+           HasShadow="False"
+           BorderColor="#E5E7EB">
+                        <Grid RowDefinitions="Auto,*,Auto">
                             <Grid Grid.Row="0" ColumnDefinitions="Auto,*">
-                                <Frame Grid.Column="0"
-                                       BackgroundColor="#8B0000"
-                                       CornerRadius="10"
-                                       Padding="8"
-                                       HasShadow="False"
-                                       WidthRequest="40"
-                                       HeightRequest="40">
-                                    <Label Text="🔍"
-                                           FontSize="18"
-                                           HorizontalOptions="Center"
-                                           VerticalOptions="Center"/>
+                                <Frame BackgroundColor="#FDECEC"
+                       WidthRequest="36"
+                       HeightRequest="36"
+                       CornerRadius="12"
+                       Padding="7"
+                       HasShadow="False">
+                                    <Image Source="notif.png" Aspect="AspectFit"/>
                                 </Frame>
+
                                 <Label Grid.Column="1"
-                                       x:Name="LostTodayLabel"
-                                       Text="+0 today"
-                                       FontSize="12"
-                                       TextColor="#888"
-                                       HorizontalOptions="End"
-                                       VerticalOptions="Center"/>
+                       x:Name="LostTodayLabel"
+                       Text="+0 today"
+                       FontSize="11"
+                       TextColor="#C8102E"
+                       HorizontalOptions="End"
+                       VerticalOptions="Center"/>
                             </Grid>
+
                             <Label Grid.Row="1"
-                                   x:Name="LostItemsLabel"
-                                   Text="0"
-                                   FontSize="28"
-                                   FontAttributes="Bold"
-                                   TextColor="#1A1A1A"
-                                   Margin="0,8,0,0"/>
+                   x:Name="LostItemsLabel"
+                   Text="0"
+                   FontSize="28"
+                   FontAttributes="Bold"
+                   TextColor="#111827"
+                   VerticalOptions="Center"/>
+
                             <Label Grid.Row="2"
-                                   Text="Lost Reports"
-                                   FontSize="13"
-                                   TextColor="#666"/>
+                   Text="Lost Reports"
+                   FontSize="12"
+                   TextColor="#6B7280"/>
                         </Grid>
                     </Frame>
 
-                    <!-- Stat Card 3: Found Items -->
+                    <!-- Found Reports -->
                     <Frame Grid.Row="1" Grid.Column="0"
-                           BackgroundColor="White"
-                           CornerRadius="16"
-                           Padding="16"
-                           HasShadow="False">
-                        <Grid RowDefinitions="Auto,Auto,Auto">
+           BackgroundColor="White"
+           CornerRadius="18"
+           Padding="14"
+           HeightRequest="120"
+           HasShadow="False"
+           BorderColor="#E5E7EB">
+                        <Grid RowDefinitions="Auto,*,Auto">
                             <Grid Grid.Row="0" ColumnDefinitions="Auto,*">
-                                <Frame Grid.Column="0"
-                                       BackgroundColor="#8B0000"
-                                       CornerRadius="10"
-                                       Padding="8"
-                                       HasShadow="False"
-                                       WidthRequest="40"
-                                       HeightRequest="40">
-                                    <Label Text="✅"
-                                           FontSize="18"
-                                           HorizontalOptions="Center"
-                                           VerticalOptions="Center"/>
+                                <Frame BackgroundColor="#FDECEC"
+                       WidthRequest="36"
+                       HeightRequest="36"
+                       CornerRadius="12"
+                       Padding="7"
+                       HasShadow="False">
+                                    <Image Source="box.png" Aspect="AspectFit"/>
                                 </Frame>
+
                                 <Label Grid.Column="1"
-                                       x:Name="FoundTodayLabel"
-                                       Text="+0 today"
-                                       FontSize="12"
-                                       TextColor="#888"
-                                       HorizontalOptions="End"
-                                       VerticalOptions="Center"/>
+                       x:Name="FoundTodayLabel"
+                       Text="+0 today"
+                       FontSize="11"
+                       TextColor="#C8102E"
+                       HorizontalOptions="End"
+                       VerticalOptions="Center"/>
                             </Grid>
+
                             <Label Grid.Row="1"
-                                   x:Name="FoundItemsLabel"
-                                   Text="0"
-                                   FontSize="28"
-                                   FontAttributes="Bold"
-                                   TextColor="#1A1A1A"
-                                   Margin="0,8,0,0"/>
+                   x:Name="FoundItemsLabel"
+                   Text="0"
+                   FontSize="28"
+                   FontAttributes="Bold"
+                   TextColor="#111827"
+                   VerticalOptions="Center"/>
+
                             <Label Grid.Row="2"
-                                   Text="Found Reports"
-                                   FontSize="13"
-                                   TextColor="#666"/>
+                   Text="Found Reports"
+                   FontSize="12"
+                   TextColor="#6B7280"/>
                         </Grid>
                     </Frame>
 
-                    <!-- Stat Card 4: Total Users -->
+                    <!-- Total Users -->
                     <Frame Grid.Row="1" Grid.Column="1"
-                           BackgroundColor="White"
-                           CornerRadius="16"
-                           Padding="16"
-                           HasShadow="False">
-                        <Grid RowDefinitions="Auto,Auto,Auto">
+           BackgroundColor="White"
+           CornerRadius="18"
+           Padding="14"
+           HeightRequest="120"
+           HasShadow="False"
+           BorderColor="#E5E7EB">
+                        <Grid RowDefinitions="Auto,*,Auto">
                             <Grid Grid.Row="0" ColumnDefinitions="Auto,*">
-                                <Frame Grid.Column="0"
-                                       BackgroundColor="#8B0000"
-                                       CornerRadius="10"
-                                       Padding="8"
-                                       HasShadow="False"
-                                       WidthRequest="40"
-                                       HeightRequest="40">
-                                    <Label Text="👥"
-                                           FontSize="18"
-                                           HorizontalOptions="Center"
-                                           VerticalOptions="Center"/>
+                                <Frame BackgroundColor="#FDECEC"
+                       WidthRequest="36"
+                       HeightRequest="36"
+                       CornerRadius="12"
+                       Padding="7"
+                       HasShadow="False">
+                                    <Image Source="home.png" Aspect="AspectFit"/>
                                 </Frame>
+
                                 <Label Grid.Column="1"
-                                       x:Name="UsersTodayLabel"
-                                       Text="+0 today"
-                                       FontSize="12"
-                                       TextColor="#888"
-                                       HorizontalOptions="End"
-                                       VerticalOptions="Center"/>
+                       x:Name="UsersTodayLabel"
+                       Text="+0 today"
+                       FontSize="11"
+                       TextColor="#C8102E"
+                       HorizontalOptions="End"
+                       VerticalOptions="Center"/>
                             </Grid>
+
                             <Label Grid.Row="1"
-                                   x:Name="TotalUsersLabel"
-                                   Text="0"
-                                   FontSize="28"
-                                   FontAttributes="Bold"
-                                   TextColor="#1A1A1A"
-                                   Margin="0,8,0,0"/>
+                   x:Name="TotalUsersLabel"
+                   Text="0"
+                   FontSize="28"
+                   FontAttributes="Bold"
+                   TextColor="#111827"
+                   VerticalOptions="Center"/>
+
                             <Label Grid.Row="2"
-                                   Text="Total Users"
-                                   FontSize="13"
-                                   TextColor="#666"/>
+                   Text="Total Users"
+                   FontSize="12"
+                   TextColor="#6B7280"/>
                         </Grid>
                     </Frame>
 
                 </Grid>
 
-                <!-- Category Quick-Nav -->
+                <!-- CATEGORIES -->
                 <Frame BackgroundColor="White"
-                       CornerRadius="16"
+                       CornerRadius="18"
                        Padding="16"
-                       HasShadow="False">
-                    <VerticalStackLayout Spacing="12">
+                       HasShadow="False"
+                       BorderColor="#E5E7EB">
+
+                    <VerticalStackLayout Spacing="14">
                         <Label Text="Categories"
-                               FontSize="15"
+                               FontSize="16"
                                FontAttributes="Bold"
-                               TextColor="#1A1A1A"/>
-                        <Grid ColumnDefinitions="*,*,*,*" ColumnSpacing="10">
+                               TextColor="#111827"/>
 
-                            <!-- Phone -->
+                        <Grid ColumnDefinitions="*,*,*,*"
+                              ColumnSpacing="10">
+
                             <VerticalStackLayout Grid.Column="0" Spacing="6" HorizontalOptions="Center">
-                                <Frame BackgroundColor="#8B0000"
-                                       CornerRadius="14"
-                                       Padding="0"
+                                <Frame BackgroundColor="White"
+                                       CornerRadius="16"
+                                       Padding="12"
+                                       BorderColor="#E5E7EB"
                                        HasShadow="False"
-                                       WidthRequest="56"
-                                       HeightRequest="56">
-                                    <Label Text="📱"
-                                           FontSize="26"
-                                           HorizontalOptions="Center"
-                                           VerticalOptions="Center"/>
+                                       WidthRequest="62"
+                                       HeightRequest="62">
+                                    <Image Source="mobile.png" Aspect="AspectFit"/>
                                 </Frame>
-                                <Label Text="Phone"
-                                       FontSize="11"
-                                       TextColor="#555"
-                                       HorizontalOptions="Center"/>
+                                <Label Text="Phone" FontSize="11" TextColor="#6B7280"/>
                             </VerticalStackLayout>
 
-                            <!-- Wallet -->
                             <VerticalStackLayout Grid.Column="1" Spacing="6" HorizontalOptions="Center">
-                                <Frame BackgroundColor="#8B0000"
-                                       CornerRadius="14"
-                                       Padding="0"
+                                <Frame BackgroundColor="White"
+                                       CornerRadius="16"
+                                       Padding="12"
+                                       BorderColor="#E5E7EB"
                                        HasShadow="False"
-                                       WidthRequest="56"
-                                       HeightRequest="56">
-                                    <Label Text="👛"
-                                           FontSize="26"
-                                           HorizontalOptions="Center"
-                                           VerticalOptions="Center"/>
+                                       WidthRequest="62"
+                                       HeightRequest="62">
+                                    <Image Source="wallet.png" Aspect="AspectFit"/>
                                 </Frame>
-                                <Label Text="Wallet"
-                                       FontSize="11"
-                                       TextColor="#555"
-                                       HorizontalOptions="Center"/>
+                                <Label Text="Wallet" FontSize="11" TextColor="#6B7280"/>
                             </VerticalStackLayout>
 
-                            <!-- ID -->
                             <VerticalStackLayout Grid.Column="2" Spacing="6" HorizontalOptions="Center">
-                                <Frame BackgroundColor="#8B0000"
-                                       CornerRadius="14"
-                                       Padding="0"
+                                <Frame BackgroundColor="White"
+                                       CornerRadius="16"
+                                       Padding="12"
+                                       BorderColor="#E5E7EB"
                                        HasShadow="False"
-                                       WidthRequest="56"
-                                       HeightRequest="56">
-                                    <Label Text="🪪"
-                                           FontSize="26"
-                                           HorizontalOptions="Center"
-                                           VerticalOptions="Center"/>
+                                       WidthRequest="62"
+                                       HeightRequest="62">
+                                    <Image Source="id.png" Aspect="AspectFit"/>
                                 </Frame>
-                                <Label Text="ID"
-                                       FontSize="11"
-                                       TextColor="#555"
-                                       HorizontalOptions="Center"/>
+                                <Label Text="ID" FontSize="11" TextColor="#6B7280"/>
                             </VerticalStackLayout>
 
-                            <!-- Watch -->
                             <VerticalStackLayout Grid.Column="3" Spacing="6" HorizontalOptions="Center">
-                                <Frame BackgroundColor="#8B0000"
-                                       CornerRadius="14"
-                                       Padding="0"
+                                <Frame BackgroundColor="White"
+                                       CornerRadius="16"
+                                       Padding="12"
+                                       BorderColor="#E5E7EB"
                                        HasShadow="False"
-                                       WidthRequest="56"
-                                       HeightRequest="56">
-                                    <Label Text="⌚"
-                                           FontSize="26"
-                                           HorizontalOptions="Center"
-                                           VerticalOptions="Center"/>
+                                       WidthRequest="62"
+                                       HeightRequest="62">
+                                    <Image Source="watch1.png" Aspect="AspectFit"/>
                                 </Frame>
-                                <Label Text="Watch"
-                                       FontSize="11"
-                                       TextColor="#555"
-                                       HorizontalOptions="Center"/>
+                                <Label Text="Watch" FontSize="11" TextColor="#6B7280"/>
                             </VerticalStackLayout>
 
                         </Grid>
                     </VerticalStackLayout>
                 </Frame>
 
-                <!-- Recent Reports -->
+                <!-- RECENT REPORTS WITH INNER SCROLL -->
                 <Frame BackgroundColor="White"
-                       CornerRadius="16"
+                       CornerRadius="18"
                        Padding="16"
-                       HasShadow="False">
-                    <VerticalStackLayout Spacing="12">
+                       HasShadow="False"
+                       BorderColor="#E5E7EB">
+
+                    <VerticalStackLayout Spacing="10">
                         <Label Text="Recent Reports"
                                FontSize="16"
                                FontAttributes="Bold"
-                               TextColor="#1A1A1A"/>
+                               TextColor="#111827"/>
 
-                        <CollectionView x:Name="RecentReportsCollection"
-                                        SelectionMode="None">
-                            <CollectionView.ItemTemplate>
-                                <DataTemplate>
-                                    <Frame BackgroundColor="#F7F4F4"
-                                           CornerRadius="12"
-                                           Padding="14,12"
-                                           HasShadow="False"
-                                           Margin="0,0,0,8">
-                                        <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto">
+                        <Grid HeightRequest="270">
+                            <CollectionView x:Name="RecentReportsCollection"
+                                            SelectionMode="None">
 
-                                            <!-- Name + Badge -->
-                                            <HorizontalStackLayout Grid.Row="0" Grid.Column="0" Spacing="8">
-                                                <Label Text="{Binding Name}"
+                                <CollectionView.ItemsLayout>
+                                    <LinearItemsLayout Orientation="Vertical"
+                                                       ItemSpacing="8"/>
+                                </CollectionView.ItemsLayout>
+
+                                <CollectionView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Frame BackgroundColor="#F9FAFB"
+                                               CornerRadius="14"
+                                               Padding="12"
+                                               HasShadow="False"
+                                               BorderColor="#E5E7EB">
+
+                                            <Grid ColumnDefinitions="*,Auto"
+                                                  RowDefinitions="Auto,Auto,Auto"
+                                                  RowSpacing="4">
+
+                                                <Label Grid.Row="0"
+                                                       Grid.Column="0"
+                                                       Text="{Binding Name}"
                                                        FontSize="14"
                                                        FontAttributes="Bold"
-                                                       TextColor="#1A1A1A"
-                                                       VerticalOptions="Center"/>
-                                                <Frame Padding="8,3"
-                                                       CornerRadius="20"
+                                                       TextColor="#111827"
+                                                       LineBreakMode="TailTruncation"/>
+
+                                                <Frame Grid.Row="0"
+                                                       Grid.Column="1"
                                                        BackgroundColor="{Binding BadgeColor}"
+                                                       CornerRadius="10"
+                                                       Padding="8,3"
                                                        HasShadow="False">
                                                     <Label Text="{Binding RType}"
-                                                           FontSize="11"
+                                                           FontSize="10"
                                                            FontAttributes="Bold"
                                                            TextColor="White"/>
                                                 </Frame>
-                                            </HorizontalStackLayout>
 
-                                            <!-- Status Button -->
-                                            <Frame Grid.Row="0" Grid.Column="1"
-                                                   Grid.RowSpan="2"
-                                                   BackgroundColor="#D6E4FF"
-                                                   CornerRadius="20"
-                                                   Padding="14,6"
-                                                   HasShadow="False"
-                                                   VerticalOptions="Center">
-                                                <Label Text="Status"
+                                                <Label Grid.Row="1"
+                                                       Grid.ColumnSpan="2"
+                                                       Text="{Binding Description}"
                                                        FontSize="12"
-                                                       FontAttributes="Bold"
-                                                       TextColor="#2563EB"/>
-                                            </Frame>
+                                                       TextColor="#6B7280"
+                                                       LineBreakMode="TailTruncation"
+                                                       MaxLines="2"/>
 
-                                            <!-- Description -->
-                                            <Label Grid.Row="1" Grid.Column="0"
-                                                   Text="{Binding Description}"
-                                                   FontSize="12"
-                                                   TextColor="#555"
-                                                   Margin="0,2,0,0"/>
-
-                                            <!-- Time -->
-                                            <HorizontalStackLayout Grid.Row="2" Grid.Column="0" Spacing="4" Margin="0,4,0,0">
-                                                <Label Text="🕐"
+                                                <Label Grid.Row="2"
+                                                       Grid.ColumnSpan="2"
+                                                       Text="{Binding TimeAgo}"
                                                        FontSize="11"
-                                                       TextColor="#999"
-                                                       VerticalOptions="Center"/>
-                                                <Label Text="{Binding TimeAgo}"
-                                                       FontSize="11"
-                                                       TextColor="#999"
-                                                       VerticalOptions="Center"/>
-                                            </HorizontalStackLayout>
+                                                       TextColor="#9CA3AF"/>
+                                            </Grid>
+                                        </Frame>
+                                    </DataTemplate>
+                                </CollectionView.ItemTemplate>
 
-                                        </Grid>
-                                    </Frame>
-                                </DataTemplate>
-                            </CollectionView.ItemTemplate>
-                        </CollectionView>
-
+                            </CollectionView>
+                        </Grid>
                     </VerticalStackLayout>
                 </Frame>
 
             </VerticalStackLayout>
         </ScrollView>
 
-        <!-- Bottom Navigation Bar -->
+        <!-- NAVIGATION -->
         <Grid Grid.Row="2"
               BackgroundColor="White"
-              ColumnDefinitions="*,*,*,*,*"
-              Padding="0,10,0,20"
-              HeightRequest="70">
+              ColumnDefinitions="*,*,*,*"
+              HeightRequest="70"
+              Padding="0,10">
 
-            <!-- Home (Active) -->
-            <VerticalStackLayout Grid.Column="0" Spacing="2" HorizontalOptions="Center">
-                <Label Text="🏠" FontSize="22" HorizontalOptions="Center" TextColor="#8B0000"/>
-                <Label Text="Home" FontSize="10" TextColor="#8B0000" HorizontalOptions="Center" FontAttributes="Bold"/>
+            <!-- Dashboard Active -->
+            <VerticalStackLayout Grid.Column="0"
+                                 Spacing="2"
+                                 HorizontalOptions="Center"
+                                 VerticalOptions="Center">
+                <Image Source="home.png" WidthRequest="28" HeightRequest="28"/>
+                <Label Text="Dashboard"
+                       FontSize="11"
+                       TextColor="#C8102E"
+                       FontAttributes="Bold"/>
+                <BoxView HeightRequest="2"
+                         WidthRequest="28"
+                         BackgroundColor="#C8102E"/>
             </VerticalStackLayout>
 
-            <!-- Report -->
-            <VerticalStackLayout Grid.Column="1" Spacing="2" HorizontalOptions="Center">
-                <Label Text="📄" FontSize="22" HorizontalOptions="Center" TextColor="#888"/>
-                <Label Text="Report" FontSize="10" TextColor="#888" HorizontalOptions="Center"/>
+            <!-- Reports -->
+            <VerticalStackLayout Grid.Column="1"
+                                 Spacing="2"
+                                 HorizontalOptions="Center"
+                                 VerticalOptions="Center">
+                <Image Source="report.png" WidthRequest="28" HeightRequest="28"/>
+                <Label Text="Reports"
+                       FontSize="11"
+                       TextColor="#9CA3AF"/>
+                <VerticalStackLayout.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnReportsTapped"/>
+                </VerticalStackLayout.GestureRecognizers>
             </VerticalStackLayout>
 
-            <!-- Receive -->
-            <VerticalStackLayout Grid.Column="2" Spacing="2" HorizontalOptions="Center">
-                <Label Text="📥" FontSize="22" HorizontalOptions="Center" TextColor="#888"/>
-                <Label Text="Receive" FontSize="10" TextColor="#888" HorizontalOptions="Center"/>
+            <!-- Verify -->
+            <VerticalStackLayout Grid.Column="2"
+                                 Spacing="2"
+                                 HorizontalOptions="Center"
+                                 VerticalOptions="Center">
+                <Image Source="notif.png" WidthRequest="28" HeightRequest="28"/>
+                <Label Text="Verify"
+                       FontSize="11"
+                       TextColor="#9CA3AF"/>
+                <VerticalStackLayout.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnVerifyTapped"/>
+                </VerticalStackLayout.GestureRecognizers>
             </VerticalStackLayout>
 
-            <!-- News -->
-            <VerticalStackLayout Grid.Column="3" Spacing="2" HorizontalOptions="Center">
-                <Label Text="🔔" FontSize="22" HorizontalOptions="Center" TextColor="#888"/>
-                <Label Text="News" FontSize="10" TextColor="#888" HorizontalOptions="Center"/>
-            </VerticalStackLayout>
-
-            <!-- Logout -->
-            <VerticalStackLayout Grid.Column="4" Spacing="2" HorizontalOptions="Center">
-                <Label Text="🚪" FontSize="22" HorizontalOptions="Center" TextColor="#888"/>
-                <Label Text="Logout" FontSize="10" TextColor="#888" HorizontalOptions="Center"/>
+            <!-- Returned -->
+            <VerticalStackLayout Grid.Column="3"
+                                 Spacing="2"
+                                 HorizontalOptions="Center"
+                                 VerticalOptions="Center">
+                <Image Source="box.png" WidthRequest="28" HeightRequest="28"/>
+                <Label Text="Returned"
+                       FontSize="11"
+                       TextColor="#9CA3AF"/>
+                <VerticalStackLayout.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnReturnedTapped"/>
+                </VerticalStackLayout.GestureRecognizers>
             </VerticalStackLayout>
 
         </Grid>

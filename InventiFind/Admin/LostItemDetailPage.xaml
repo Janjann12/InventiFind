@@ -2,7 +2,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="InventiFind.LostItemDetailPage"
-             BackgroundColor="#F0EBEB"
+             BackgroundColor="#F2F4F7"
              Shell.NavBarIsVisible="False">
 
     <Shell.BackButtonBehavior>
@@ -11,71 +11,135 @@
 
     <Grid RowDefinitions="Auto,*,Auto">
 
-        <!-- 🔴 Header -->
+        <!-- HEADER -->
         <Grid Grid.Row="0"
-              BackgroundColor="#8B0000"
-              Padding="20,40,20,16">
+              BackgroundColor="#C8102E"
+              Padding="20,40,20,24"
+              HeightRequest="145">
 
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
+            <Grid ColumnDefinitions="Auto,*"
+                  ColumnSpacing="14"
+                  VerticalOptions="Center">
 
-            <!-- Back Icon (optional) -->
-            <Label Text="←"
-                   FontSize="22"
-                   TextColor="White"
-                   VerticalOptions="Center"
-                   HorizontalOptions="Start"/>
+                <Frame WidthRequest="46"
+                       HeightRequest="46"
+                       CornerRadius="23"
+                       BackgroundColor="#33FFFFFF"
+                       Padding="0"
+                       HasShadow="False"
+                       VerticalOptions="Center">
 
-            <!-- Title -->
-            <Label Grid.Column="1"
-                   Text="Lost Item"
-                   FontSize="24"
-                   FontAttributes="Bold"
-                   TextColor="White"
-                   VerticalOptions="Center"/>
+                    <Image Source="notif.png"
+                           WidthRequest="26"
+                           HeightRequest="26"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center"/>
+                </Frame>
+
+                <VerticalStackLayout Grid.Column="1"
+                                     Spacing="2"
+                                     VerticalOptions="Center">
+
+                    <Label Text="Verify Items"
+                           FontSize="26"
+                           FontAttributes="Bold"
+                           TextColor="White"/>
+
+                    <Label Text="Review pending item claims"
+                           FontSize="13"
+                           TextColor="#FDECEC"/>
+                </VerticalStackLayout>
+
+            </Grid>
         </Grid>
 
-        <!-- 📜 Scrollable Content -->
+        <!-- CONTENT -->
         <ScrollView Grid.Row="1">
-            <VerticalStackLayout Padding="12"
-                                 Spacing="12"
-                                 x:Name="MatchesStack">
-                <!-- Cards dynamically added in code-behind -->
+            <VerticalStackLayout Padding="18,18,18,24"
+                                 Spacing="14">
+
+                <Label Text="PENDING VERIFICATION"
+                       FontSize="12"
+                       FontAttributes="Bold"
+                       TextColor="#6B7280"
+                       CharacterSpacing="1.4"/>
+
+                <VerticalStackLayout x:Name="MatchesStack"
+                                     Spacing="12">
+                    <!-- Cards dynamically added in code-behind -->
+                </VerticalStackLayout>
+
             </VerticalStackLayout>
         </ScrollView>
 
-        <!-- 🔻 Bottom Navigation -->
+        <!-- BOTTOM NAVIGATION -->
         <Grid Grid.Row="2"
-              BackgroundColor="#8B0000"
-              ColumnDefinitions="*,*,*,*,*"
-              Padding="0,10,0,20"
-              HeightRequest="70">
+              BackgroundColor="White"
+              HeightRequest="70"
+              ColumnDefinitions="*,*,*,*"
+              Padding="0,10">
 
-            <VerticalStackLayout Grid.Column="0" Spacing="2" HorizontalOptions="Center">
-                <Label Text="🏠" FontSize="20" TextColor="White" HorizontalOptions="Center"/>
-                <Label Text="Dashboard" FontSize="9" TextColor="White" HorizontalOptions="Center"/>
+            <!-- Dashboard -->
+            <VerticalStackLayout Grid.Column="0"
+                                 Spacing="2"
+                                 HorizontalOptions="Center"
+                                 VerticalOptions="Center">
+                <Image Source="home.png" WidthRequest="28" HeightRequest="28"/>
+                <Label Text="Dashboard"
+                       FontSize="11"
+                       TextColor="#9CA3AF"
+                       HorizontalOptions="Center"/>
+                <VerticalStackLayout.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnDashboardTapped"/>
+                </VerticalStackLayout.GestureRecognizers>
             </VerticalStackLayout>
 
-            <VerticalStackLayout Grid.Column="1" Spacing="2" HorizontalOptions="Center">
-                <Label Text="📄" FontSize="20" TextColor="White" HorizontalOptions="Center"/>
-                <Label Text="Reports" FontSize="9" TextColor="White" HorizontalOptions="Center"/>
+            <!-- Reports -->
+            <VerticalStackLayout Grid.Column="1"
+                                 Spacing="2"
+                                 HorizontalOptions="Center"
+                                 VerticalOptions="Center">
+                <Image Source="report.png" WidthRequest="28" HeightRequest="28"/>
+                <Label Text="Reports"
+                       FontSize="11"
+                       TextColor="#9CA3AF"
+                       HorizontalOptions="Center"/>
+                <VerticalStackLayout.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnReportsTapped"/>
+                </VerticalStackLayout.GestureRecognizers>
             </VerticalStackLayout>
 
-            <VerticalStackLayout Grid.Column="2" Spacing="2" HorizontalOptions="Center">
-                <Label Text="📥" FontSize="20" TextColor="White" HorizontalOptions="Center"/>
-                <Label Text="Receive" FontSize="9" TextColor="White" HorizontalOptions="Center"/>
+            <!-- Verify ACTIVE -->
+            <VerticalStackLayout Grid.Column="2"
+                                 Spacing="2"
+                                 HorizontalOptions="Center"
+                                 VerticalOptions="Center">
+                <Image Source="notif.png" WidthRequest="28" HeightRequest="28"/>
+                <Label Text="Verify"
+                       FontSize="11"
+                       TextColor="#C8102E"
+                       FontAttributes="Bold"
+                       HorizontalOptions="Center"/>
+                <BoxView HeightRequest="2"
+                         WidthRequest="28"
+                         BackgroundColor="#C8102E"
+                         CornerRadius="1"
+                         Margin="0,-2,0,0"/>
             </VerticalStackLayout>
 
-            <VerticalStackLayout Grid.Column="3" Spacing="2" HorizontalOptions="Center">
-                <Label Text="🔔" FontSize="20" TextColor="White" HorizontalOptions="Center"/>
-                <Label Text="Alerts" FontSize="9" TextColor="White" HorizontalOptions="Center"/>
-            </VerticalStackLayout>
-
-            <VerticalStackLayout Grid.Column="4" Spacing="2" HorizontalOptions="Center">
-                <Label Text="👤" FontSize="20" TextColor="White" HorizontalOptions="Center"/>
-                <Label Text="Profile" FontSize="9" TextColor="White" HorizontalOptions="Center"/>
+            <!-- Returned -->
+            <VerticalStackLayout Grid.Column="3"
+                                 Spacing="2"
+                                 HorizontalOptions="Center"
+                                 VerticalOptions="Center">
+                <Image Source="box.png" WidthRequest="28" HeightRequest="28"/>
+                <Label Text="Returned"
+                       FontSize="11"
+                       TextColor="#9CA3AF"
+                       HorizontalOptions="Center"/>
+                <VerticalStackLayout.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnReturnedTapped"/>
+                </VerticalStackLayout.GestureRecognizers>
             </VerticalStackLayout>
 
         </Grid>

@@ -74,6 +74,8 @@ public partial class ReceiveModule : ContentPage
 
                 var pair = new MatchPair
                 {
+                    MatchId = reader.GetInt32("match_id"),
+
                     LostId = reader.GetInt32("lost_report_id"),
                     SurrenderedId = reader.GetInt32("found_report_id"),
 
@@ -427,6 +429,7 @@ public partial class ReceiveModule : ContentPage
 
     public class MatchPair
     {
+        public int MatchId { get; set; }
         public int LostId { get; set; }
         public int SurrenderedId { get; set; }
 

@@ -145,8 +145,16 @@ public partial class VerifyOwnership : ContentPage
 
             await using var cmd = new MySqlCommand(sql, conn);
 
-            cmd.Parameters.AddWithValue("@matchId", _pair.LostId);
-            cmd.Parameters.AddWithValue("@userId", UserSession.UserId);
+            cmd.Parameters.AddWithValue("@matchId", _pair.MatchId);
+            int userId = Preferences.Get("UserID", 0);
+
+            if (userId == 0)
+            {
+                await DisplayAlert("Error", "No logged-in user found.", "OK");
+                return;
+            }
+
+            cmd.Parameters.AddWithValue("@userId", userId);
             cmd.Parameters.AddWithValue("@itemDesc", DescriptionEditor.Text.Trim());
             cmd.Parameters.AddWithValue("@lostAt", LostAtEntry.Text.Trim());
 
