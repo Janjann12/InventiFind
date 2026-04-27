@@ -143,4 +143,16 @@ public partial class AdminDashboard : ContentPage
     {
         await Navigation.PushModalAsync(new ReturnedItemsPage());
     }
+
+    private async void OnLogoutTapped(object sender, TappedEventArgs e)
+    {
+        bool confirm = await DisplayAlert("Logout", "Are you sure?", "Yes", "No");
+
+        if (!confirm) return;
+
+        Preferences.Remove("UserID");
+        Preferences.Remove("UserEmail");
+
+        await Shell.Current.GoToAsync("//MainPage");
+    }
 }

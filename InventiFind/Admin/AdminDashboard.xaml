@@ -369,7 +369,7 @@
         <!-- NAVIGATION -->
         <Grid Grid.Row="2"
               BackgroundColor="White"
-              ColumnDefinitions="*,*,*,*"
+              ColumnDefinitions="*,*,*,*,*"
               HeightRequest="70"
               Padding="0,10">
 
@@ -429,7 +429,17 @@
                     <TapGestureRecognizer Tapped="OnReturnedTapped"/>
                 </VerticalStackLayout.GestureRecognizers>
             </VerticalStackLayout>
-
+            
+            <VerticalStackLayout Grid.Column="4"
+                                 Spacing="2"
+                                 HorizontalOptions="Center"
+                                 VerticalOptions="Center">
+                <Image Source="gear.png" WidthRequest="28" HeightRequest="28"/>
+                <Label Text="Settings" FontSize="11" TextColor="#9CA3AF"/>
+                <VerticalStackLayout.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnLogoutTapped"/>
+                </VerticalStackLayout.GestureRecognizers>
+            </VerticalStackLayout>
         </Grid>
 
     </Grid>
