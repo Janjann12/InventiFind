@@ -1,4 +1,6 @@
 using MySqlConnector;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace InventiFind;
 
@@ -8,6 +10,12 @@ public partial class Settings : ContentPage
         "server=localhost;database=inventifind2;uid=root;pwd=;";
 
     private int currentUserId;
+
+    // PAGINATION
+    private List<UserReport> allReports = new();
+    private int currentPage = 1;
+    private const int pageSize = 10;
+    private int totalPages = 1;
 
     public Settings()
     {
@@ -77,24 +85,23 @@ public partial class Settings : ContentPage
             await conn.OpenAsync();
 
             string query = @"
-            SELECT item_name,
-                   report_type,
-                   date_reported
-            FROM item_reports
-            WHERE user_id = @UserID
-            ORDER BY date_reported DESC";
+                SELECT item_name,
+                       report_type,
+                       date_reported
+                FROM item_reports
+                WHERE user_id = @UserID
+                ORDER BY date_reported DESC";
 
             using var cmd = new MySqlCommand(query, conn);
-
             cmd.Parameters.AddWithValue("@UserID", currentUserId);
 
             using var reader = await cmd.ExecuteReaderAsync();
 
-            var reports = new List<UserReport>();
+            allReports.Clear();
 
             while (await reader.ReadAsync())
             {
-                reports.Add(new UserReport
+                allReports.Add(new UserReport
                 {
                     ItemName = reader["item_name"]?.ToString(),
                     ReportType = reader["report_type"]?.ToString(),
@@ -103,11 +110,63 @@ public partial class Settings : ContentPage
                 });
             }
 
-            ReportsCollection.ItemsSource = reports;
+            totalPages = (int)Math.Ceiling((double)allReports.Count / pageSize);
+
+            if (totalPages == 0)
+                totalPages = 1;
+
+            currentPage = 1;
+
+            LoadCurrentPage();
         }
         catch (Exception ex)
         {
             await DisplayAlert("Error", ex.Message, "OK");
+        }
+    }
+
+    private void LoadCurrentPage()
+    {
+        var pagedReports = allReports
+            .Skip((currentPage - 1) * pageSize)
+            .Take(pageSize)
+            .ToList();
+
+        ReportsCollection.ItemsSource = pagedReports;
+
+        PaginationLabel.Text = BuildPaginationText();
+    }
+
+    private string BuildPaginationText()
+    {
+        if (totalPages <= 1)
+            return "1";
+
+        if (totalPages <= 5)
+        {
+            return string.Join(" ",
+                Enumerable.Range(1, totalPages)
+                .Select(i => i == currentPage ? $"[{i}]" : i.ToString()));
+        }
+
+        return $"{currentPage} ... {totalPages}";
+    }
+
+    private void OnPreviousPageClicked(object sender, EventArgs e)
+    {
+        if (currentPage > 1)
+        {
+            currentPage--;
+            LoadCurrentPage();
+        }
+    }
+
+    private void OnNextPageClicked(object sender, EventArgs e)
+    {
+        if (currentPage < totalPages)
+        {
+            currentPage++;
+            LoadCurrentPage();
         }
     }
 

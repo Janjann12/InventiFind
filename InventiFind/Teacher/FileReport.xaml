@@ -85,10 +85,11 @@
                                 TextColor="#374151"
                                 Title="Select category">
                             <Picker.Items>
-                                <x:String>Electronics</x:String>
+                                <x:String>Phone</x:String>
                                 <x:String>Wallet</x:String>
                                 <x:String>ID</x:String>
-                                <x:String>Bag</x:String>
+                                <x:String>Watch</x:String>
+                                <x:String>Keys</x:String>
                                 <x:String>Others</x:String>
                             </Picker.Items>
                         </Picker>

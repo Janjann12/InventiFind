@@ -354,8 +354,8 @@
                                  Spacing="2"
                                  HorizontalOptions="Center"
                                  VerticalOptions="Center">
-                <Image Source="gear.png" WidthRequest="28" HeightRequest="28"/>
-                <Label Text="Settings" FontSize="11" TextColor="#9CA3AF"/>
+                <Image Source="logout.png" WidthRequest="28" HeightRequest="28"/>
+                <Label Text="Logout" FontSize="11" TextColor="#9CA3AF"/>
                 <VerticalStackLayout.GestureRecognizers>
                     <TapGestureRecognizer Tapped="OnLogoutTapped"/>
                 </VerticalStackLayout.GestureRecognizers>

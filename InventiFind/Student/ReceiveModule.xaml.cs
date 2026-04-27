@@ -1,4 +1,5 @@
 using MySqlConnector;
+using System.Security.Claims;
 using System.Windows.Input;
 
 namespace InventiFind;
@@ -33,30 +34,31 @@ public partial class ReceiveModule : ContentPage
 
             int currentUserId = Preferences.Get("UserID", 0);
             const string sql = """
-    SELECT
-        m.match_id,
-        m.lost_report_id,
-        m.found_report_id,
-        m.similarity_score AS score,
-        m.match_status,
+SELECT
+    m.match_id,
+    m.lost_report_id,
+    m.found_report_id,
+    m.similarity_score AS score,
+    m.match_status,
 
-        L.item_name,
-        L.category,
-        L.description AS ownership_proof,
-        L.date_reported,
-        L.user_id AS lost_user_id,
+    L.status AS item_status,
+    L.item_name,
+    L.category,
+    L.description AS ownership_proof,
+    L.date_reported,
+    L.user_id AS lost_user_id,
 
-        F.user_id AS found_user_id,
+    F.user_id AS found_user_id,
 
-        CONCAT(U.FirstName, ' ', U.Surname) AS reporter_name
-    FROM matches m
-    JOIN item_reports L ON L.report_id = m.lost_report_id
-    JOIN item_reports F ON F.report_id = m.found_report_id
-    LEFT JOIN users U ON U.UserID = L.user_id
-    WHERE L.user_id = @currentUserId
-       OR F.user_id = @currentUserId
-    ORDER BY m.created_at DESC
-    LIMIT 20
+    CONCAT(U.FirstName, ' ', U.Surname) AS reporter_name
+FROM matches m
+JOIN item_reports L ON L.report_id = m.lost_report_id
+JOIN item_reports F ON F.report_id = m.found_report_id
+LEFT JOIN users U ON U.UserID = L.user_id
+WHERE L.user_id = @currentUserId
+   OR F.user_id = @currentUserId
+ORDER BY m.created_at DESC
+LIMIT 20
 """;
 
             MatchesStack.Children.Clear();
@@ -107,9 +109,10 @@ public partial class ReceiveModule : ContentPage
                     SurrenderedNo = reader.GetInt32("found_report_id")
                         .ToString("D10"),
 
-                    Status = CapFirst(reader.GetString("match_status"))
+                    Status = CapFirst(reader.GetString("item_status"))
                 };
 
+                System.Diagnostics.Debug.WriteLine($"MATCH STATUS DB = [{pair.Status}]");
                 MatchesStack.Children.Add(BuildMatchCard(pair));
             }
 
@@ -344,11 +347,34 @@ public partial class ReceiveModule : ContentPage
             }
         };
 
+        var normalizedStatus = pair.Status?.Trim().ToLower();
+
+        var isApproved =
+            normalizedStatus == "confirmed" ||
+            normalizedStatus == "verified";
+
+        var isReadyForPickup =
+            normalizedStatus == "released";
+
+        var isWaiting =
+            normalizedStatus == "wait";
+
+        var isClaimed =
+    normalizedStatus == "claimed";
+
         var verifyBtn = new Frame
         {
             BackgroundColor = pair.IsFinder
-                ? Color.FromArgb("#546E7A")
-                : Color.FromArgb("#1565C0"),
+    ? Color.FromArgb("#546E7A")
+    : isClaimed
+        ? Color.FromArgb("#757575")
+        : isReadyForPickup
+            ? Color.FromArgb("#6A1B9A")
+            : isWaiting
+                ? Color.FromArgb("#F57C00")
+                : isApproved
+                    ? Color.FromArgb("#2E7D32")
+                    : Color.FromArgb("#1565C0"),
             CornerRadius = 12,
             Padding = new Thickness(0, 18),
             HasShadow = false,
@@ -358,8 +384,16 @@ public partial class ReceiveModule : ContentPage
         verifyBtn.Content = new Label
         {
             Text = pair.IsFinder
-                ? "You found someone's item"
-                : "Verify Ownership",
+    ? "You found someone's item"
+    : isClaimed
+        ? "You already claimed this item"
+        : isReadyForPickup
+            ? "Pick up at this location"
+            : isWaiting
+                ? "Waiting for approval..."
+                : isApproved
+                    ? "Claim Item"
+                    : "Verify Ownership",
             FontSize = 18,
             FontAttributes = FontAttributes.Bold,
             TextColor = Colors.White,
@@ -379,6 +413,101 @@ public partial class ReceiveModule : ContentPage
                 return;
             }
 
+            if (isClaimed)
+            {
+                await DisplayAlert(
+                    "Already Claimed",
+                    "You already claimed this item.",
+                    "OK");
+                return;
+            }
+            // PICKUP READY
+            if (isReadyForPickup)
+            {
+                try
+                {
+                    await using var conn =
+                        new MySqlConnection(DatabaseConfig.ConnectionString);
+
+                    await conn.OpenAsync();
+
+                    await using var cmd = new MySqlCommand(
+                        @"UPDATE item_reports
+              SET status = 'claimed'
+              WHERE report_id IN (@lostId, @foundId)", conn);
+
+                    cmd.Parameters.AddWithValue("@lostId", pair.LostId);
+                    cmd.Parameters.AddWithValue("@foundId", pair.SurrenderedId);
+
+                    await cmd.ExecuteNonQueryAsync();
+
+                    await DisplayAlert(
+                        "Pick Up Location",
+                        "Please pick up your item at the Guidance Office.\n\nBring your valid school ID.",
+                        "OK");
+
+                    await LoadMatchesAsync(); // refresh UI after claiming
+                }
+                catch (Exception ex)
+                {
+                    await DisplayAlert(
+                        "Error",
+                        $"Failed to update claim status:\n{ex.Message}",
+                        "OK");
+                }
+
+                return;
+            }
+
+            // STILL WAITING
+            if (isWaiting)
+            {
+                await DisplayAlert(
+                    "Pending",
+                    "Your request is still waiting for approval.",
+                    "OK");
+                return;
+            }
+
+            // SEND CLAIM REQUEST
+            if (isApproved)
+            {
+                try
+                {
+                    await using var conn =
+                        new MySqlConnection(DatabaseConfig.ConnectionString);
+
+                    await conn.OpenAsync();
+
+                    await using var cmd = new MySqlCommand(
+                        @"UPDATE item_reports 
+                  SET status = 'wait' 
+                  WHERE report_id IN (@lostId, @foundId)", conn);
+
+                    cmd.Parameters.AddWithValue("@lostId", pair.LostId);
+                    cmd.Parameters.AddWithValue("@foundId", pair.SurrenderedId);
+
+                    await cmd.ExecuteNonQueryAsync();
+
+                    await DisplayAlert(
+                        "Request Sent",
+                        "Waiting for approval...",
+                        "OK");
+
+                    await LoadMatchesAsync();
+                }
+                catch (Exception ex)
+                {
+                    await DisplayAlert(
+                        "Error",
+                        $"Failed to send request:\n{ex.Message}",
+                        "OK");
+                }
+
+                return;
+            }
+
+            // VERIFY FIRST
             await Navigation.PushModalAsync(
                 new VerifyOwnership(pair), true);
         };
@@ -422,7 +551,6 @@ public partial class ReceiveModule : ContentPage
     private async void OnLogoutTapped(object sender, TappedEventArgs e)
     {
         await Navigation.PushModalAsync(new Settings());
-
     }
 
     // ── INNER CLASS ───────────────────────────────────────────────────────
@@ -452,9 +580,15 @@ public partial class ReceiveModule : ContentPage
         public string Status { get; set; }
 
         public Color StatusBadgeColor =>
-            Status.ToLower() == "verified"
-                ? Color.FromArgb("#2E7D32")
-                : Color.FromArgb("#E65100");
+            Status.ToLower() switch
+            {
+                "verified" => Color.FromArgb("#2E7D32"),
+                "confirmed" => Color.FromArgb("#2E7D32"),
+                "released" => Color.FromArgb("#6A1B9A"),
+                "claimed" => Color.FromArgb("#6A1B9A"),
+                "wait" => Color.FromArgb("#F57C00"),
+                _ => Color.FromArgb("#1565C0")
+            };
 
         public Color ScoreColor =>
             SimilarityScore >= 80

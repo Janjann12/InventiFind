@@ -486,15 +486,7 @@ public partial class LostItemDetailPage : ContentPage
             }
         }.ExecuteNonQueryAsync();
 
-        await new MySqlCommand(
-            "UPDATE item_reports SET status='claimed' WHERE report_id IN (@l,@f)", conn)
-        {
-            Parameters =
-            {
-                new("@l", proof.LostReportId),
-                new("@f", proof.FoundReportId)
-            }
-        }.ExecuteNonQueryAsync();
+       
 
         await new MySqlCommand("""
             INSERT INTO returns (match_id, returned_to, released_by, return_date, notes)
@@ -537,5 +529,16 @@ public partial class LostItemDetailPage : ContentPage
     private async void OnReturnedTapped(object sender, TappedEventArgs e)
     {
         await Navigation.PushModalAsync(new ReturnedItemsPage());
+    }
+    private async void OnLogoutTapped(object sender, TappedEventArgs e)
+    {
+        bool confirm = await DisplayAlert("Logout", "Are you sure?", "Yes", "No");
+
+        if (!confirm) return;
+
+        Preferences.Remove("UserID");
+        Preferences.Remove("UserEmail");
+
+        await Shell.Current.GoToAsync("//MainPage");
     }
 }

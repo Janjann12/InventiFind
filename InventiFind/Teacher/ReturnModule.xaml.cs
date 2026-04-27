@@ -72,6 +72,7 @@ public partial class ReturnModule : ContentPage
                     ORDER BY m.created_at DESC
                 """,
 
+                // OPEN FILTER = WAITING APPROVAL ONLY
                 _ => """
                     SELECT
                         m.lost_report_id,
@@ -86,7 +87,7 @@ public partial class ReturnModule : ContentPage
                     LEFT JOIN users U
                         ON U.UserID = L.user_id
                     WHERE m.match_status = 'confirmed'
-                      AND L.status != 'claimed'
+                      AND L.status = 'wait'
                     ORDER BY m.created_at DESC
                 """
             };
@@ -154,7 +155,7 @@ public partial class ReturnModule : ContentPage
         {
             "returned" => "Returned items",
             "matched" => "Matched items",
-            _ => "Items ready for release"
+            _ => "Items waiting for approval"
         };
 
         BuildPagination();
@@ -167,7 +168,6 @@ public partial class ReturnModule : ContentPage
     {
         PaginationLayout.Children.Clear();
 
-        // Hide pagination if records fit on one page
         if (_allRecords.Count <= _pageSize)
         {
             PaginationLayout.IsVisible = false;
@@ -242,6 +242,50 @@ public partial class ReturnModule : ContentPage
     }
 
     // ===============================
+    // RELEASE ITEM
+    // ===============================
+    private async Task ReleaseToOwnerAsync(MatchPair pair)
+    {
+        bool confirm = await DisplayAlert(
+            "Release Item",
+            $"Release {pair.ItemName} to owner?",
+            "Release",
+            "Cancel");
+
+        if (!confirm)
+            return;
+
+        try
+        {
+            await using var conn =
+                new MySqlConnection(DatabaseConfig.ConnectionString);
+
+            await conn.OpenAsync();
+
+            await using var cmd = new MySqlCommand(
+                @"UPDATE item_reports
+                  SET status = 'released'
+                  WHERE report_id IN (@lostId, @foundId)", conn);
+
+            cmd.Parameters.AddWithValue("@lostId", pair.LostId);
+            cmd.Parameters.AddWithValue("@foundId", pair.SurrenderedId);
+
+            await cmd.ExecuteNonQueryAsync();
+
+            await DisplayAlert(
+                "Released",
+                $"{pair.ItemName} is now ready for claiming.",
+                "OK");
+
+            await LoadReturnsAsync();
+        }
+        catch (Exception ex)
+        {
+            await DisplayAlert("Error", ex.Message, "OK");
+        }
+    }
+
+    // ===============================
     // CARD UI
     // ===============================
     private View BuildReturnCard(MatchPair pair)
@@ -266,8 +310,7 @@ public partial class ReturnModule : ContentPage
         {
             Command = new Command(async () =>
             {
-                await Navigation.PushModalAsync(
-                    new ConfirmReturn(pair));
+                await ReleaseToOwnerAsync(pair);
             })
         });
 
