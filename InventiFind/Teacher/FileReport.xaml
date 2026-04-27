@@ -8,26 +8,27 @@
 
     <Grid>
 
-        <!-- Semi transparent dark overlay -->
+        <!-- DARK OVERLAY -->
         <BoxView BackgroundColor="#66000000"/>
 
-        <!-- Modal container -->
-        <Frame WidthRequest="560"
-               MaximumWidthRequest="560"
-               Padding="30"
+        <!-- RESPONSIVE MODAL -->
+        <Frame Padding="20"
                CornerRadius="24"
                BackgroundColor="White"
                HasShadow="True"
                VerticalOptions="Center"
                HorizontalOptions="Center"
-               Margin="20">
+               Margin="16"
+               MaximumWidthRequest="560"
+               MinimumWidthRequest="280">
 
-            <ScrollView>
-                <VerticalStackLayout Spacing="18">
+            <ScrollView VerticalScrollBarVisibility="Never">
 
-                    <!-- Title -->
+                <VerticalStackLayout Spacing="16">
+
+                    <!-- TITLE -->
                     <Label Text="File Report"
-                           FontSize="30"
+                           FontSize="26"
                            FontAttributes="Bold"
                            TextColor="#111827"/>
 
@@ -35,9 +36,9 @@
                            FontSize="14"
                            TextColor="#6B7280"/>
 
-                    <!-- Report Type -->
+                    <!-- REPORT TYPE -->
                     <Grid ColumnDefinitions="*,*"
-                          ColumnSpacing="12">
+                          ColumnSpacing="10">
 
                         <Button x:Name="LostButton"
                                 Grid.Column="0"
@@ -46,7 +47,7 @@
                                 BackgroundColor="#C8102E"
                                 TextColor="White"
                                 CornerRadius="12"
-                                HeightRequest="48"
+                                HeightRequest="46"
                                 FontAttributes="Bold"/>
 
                         <Button x:Name="FoundButton"
@@ -56,11 +57,11 @@
                                 BackgroundColor="#F3F4F6"
                                 TextColor="#374151"
                                 CornerRadius="12"
-                                HeightRequest="48"
+                                HeightRequest="46"
                                 FontAttributes="Bold"/>
                     </Grid>
 
-                    <!-- Item Name -->
+                    <!-- ITEM NAME -->
                     <Frame BackgroundColor="#F9FAFB"
                            BorderColor="#E5E7EB"
                            CornerRadius="12"
@@ -73,7 +74,7 @@
                                TextColor="#374151"/>
                     </Frame>
 
-                    <!-- Category -->
+                    <!-- CATEGORY -->
                     <Frame BackgroundColor="#F9FAFB"
                            BorderColor="#E5E7EB"
                            CornerRadius="12"
@@ -93,7 +94,7 @@
                         </Picker>
                     </Frame>
 
-                    <!-- Description -->
+                    <!-- DESCRIPTION -->
                     <Frame BackgroundColor="#F9FAFB"
                            BorderColor="#E5E7EB"
                            CornerRadius="12"
@@ -101,12 +102,13 @@
                            HasShadow="False">
                         <Editor x:Name="DescriptionEditor"
                                 Placeholder="Describe the item..."
-                                HeightRequest="100"
+                                HeightRequest="90"
+                                AutoSize="TextChanges"
                                 BackgroundColor="Transparent"
                                 TextColor="#374151"/>
                     </Frame>
 
-                    <!-- Location -->
+                    <!-- LOCATION -->
                     <Frame BackgroundColor="#F9FAFB"
                            BorderColor="#E5E7EB"
                            CornerRadius="12"
@@ -119,7 +121,7 @@
                                TextColor="#374151"/>
                     </Frame>
 
-                    <!-- Date -->
+                    <!-- DATE -->
                     <Frame BackgroundColor="#F9FAFB"
                            BorderColor="#E5E7EB"
                            CornerRadius="12"
@@ -130,44 +132,42 @@
                                     TextColor="#374151"/>
                     </Frame>
 
-                    <!-- Upload -->
+                    <!-- IMAGE UPLOAD -->
                     <Frame BackgroundColor="#F9FAFB"
-       BorderColor="#D1D5DB"
-       CornerRadius="14"
-       Padding="18"
-       HasShadow="False">
+                           BorderColor="#D1D5DB"
+                           CornerRadius="14"
+                           Padding="16"
+                           HasShadow="False">
 
                         <VerticalStackLayout Spacing="8">
 
                             <Label Text="📎 Upload image"
-               FontSize="16"
-               FontAttributes="Bold"
-               TextColor="#374151"/>
+                                   FontSize="15"
+                                   FontAttributes="Bold"
+                                   TextColor="#374151"/>
 
                             <Label Text="PNG / JPG supported"
-               FontSize="12"
-               TextColor="#9CA3AF"/>
+                                   FontSize="12"
+                                   TextColor="#9CA3AF"/>
 
                             <Button Text="Choose File"
-                Clicked="OnUploadTapped"
-                BackgroundColor="#E5E7EB"
-                TextColor="#374151"
-                CornerRadius="10"
-                HeightRequest="42"/>
+                                    Clicked="OnUploadTapped"
+                                    BackgroundColor="#E5E7EB"
+                                    TextColor="#374151"
+                                    CornerRadius="10"
+                                    HeightRequest="42"/>
 
-                            <!-- FILE NAME DISPLAY -->
                             <Label x:Name="UploadedFileNameLabel"
-               Text="No file selected"
-               FontSize="13"
-               TextColor="#6B7280"
-               FontAttributes="Italic"/>
-
+                                   Text="No file selected"
+                                   FontSize="13"
+                                   TextColor="#6B7280"
+                                   FontAttributes="Italic"/>
                         </VerticalStackLayout>
                     </Frame>
 
-                    <!-- Action buttons -->
+                    <!-- ACTION BUTTONS -->
                     <Grid ColumnDefinitions="*,*"
-                          ColumnSpacing="12">
+                          ColumnSpacing="10">
 
                         <Button Grid.Column="0"
                                 Text="Cancel"
@@ -175,7 +175,7 @@
                                 BackgroundColor="#F3F4F6"
                                 TextColor="#374151"
                                 CornerRadius="12"
-                                HeightRequest="48"/>
+                                HeightRequest="46"/>
 
                         <Button Grid.Column="1"
                                 Text="Submit"
@@ -183,11 +183,12 @@
                                 BackgroundColor="#C8102E"
                                 TextColor="White"
                                 CornerRadius="12"
-                                HeightRequest="48"
+                                HeightRequest="46"
                                 FontAttributes="Bold"/>
                     </Grid>
 
                 </VerticalStackLayout>
+
             </ScrollView>
         </Frame>
 

@@ -9,65 +9,90 @@
     <Grid RowDefinitions="Auto,*">
 
         <!-- TOP NAVIGATION -->
+        <!-- TOP NAVIGATION -->
         <Grid Grid.Row="0"
-              BackgroundColor="#C8102E"
-              Padding="25,18"
-              ColumnDefinitions="Auto,Auto,*,Auto,Auto,Auto">
+      BackgroundColor="#C8102E"
+      Padding="25,18"
+      ColumnDefinitions="Auto,Auto,*"
+      RowDefinitions="Auto,Auto"
+      RowSpacing="10">
 
             <!-- CLOSE BUTTON -->
-            <Button Grid.Column="0"
-                    Text="✕"
-                    WidthRequest="45"
-                    HeightRequest="40"
-                    BackgroundColor="White"
-                    TextColor="#C8102E"
-                    CornerRadius="10"
-                    FontSize="18"
-                    FontAttributes="Bold"
-                    Clicked="OnBackClicked"/>
+            <Button Grid.Row="0"
+            Grid.Column="0"
+            Text="✕"
+            WidthRequest="45"
+            HeightRequest="40"
+            BackgroundColor="White"
+            TextColor="#C8102E"
+            CornerRadius="10"
+            FontSize="18"
+            FontAttributes="Bold"
+            Clicked="OnBackClicked"/>
 
             <!-- TITLE -->
-            <Label Grid.Column="1"
-                   Text="Settings"
-                   FontSize="28"
-                   FontAttributes="Bold"
-                   TextColor="White"
-                   VerticalOptions="Center"
-                   Margin="15,0,0,0"/>
+            <Label Grid.Row="0"
+           Grid.Column="1"
+           Text="Settings"
+           FontSize="28"
+           FontAttributes="Bold"
+           TextColor="White"
+           VerticalOptions="Center"
+           Margin="15,0,0,0"/>
 
-            <!-- PROFILE -->
-            <Grid Grid.Column="3" Padding="15,8">
-                <Grid.GestureRecognizers>
-                    <TapGestureRecognizer Tapped="OnProfileTapped"/>
-                </Grid.GestureRecognizers>
+            <!-- RESPONSIVE NAV ACTIONS -->
+            <FlexLayout Grid.Row="1"
+                Grid.ColumnSpan="3"
+                Direction="Row"
+                Wrap="Wrap"
+                JustifyContent="End"
+                AlignItems="Center">
 
-                <HorizontalStackLayout Spacing="8">
-                    <Label Text="👤" FontSize="18" TextColor="White"/>
-                    <Label Text="Profile" FontSize="16" TextColor="White"/>
-                </HorizontalStackLayout>
-            </Grid>
+                <!-- PROFILE -->
+                <Grid Padding="15,8"
+              Margin="0,0,8,8">
+                    <Grid.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnProfileTapped"/>
+                    </Grid.GestureRecognizers>
 
-            <!-- REPORTS -->
-            <Grid Grid.Column="4" Padding="15,8">
-                <Grid.GestureRecognizers>
-                    <TapGestureRecognizer Tapped="OnReportsTapped"/>
-                </Grid.GestureRecognizers>
+                    <HorizontalStackLayout Spacing="8">
+                        <Label Text="👤"
+                       FontSize="18"
+                       TextColor="White"/>
+                        <Label Text="Profile"
+                       FontSize="16"
+                       TextColor="White"/>
+                    </HorizontalStackLayout>
+                </Grid>
 
-                <HorizontalStackLayout Spacing="8">
-                    <Label Text="📋" FontSize="18" TextColor="White"/>
-                    <Label Text="Reports" FontSize="16" TextColor="White"/>
-                </HorizontalStackLayout>
-            </Grid>
+                <!-- REPORTS -->
+                <Grid Padding="15,8"
+              Margin="0,0,8,8">
+                    <Grid.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnReportsTapped"/>
+                    </Grid.GestureRecognizers>
 
-            <!-- LOGOUT -->
-            <Button Grid.Column="5"
-                    Text="Logout"
-                    WidthRequest="100"
-                    HeightRequest="40"
-                    BackgroundColor="White"
-                    TextColor="#C8102E"
-                    CornerRadius="10"
-                    Clicked="OnLogoutClicked"/>
+                    <HorizontalStackLayout Spacing="8">
+                        <Label Text="📋"
+                       FontSize="18"
+                       TextColor="White"/>
+                        <Label Text="Reports"
+                       FontSize="16"
+                       TextColor="White"/>
+                    </HorizontalStackLayout>
+                </Grid>
+
+                <!-- LOGOUT -->
+                <Button Text="Logout"
+                WidthRequest="100"
+                HeightRequest="40"
+                BackgroundColor="White"
+                TextColor="#C8102E"
+                CornerRadius="10"
+                Margin="0,0,0,8"
+                Clicked="OnLogoutClicked"/>
+
+            </FlexLayout>
         </Grid>
 
         <!-- MAIN CONTENT -->
