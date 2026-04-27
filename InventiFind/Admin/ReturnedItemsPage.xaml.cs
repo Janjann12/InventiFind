@@ -125,7 +125,6 @@ public partial class ReturnedItemsPage : ContentPage
         {
             await using var conn = new MySqlConnection(DatabaseConfig.ConnectionString);
             await conn.OpenAsync();
-
             // ✔ TOTAL RETURNS
             int totalReturned = await GetScalarAsync(conn,
                 "SELECT COUNT(*) FROM returns");
@@ -133,8 +132,12 @@ public partial class ReturnedItemsPage : ContentPage
             int pendingVerify = await GetScalarAsync(conn,
                 "SELECT COUNT(*) FROM matches WHERE match_status = 'pending'");
 
+            int thisMonth = await GetScalarAsync(conn,
+                "SELECT COUNT(*) FROM returns WHERE MONTH(return_date) = MONTH(CURDATE()) AND YEAR(return_date) = YEAR(CURDATE())");
+
             TotalReturnedLabel.Text = totalReturned.ToString();
             SubtitleLabel.Text = $"{totalReturned} returned item{(totalReturned == 1 ? "" : "s")}";
+            ThisMonthLabel.Text = $"{thisMonth}";
             VerifyBadgeLabel.Text = pendingVerify.ToString();
             VerifyBadge.IsVisible = pendingVerify > 0;
 

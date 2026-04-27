@@ -54,7 +54,6 @@ public partial class AdminDashboard : ContentPage
             LostItemsLabel.Text = lostTotal.ToString();
             LostTodayLabel.Text = $"+{lostToday} today";
 
-            // ── Found reports ──────────────────────────────────────────────
             int foundTotal = await GetScalarAsync(conn,
                 "SELECT COUNT(*) FROM item_reports WHERE report_type = 'found'");
 
@@ -64,14 +63,12 @@ public partial class AdminDashboard : ContentPage
             FoundItemsLabel.Text = foundTotal.ToString();
             FoundTodayLabel.Text = $"+{foundToday} today";
 
-            // ── Total users ────────────────────────────────────────────────
             int totalUsers = await GetScalarAsync(conn,
                 "SELECT COUNT(*) FROM users");
 
             TotalUsersLabel.Text = totalUsers.ToString();
             UsersTodayLabel.Text = "+0 today";
 
-            // ── Recent reports (latest 10) ─────────────────────────────────
             var reports = new ObservableCollection<ReportItem>();
 
             const string sql = """
